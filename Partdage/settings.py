@@ -165,3 +165,5 @@ CACHES = {
     # read os.environ['REDIS_URL']
     'redis': env.cache_url('REDIS_URL')
 }
+
+AUTH_USER_MODEL = 'authentication.User'

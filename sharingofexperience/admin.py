@@ -1,3 +1,7 @@
 from django.contrib import admin
+from sharingofexperience.models import SharingOfExperience
 
-# Register your models here.
+class SharingOfExperienceAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'experienced_age', 'description', 'moderator_validation', 'likes')
+
+admin.site.register(SharingOfExperience, SharingOfExperienceAdmin)
