@@ -96,22 +96,36 @@ WSGI_APPLICATION = 'Partdage.wsgi.application'
 #        'NAME': BASE_DIR / 'db.sqlite3',
 #    }
 # }
+
 # https://django-environ.readthedocs.io/en/latest/quickstart.html
 # Parse database connection url strings
 # like psql://user:pass@127.0.0.1:8458/db
-DATABASES = {
-    # read os.environ['DATABASE_URL'] and raises
-    # ImproperlyConfigured exception if not found
-    #
-    # The db() method is an alias for db_url().
-    'default': env.db(),
+# DATABASES = {
+#    # read os.environ['DATABASE_URL'] and raises
+#    # ImproperlyConfigured exception if not found
+#    #
+#    # The db() method is an alias for db_url().
+#    'default': env.db(),
+#
+#    # read os.environ['SQLITE_URL']
+#    'extra': env.db_url(
+#        'SQLITE_URL',
+#        default='sqlite:////tmp/my-tmp-sqlite.db'
+#    )
+# }
 
-    # read os.environ['SQLITE_URL']
-    'extra': env.db_url(
-        'SQLITE_URL',
-        default='sqlite:////tmp/my-tmp-sqlite.db'
-    )
+# Change DATABASES for postgreSQL
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -155,15 +169,15 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # https://django-environ.readthedocs.io/en/latest/quickstart.html
-CACHES = {
-    # Read os.environ['CACHE_URL'] and raises
-    # ImproperlyConfigured exception if not found.
-    #
-    # The cache() method is an alias for cache_url().
-    'default': env.cache(),
-
-    # read os.environ['REDIS_URL']
-    'redis': env.cache_url('REDIS_URL')
-}
+#CACHES = {
+#    # Read os.environ['CACHE_URL'] and raises
+#    # ImproperlyConfigured exception if not found.
+#    #
+#    # The cache() method is an alias for cache_url().
+#    'default': env.cache(),
+#
+#    # read os.environ['REDIS_URL']
+#    'redis': env.cache_url('REDIS_URL')
+# }
 
 AUTH_USER_MODEL = 'authentication.User'
