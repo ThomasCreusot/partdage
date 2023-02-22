@@ -10,6 +10,11 @@
     <body>
         <header>
             <p>Partage : testing postgreSQL initialisation</p>
+            <div>
+                {% for object in objects %}
+                    {{object.description}}
+                {% endfor %}
+            </div>
         </header>
     </body>
 </html>
