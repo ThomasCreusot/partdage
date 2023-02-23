@@ -21,9 +21,11 @@ env = environ.Env(
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-# BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 # https://django-environ.readthedocs.io/en/latest/quickstart.html
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# The default value has been set again as the recommendation from django-environ quickstarts
+# does not works with the codfe """ BASE_DIR.joinpath('templates'), """
 
 # https://django-environ.readthedocs.io/en/latest/quickstart.html
 # Take environment variables from .env file
@@ -72,7 +74,9 @@ ROOT_URLCONF = 'Partdage.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR.joinpath('templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
