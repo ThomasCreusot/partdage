@@ -26,4 +26,5 @@ urlpatterns = [
     path('logout/', authentication.views.logout_user, name='logout'),
 
     path('home/', sharingofexperience.views.home, name='home'),
+    path('signup/', authentication.views.signup_page, name='signup')
 ]
