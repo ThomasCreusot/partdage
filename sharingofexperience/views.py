@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from .models import SharingOfExperience
 
 def index(request):
@@ -8,5 +9,6 @@ def index(request):
     }
     return render(request, 'index.html', context)
 
+@login_required
 def home(request):
     return render(request, 'sharingofexperience/home.html')
