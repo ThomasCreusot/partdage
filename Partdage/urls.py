@@ -16,11 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 import authentication.views
-from sharingofexperience.views import index
+from sharingofexperience.views import index # to be deleted
+import sharingofexperience.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', index, name='index'),
+    path('', index, name='index'), # to be deleted
     path('login/', authentication.views.login_page, name='login'),
     path('logout/', authentication.views.logout_user, name='logout'),
+
+    path('home/', sharingofexperience.views.home, name='home'),
 ]

@@ -14,7 +14,7 @@ def login_page(request):
             )
             if user is not None:
                 login(request, user)
-                message = f'Welcom {user.username}!'
+                return redirect('home') 
             else:
                 message = 'Invalide credentials.'
     return render(
