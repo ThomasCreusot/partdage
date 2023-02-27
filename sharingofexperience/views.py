@@ -50,8 +50,26 @@ def sharing_an_experience_create(request):
             sharing_of_experience.likes = {"likes": {}}
             # Save
             sharing_of_experience.save()
-
             return redirect('sharing_experiences_menu')
     else:
         form = SharingOfExperienceFormCreate()
+
     return render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
+
+
+@login_required
+def sharing_an_experience_update(request, sharing_of_experiment_id):
+    sharing_of_experience = SharingOfExperience.objects.get(id=sharing_of_experiment_id)
+
+    if request.method == 'POST':
+        form = SharingOfExperienceFormCreate(request.POST, instance=sharing_of_experience)
+        if form.is_valid():
+            form.save()
+            return redirect('sharing_experiences_menu')
+    else:
+        form = SharingOfExperienceFormCreate(instance=sharing_of_experience)
+
+    return render(request,
+        'sharingofexperience/sharing_an_experience_update.html',
+        {'form': form}
+    )

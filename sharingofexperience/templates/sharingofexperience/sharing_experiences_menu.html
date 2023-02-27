@@ -3,6 +3,8 @@
 
     <p>Sharing my experiences</p>
 
+    <p>a faire : si partage d'age pas fait : formulaire de création, sinon formulaire de mise à jour; utiliser la vue pour faire passer un true/false</p>
+
     {% for user_age in user_ages %}
         <button><a href="{% url 'sharing_an_experience_create' %}">{{ user_age }}</a></button>
     {% endfor %}
