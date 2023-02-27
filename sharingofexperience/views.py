@@ -50,6 +50,8 @@ def sharing_an_experience_create(request):
             sharing_of_experience = form.save(commit=False)
             # set the connected user to the user before saving the model
             sharing_of_experience.user_id_id = request.user.id
+            sharing_of_experience.moderator_validation = "NOP"  # NOP = "Not processed yet"
+            sharing_of_experience.likes = {"likes": {}}
             # Save
             sharing_of_experience.save()
 
