@@ -43,8 +43,16 @@ def sharing_an_experience_create(request):
     if request.method == 'POST':
         form = SharingOfExperienceFormCreate(request.POST)
         if form.is_valid():
-            # Create new "nomModele" and save it in database
-            SharingOfExperience = form.save()
+            # first functional version 
+            # SharingOfExperience = form.save()
+
+            # New instance but without saving in database
+            sharing_of_experience = form.save(commit=False)
+            # set the connected user to the user before saving the model
+            sharing_of_experience.user_id_id = request.user.id
+            # Save
+            sharing_of_experience.save()
+
             return redirect('sharing_experiences_menu')
     else:
         form = SharingOfExperienceFormCreate()
