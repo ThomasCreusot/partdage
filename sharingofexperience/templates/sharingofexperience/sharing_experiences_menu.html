@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <p>Sharing my experiences</p>
+
+    {% for user_age in user_ages %}
+        <p>{{ user_age }}</p>
+    {% endfor %}
+
+
+
+
+{% endblock content %}
