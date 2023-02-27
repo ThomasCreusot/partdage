@@ -29,4 +29,5 @@ urlpatterns = [
     path('signup/', authentication.views.signup_page, name='signup'),
 
     path('sharing_experiences_menu/', sharingofexperience.views.sharing_experiences_menu, name='sharing_experiences_menu'),
+    path('sharing_an_experience_create/', sharingofexperience.views.sharing_an_experience_create, name='sharing_an_experience_create'),
 ]
