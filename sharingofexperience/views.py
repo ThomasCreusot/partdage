@@ -13,11 +13,7 @@ def age_calculation(birth_date):
 
 
 def index(request):
-    objects=SharingOfExperience.objects.all()
-    context={
-        "objects":objects,
-    }
-    return render(request, 'index.html', context)
+    return render(request, 'sharingofexperience/index.html')
 
 
 @login_required

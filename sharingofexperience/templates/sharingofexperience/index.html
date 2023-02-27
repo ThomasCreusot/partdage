@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h1>Welcome !</h1>
+    <p>Texte de bienvenue : j'ai créé partage à la fin de ma formation OC, dans le but de pratique 
+        et de partager mon engouement pour la bienveillance et  le développement personnel
+        blablaaaaaablablaaaaaa blablaaaaaablablaaaaaablablaaaaaa blablaaaaaa blablaaaaaablablaaaaaa
+        blablaaaaaablablaaaaaa blablaaaaaa
+    </p>
+
+    {%  if user.is_authenticated %}
+        <button><a href="{% url 'home' %}">Home</a></button>
+    {%  else %}
+        <button><a href="{% url 'login' %}">Login</a></button>
+    {% endif %}
+
+
+
+{% endblock content %}

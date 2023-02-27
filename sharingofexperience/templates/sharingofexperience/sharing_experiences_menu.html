@@ -4,10 +4,7 @@
     <p>Sharing my experiences</p>
 
     {% for user_age in user_ages %}
-        <p>{{ user_age }}</p>
+        <button><a href="{% url 'sharing_an_experience_create' %}">{{ user_age }}</a></button>
     {% endfor %}
-
-
-
 
 {% endblock content %}
