@@ -7,4 +7,4 @@ class SharingOfExperienceFormCreate(forms.ModelForm):
       model = SharingOfExperience
       #fields = '__all__'
       # fields = ['description',]
-      exclude = ('user_id', 'moderator_validation', 'likes')
+      exclude = ('user_id', 'moderator_validation', 'likes', 'experienced_age')

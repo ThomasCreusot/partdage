@@ -32,7 +32,7 @@ def sharing_experiences_menu(request):
 
 
 @login_required
-def sharing_an_experience_create(request):
+def sharing_an_experience_create(request, experienced_age):
     # form = SharingOfExperienceFormCreate
     # return render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
 
@@ -48,6 +48,8 @@ def sharing_an_experience_create(request):
             sharing_of_experience.user_id_id = request.user.id
             sharing_of_experience.moderator_validation = "NOP"  # NOP = "Not processed yet"
             sharing_of_experience.likes = {"likes": {}}
+            sharing_of_experience.experienced_age = experienced_age
+
             # Save
             sharing_of_experience.save()
             return redirect('sharing_experiences_menu')
@@ -58,8 +60,8 @@ def sharing_an_experience_create(request):
 
 
 @login_required
-def sharing_an_experience_update(request, sharing_of_experiment_id):
-    sharing_of_experience = SharingOfExperience.objects.get(id=sharing_of_experiment_id)
+def sharing_an_experience_update(request, sharing_of_experience_id):
+    sharing_of_experience = SharingOfExperience.objects.get(id=sharing_of_experience_id)
 
     if request.method == 'POST':
         form = SharingOfExperienceFormCreate(request.POST, instance=sharing_of_experience)
