@@ -5,6 +5,7 @@ from datetime import date
 from .models import SharingOfExperience
 from sharingofexperience.forms import SharingOfExperienceFormCreate
 
+
 LOWER_LIMIT_AGE_TO_BE_SHARED = 10 #  years old
 
 
@@ -30,6 +31,13 @@ def sharing_of_experience_of_an_user_at_a_given_age_id(request, experienced_age)
     )
     sharing_of_experience_already_created_id = sharing_of_experience_already_created[0].id
     return sharing_of_experience_already_created_id
+
+
+def sharing_of_experience_found(sharing_of_experience_search):
+    if len(sharing_of_experience_search) == 0:
+        return False
+    if len(sharing_of_experience_search) == 1:
+        return True
 
 
 def index(request):
@@ -89,18 +97,20 @@ def sharing_an_experience_create(request, experienced_age):
             return render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
 
 
-
 @login_required
 def sharing_an_experience_update(request, sharing_of_experience_id):
     # modified as an user could as to update a sharing_of_experience that does not exist yet
     # sharing_of_experience = SharingOfExperience.objects.get(id=sharing_of_experience_id)
+    global sharing_of_experience_found
 
     sharing_of_experience_search = SharingOfExperience.objects.filter(id=sharing_of_experience_id)
 
-    if len(sharing_of_experience_search) == 0:
+    sharing_of_experience_was_found = sharing_of_experience_found(sharing_of_experience_search)
+
+    if not sharing_of_experience_was_found:
         return render(request, 'sharingofexperience/sharing_of_experience_not_yet_created.html')
 
-    elif len(sharing_of_experience_search) == 1:
+    elif sharing_of_experience_was_found:
         sharing_of_experience=sharing_of_experience_search[0]
         if sharing_of_experience.user_id == request.user:
             if request.method == 'POST':
