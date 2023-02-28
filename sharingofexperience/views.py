@@ -84,7 +84,7 @@ def sharing_an_experience_create(request, experienced_age):
     else : 
         if age_already_filled_boolean:
             sharing_of_experience_already_created_id=sharing_of_experience_of_an_user_at_a_given_age_id(request, experienced_age)
-            return redirect('sharing_an_experience_update', sharing_of_experience_already_created_id)        
+            return redirect('sharing_an_experience_update', sharing_of_experience_already_created_id)
         else: 
             return render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
 
@@ -92,17 +92,25 @@ def sharing_an_experience_create(request, experienced_age):
 
 @login_required
 def sharing_an_experience_update(request, sharing_of_experience_id):
-    sharing_of_experience = SharingOfExperience.objects.get(id=sharing_of_experience_id)
+    # modified as an user could as to update a sharing_of_experience that does not exist yet
+    # sharing_of_experience = SharingOfExperience.objects.get(id=sharing_of_experience_id)
 
-    if request.method == 'POST':
-        form = SharingOfExperienceFormCreate(request.POST, instance=sharing_of_experience)
-        if form.is_valid():
-            form.save()
-            return redirect('sharing_experiences_menu')
-    else:
-        form = SharingOfExperienceFormCreate(instance=sharing_of_experience)
+    sharing_of_experience_search = SharingOfExperience.objects.filter(id=sharing_of_experience_id)
 
-    return render(request,
-        'sharingofexperience/sharing_an_experience_update.html',
-        {'form': form}
-    )
+    if len(sharing_of_experience_search) == 0:
+        return render(request, 'sharingofexperience/be_patient.html')
+
+    elif len(sharing_of_experience_search) == 1:
+        sharing_of_experience=sharing_of_experience_search[0]
+        if request.method == 'POST':
+            form = SharingOfExperienceFormCreate(request.POST, instance=sharing_of_experience)
+            if form.is_valid():
+                form.save()
+                return redirect('sharing_experiences_menu')
+        else:
+            form = SharingOfExperienceFormCreate(instance=sharing_of_experience)
+
+        return render(request,
+            'sharingofexperience/sharing_an_experience_update.html',
+            {'form': form}
+        )
