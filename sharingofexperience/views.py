@@ -33,6 +33,20 @@ def sharing_of_experience_of_an_user_at_a_given_age_id(request, experienced_age)
     return sharing_of_experience_already_created_id
 
 
+def url_to_be_returned_for_experience_create_view(
+        request, experienced_age_to_be_created_low_enough_boolean, age_already_filled_boolean,
+        experienced_age, form):
+
+    if not experienced_age_to_be_created_low_enough_boolean:
+        return render(request, 'sharingofexperience/be_patient.html')
+    else : 
+        if age_already_filled_boolean:
+            sharing_of_experience_already_created_id=sharing_of_experience_of_an_user_at_a_given_age_id(request, experienced_age)
+            return redirect('sharing_an_experience_update', sharing_of_experience_already_created_id)
+        else: 
+            return render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
+
+
 def sharing_of_experience_found(sharing_of_experience_search):
     if len(sharing_of_experience_search) == 0:
         return False
@@ -64,6 +78,8 @@ def sharing_an_experience_create(request, experienced_age):
     # form = SharingOfExperienceFormCreate
     # return render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
 
+    global url_to_be_returned_for_experience_create_view
+
     if request.method == 'POST':
         form = SharingOfExperienceFormCreate(request.POST)
         if form.is_valid():
@@ -87,14 +103,10 @@ def sharing_an_experience_create(request, experienced_age):
     age_already_filled_boolean = sharing_of_experience_already_created_for_an_age(request, experienced_age)
     experienced_age_to_be_created_low_enough_boolean = experienced_age_to_be_created_lower_than_user_age_boolean(experienced_age, request)
 
-    if not experienced_age_to_be_created_low_enough_boolean:
-        return render(request, 'sharingofexperience/be_patient.html')
-    else : 
-        if age_already_filled_boolean:
-            sharing_of_experience_already_created_id=sharing_of_experience_of_an_user_at_a_given_age_id(request, experienced_age)
-            return redirect('sharing_an_experience_update', sharing_of_experience_already_created_id)
-        else: 
-            return render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
+    url_to_be_returned = url_to_be_returned_for_experience_create_view(
+        request, experienced_age_to_be_created_low_enough_boolean, age_already_filled_boolean,
+        experienced_age, form)
+    return url_to_be_returned
 
 
 @login_required
