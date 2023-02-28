@@ -98,19 +98,22 @@ def sharing_an_experience_update(request, sharing_of_experience_id):
     sharing_of_experience_search = SharingOfExperience.objects.filter(id=sharing_of_experience_id)
 
     if len(sharing_of_experience_search) == 0:
-        return render(request, 'sharingofexperience/be_patient.html')
+        return render(request, 'sharingofexperience/sharing_of_experience_not_yet_created.html')
 
     elif len(sharing_of_experience_search) == 1:
         sharing_of_experience=sharing_of_experience_search[0]
-        if request.method == 'POST':
-            form = SharingOfExperienceFormCreate(request.POST, instance=sharing_of_experience)
-            if form.is_valid():
-                form.save()
-                return redirect('sharing_experiences_menu')
-        else:
-            form = SharingOfExperienceFormCreate(instance=sharing_of_experience)
+        if sharing_of_experience.user_id == request.user:
+            if request.method == 'POST':
+                form = SharingOfExperienceFormCreate(request.POST, instance=sharing_of_experience)
+                if form.is_valid():
+                    form.save()
+                    return redirect('sharing_experiences_menu')
+            else:
+                form = SharingOfExperienceFormCreate(instance=sharing_of_experience)
 
-        return render(request,
-            'sharingofexperience/sharing_an_experience_update.html',
-            {'form': form}
-        )
+            return render(request,
+                'sharingofexperience/sharing_an_experience_update.html',
+                {'form': form}
+            )
+        else:
+            return render(request, 'sharingofexperience/not_your_experience.html')
