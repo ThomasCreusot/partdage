@@ -56,8 +56,11 @@ def sharing_an_experience_create(request, experienced_age):
     else:
         form = SharingOfExperienceFormCreate()
 
-    return render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
-
+    user_age = age_calculation(request.user.birth_date)
+    if experienced_age < user_age:
+        return render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
+    else : 
+        return render(request, 'sharingofexperience/be_patient.html')
 
 @login_required
 def sharing_an_experience_update(request, sharing_of_experience_id):
