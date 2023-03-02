@@ -142,4 +142,10 @@ def sharing_an_experience_update(request, sharing_of_experience_id):
 
 @login_required
 def learning_from_others(request):
-    return render(request, 'sharingofexperience/learning_from_others.html')
+    sharing_of_experiences_from_others = SharingOfExperience.objects.filter(
+    ~Q(user_id_id = request.user.id)
+        )
+    context = {
+        'sharing_of_experiences':sharing_of_experiences_from_others
+    }
+    return render(request, 'sharingofexperience/learning_from_others.html', context=context)
