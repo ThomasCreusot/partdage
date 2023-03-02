@@ -139,3 +139,7 @@ def sharing_an_experience_update(request, sharing_of_experience_id):
             )
         else:
             return render(request, 'sharingofexperience/not_your_experience.html')
+
+@login_required
+def learning_from_others(request):
+    return render(request, 'sharingofexperience/learning_from_others.html')
