@@ -32,4 +32,6 @@ urlpatterns = [
     path('sharing_an_experience_update/<int:sharing_of_experience_id>/', sharingofexperience.views.sharing_an_experience_update, name='sharing_an_experience_update'),
 
     path('learning_from_others/', sharingofexperience.views.learning_from_others, name='learning_from_others'),
+
+    path('like_a_sharing_of_experience/', sharingofexperience.views.like_a_sharing_of_experience, name='like_a_sharing_of_experience'),
 ]

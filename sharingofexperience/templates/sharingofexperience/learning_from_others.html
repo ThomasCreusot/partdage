@@ -2,8 +2,10 @@
 {% block content %}
     <p>LEARNING FROM OTHERS</p>
 
+   
     {% for sharing_of_experience in sharing_of_experiences %}
         <p>{{ sharing_of_experience.description }}</p>
+        <button><a href="{% url 'like_a_sharing_of_experience' %}">Like</a></button>
     {% endfor %}
 
 {% endblock content %}

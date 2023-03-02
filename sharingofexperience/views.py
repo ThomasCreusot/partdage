@@ -153,15 +153,17 @@ def sharing_an_experience_update(request, sharing_of_experience_id):
 @login_required
 def learning_from_others(request):
     user_age = age_calculation(request.user.birth_date)
-
     user_age_plus_minus_range = user_age_plus_minus_range_generation(user_age)
-
     sharing_of_experiences_from_others = SharingOfExperience.objects.filter(
         ~Q(user_id_id = request.user.id) & Q(experienced_age__in=user_age_plus_minus_range)
     )
-
     context = {
         'sharing_of_experiences':sharing_of_experiences_from_others
     }
-
     return render(request, 'sharingofexperience/learning_from_others.html', context=context)
+
+
+@login_required
+def like_a_sharing_of_experience(request):
+    print("like : done")
+    return redirect('learning_from_others')
