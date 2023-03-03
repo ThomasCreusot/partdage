@@ -157,6 +157,10 @@ def learning_from_others(request):
     sharing_of_experiences_from_others = SharingOfExperience.objects.filter(
         ~Q(user_id_id = request.user.id) & Q(experienced_age__in=user_age_plus_minus_range)
     )
+
+    for sharing_of_experience in sharing_of_experiences_from_others:
+        sharing_of_experience.total_likes_calculation()
+
     context = {
         'sharing_of_experiences':sharing_of_experiences_from_others
     }

@@ -23,3 +23,6 @@ class SharingOfExperience(models.Model):
     def receive_like(self, id_user_who_send_liked):
         self.likes['likes'][str(id_user_who_send_liked)] = 1
         self.save()
+
+    def total_likes_calculation(self):
+        self.total_likes = len(self.likes['likes'])
