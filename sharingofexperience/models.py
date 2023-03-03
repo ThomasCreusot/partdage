@@ -19,3 +19,7 @@ class SharingOfExperience(models.Model):
     description = models.fields.TextField(max_length=2500, blank=False)
     moderator_validation = models.fields.CharField(max_length=20, choices=MODERATION_CHOICES, blank=False)
     likes = models.JSONField()
+
+    def receive_like(self, id_user_who_send_liked):
+        self.likes['likes'][str(id_user_who_send_liked)] = 1
+        self.save()
