@@ -4,8 +4,9 @@
 
    
     {% for sharing_of_experience in sharing_of_experiences %}
+        <p>{{ sharing_of_experience.user_id }}</p>
         <p>{{ sharing_of_experience.description }}</p>
-        <button><a href="{% url 'like_a_sharing_of_experience' %}">Like</a></button>
+        <button><a href="{% url 'like_a_sharing_of_experience' sharing_of_experience.id %}">Like</a></button>
     {% endfor %}
 
 {% endblock content %}

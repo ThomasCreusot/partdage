@@ -164,6 +164,7 @@ def learning_from_others(request):
 
 
 @login_required
-def like_a_sharing_of_experience(request):
-    print("like : done")
+def like_a_sharing_of_experience(request, id_sharing_to_be_liked):
+    print("like : to be done ; with a if sharing of experience instance . property (to be created : list of sharing exp the request.user has access) = add a like from request.user in dico ; else redirect")
+    print(id_sharing_to_be_liked)
     return redirect('learning_from_others')
