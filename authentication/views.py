@@ -18,14 +18,14 @@ def login_page(request):
                 login(request, user)
 
                 # Creation of a ProfileModelSharingOfExperiencesUserHasAccess if a user who logs in 
-                # does not have one 
+                # does not have one
                 # https://docs.djangoproject.com/en/4.1/topics/db/examples/one_to_one/
                 try:
                     ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
                 except:
                     profile_model = ProfileModelSharingOfExperiencesUserHasAccess(
                         user=request.user,
-                        sharing_of_experiences_user_has_access = {"test2": 1},
+                        sharing_of_experiences_user_has_access = {"dictionary initialisation": 1},
                     )
                     profile_model.save()
 

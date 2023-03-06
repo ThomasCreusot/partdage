@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from datetime import date
-from .models import SharingOfExperience
+from .models import SharingOfExperience, ProfileModelSharingOfExperiencesUserHasAccess
 from sharingofexperience.forms import SharingOfExperienceFormCreate
 
 
 LOWER_LIMIT_AGE_TO_BE_SHARED = 10  # years old
 GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES = 1  # years old
+ACCESS_TO_SHARINGS_MINIMUM_NUMBER = 5
 
 def age_calculation(birth_date):
     today = date.today()
@@ -67,8 +68,63 @@ def user_age_plus_minus_range_generation(user_age):
     return user_age_plus_minus_range
 
 
+def user_has_not_yet_access_to_sharings_of_experiences(request):
+    profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
+    profile_model_dictionnary = profile_model.sharing_of_experiences_user_has_access
+    # total_sharing_of_experience_age_plus_minus_one = queryset_sharing_of_experiences_from_others(request).count()
+    # len(profile_model_dictionnary)-1 as the dictionnary initialy contains {"dictionary initialisation": 1}
+    # return len(profile_model_dictionnary)-1 < min(ACCESS_TO_SHARINGS_MINIMUM_NUMBER, total_sharing_of_experience_age_plus_minus_one)
+
+    # see views.py of authentication app : 
+    # -> sharing_of_experiences_user_has_access = {"dictionary initialisation": 1}
+    # + see allocation_of_new_sharings_of_experiences : {"dictionary initialisation": 1} -> {}
+    return 'dictionary initialisation' in profile_model_dictionnary
+
+
+def queryset_sharing_of_experiences_from_others(request):
+    user_age = age_calculation(request.user.birth_date)
+    user_age_plus_minus_range = user_age_plus_minus_range_generation(user_age)
+    sharing_of_experiences_from_others = SharingOfExperience.objects.filter(
+        ~Q(user_id_id = request.user.id) & Q(experienced_age__in=user_age_plus_minus_range)
+    )
+    return sharing_of_experiences_from_others
+
+
+def allocation_of_new_sharings_of_experiences(request, number_of_new_sharings):
+    profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
+    profile_model_dictionnary = profile_model.sharing_of_experiences_user_has_access
+    
+    # {"dictionary initialisation": 1} -> {}
+    # profile_model_dictionnary = {}  # does not works for the actual purpose
+    del profile_model_dictionnary['dictionary initialisation']
+
+    total_sharing_of_experience_age_plus_minus_one = queryset_sharing_of_experiences_from_others(request).count()
+
+    i=0
+    while len(profile_model_dictionnary) < min(ACCESS_TO_SHARINGS_MINIMUM_NUMBER, total_sharing_of_experience_age_plus_minus_one):
+        profile_model_dictionnary[i]=i
+        i+=1
+        print(i)
+    profile_model.save()
+    print("2", profile_model_dictionnary)
+
+
+
 @login_required
 def home(request):
+    profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
+    profile_model_dictionnary = profile_model.sharing_of_experiences_user_has_access
+    print("1", profile_model_dictionnary)
+
+    print('initialisation', user_has_not_yet_access_to_sharings_of_experiences(request))
+    if user_has_not_yet_access_to_sharings_of_experiences(request):
+        allocation_of_new_sharings_of_experiences(request, ACCESS_TO_SHARINGS_MINIMUM_NUMBER)
+
+    #{test to understand}
+    profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
+    profile_model_dictionnary = profile_model.sharing_of_experiences_user_has_access
+    print("3", profile_model_dictionnary)
+
     return render(request, 'sharingofexperience/home.html')
 
 
@@ -152,11 +208,8 @@ def sharing_an_experience_update(request, sharing_of_experience_id):
 
 @login_required
 def learning_from_others(request):
-    user_age = age_calculation(request.user.birth_date)
-    user_age_plus_minus_range = user_age_plus_minus_range_generation(user_age)
-    sharing_of_experiences_from_others = SharingOfExperience.objects.filter(
-        ~Q(user_id_id = request.user.id) & Q(experienced_age__in=user_age_plus_minus_range)
-    )
+
+    sharing_of_experiences_from_others = queryset_sharing_of_experiences_from_others(request)
 
     for sharing_of_experience in sharing_of_experiences_from_others:
         sharing_of_experience.total_likes_calculation()
