@@ -2,6 +2,7 @@ from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from . import forms
+from sharingofexperience.models import ProfileModelSharingOfExperiencesUserHasAccess
 
 def login_page(request):
     form = forms.LoginForm()
@@ -15,6 +16,19 @@ def login_page(request):
             )
             if user is not None:
                 login(request, user)
+
+                # Creation of a ProfileModelSharingOfExperiencesUserHasAccess if a user who logs in 
+                # does not have one 
+                # https://docs.djangoproject.com/en/4.1/topics/db/examples/one_to_one/
+                try:
+                    ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
+                except:
+                    profile_model = ProfileModelSharingOfExperiencesUserHasAccess(
+                        user=request.user,
+                        sharing_of_experiences_user_has_access = {"test2": 1},
+                    )
+                    profile_model.save()
+
                 return redirect('home') 
             else:
                 message = 'Invalide credentials.'
