@@ -7,7 +7,7 @@ class SharingOfExperienceAdmin(admin.ModelAdmin):
 
 
 class ProfileModelSharingOfExperiencesUserHasAccessAdmin(admin.ModelAdmin):
-    list_display = ('id', 'sharing_of_experiences_user_has_access')
+    list_display = ('user', 'sharing_of_experiences_user_has_access',)
 
 
 admin.site.register(SharingOfExperience, SharingOfExperienceAdmin)
