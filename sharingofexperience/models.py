@@ -30,3 +30,17 @@ class SharingOfExperience(models.Model):
         for like_key in self.likes['likes']:
             if self.likes['likes'][like_key] == 1:
                 self.total_likes += self.likes['likes'][like_key]
+
+
+class ProfileModelSharingOfExperiencesUserHasAccess(models.Model):
+    """Represents the list of sharings of experiences each User can have access"""
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    sharing_of_experiences_user_has_access = models.JSONField()
+
+    def determination_of_sharing_of_experiences_user_has_access(self):
+        pass
+        # random: random.sample(listName, x) (x= number of draws)
