@@ -89,6 +89,13 @@ def queryset_sharing_of_experiences_from_others(request):
     )
     return sharing_of_experiences_from_others
 
+
+def add_credits_to_user(user_profile_model_dictionnary, number_of_credits):
+    """Credits are attributed to users who should have access to sharings_of_experience but
+    database is not big enough, for future consultation of sharings"""
+    user_profile_model_dictionnary['credits'] = number_of_credits
+
+
 # import timeit
 # code_test="""
 def allocation_of_new_sharings_of_experiences(request, number_of_new_sharings):
@@ -121,9 +128,9 @@ def allocation_of_new_sharings_of_experiences(request, number_of_new_sharings):
     for sharing in sample_sharings_of_experience_age_plus_minus_one:
         user_profile_model_dictionnary[sharing.id] = True
 
-    # CREDITS
     if total_sharings_of_experience_age_plus_minus_one < ACCESS_TO_SHARINGS_MINIMUM_NUMBER:
-        user_profile_model_dictionnary['credits'] = ACCESS_TO_SHARINGS_MINIMUM_NUMBER-total_sharings_of_experience_age_plus_minus_one
+        number_of_credits = ACCESS_TO_SHARINGS_MINIMUM_NUMBER-total_sharings_of_experience_age_plus_minus_one
+        add_credits_to_user(user_profile_model_dictionnary, number_of_credits)
 
     user_profile_model.save()
 # """
@@ -145,6 +152,40 @@ def sharing_experiences_menu(request):
         'user_ages':user_ages
     }
     return render(request, 'sharingofexperience/sharing_experiences_menu.html', context=context)
+
+def access_to_new_sharings_of_experience(request):
+
+    #définir fonction access_to_ALL_sharings_of_experience_age_minus_plus
+    # SI l'utilisateur a renseigné tous ses ages et qu'il n'a pas encore accès à tous les sharings 
+    # of exp,--> ALORS il a accès à tous les sharings of experience
+    #c'est à dire SI request.user.sharings == request.user.age ET que len(request.user.dictionnaire) < total du nombre de sharings of exp auquel il a access
+    #   ALORS --> JUSQUA CE QUE il y ait égalité : request.user.dictionnaire d'access[] --> compléter le dictionnaire d'access
+    
+    #def access_to_ALL_sharings_of_experience_age_minus_plus(request):
+    count_user_sharing_of_experiences = len(SharingOfExperience.objects.filter(user_id_id = request.user.id))
+    user_age = age_calculation(request.user.birth_date)
+    # user_age - 1 as the user must wait his/her birthday to complete a sharing about the current year
+    max_number_of_sharings_depends_on_user_age = user_age -1 - LOWER_LIMIT_AGE_TO_BE_SHARED
+    user_has_completed_all_his_sharings = count_user_sharing_of_experiences == max_number_of_sharings_depends_on_user_age
+
+    user_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
+    user_profile_model_dictionnary = user_profile_model.sharing_of_experiences_user_has_access
+
+    if 'full access sharings age plus minus' in user_profile_model_dictionnary:
+        user_has_already_access_to_all_sharings_age_minus_plus = user_profile_model_dictionnary['user_profile_model_dictionnary'] == True
+    else :
+        user_has_already_access_to_all_sharings_age_minus_plus = False
+
+    if user_has_completed_all_his_sharings and not user_has_already_access_to_all_sharings_age_minus_plus:
+        user_profile_model_dictionnary['full access sharings age plus minus'] = True
+
+    print(user_profile_model_dictionnary)
+
+    #Sinon (pas encore tout complété)
+    #définir fonction access_to_some_sharings_of_experience_age_minus_plus:
+    # tous les deux ajouts, on donne accès à 3 nouveaux sharings
+    # C'est à dire si la longueur du nombre de sharings of exp MODULE 2 = 0 -> ajout de CONSTANTE NUMBER NEW SHARINGS ADDED
+    pass
 
 
 @login_required
@@ -169,6 +210,9 @@ def sharing_an_experience_create(request, experienced_age):
             sharing_of_experience.experienced_age = experienced_age
             # Save
             sharing_of_experience.save()
+            
+            access_to_new_sharings_of_experience(request)
+            
             return redirect('sharing_experiences_menu')
     else:
         form = SharingOfExperienceFormCreate()

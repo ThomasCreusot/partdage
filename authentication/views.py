@@ -25,6 +25,7 @@ def login_page(request):
                 except:
                     profile_model = ProfileModelSharingOfExperiencesUserHasAccess(
                         user=request.user,
+                        # 'dictionary initialisation' is used later, see views.py of sharingofexperience app
                         sharing_of_experiences_user_has_access = {"dictionary initialisation": 1},
                     )
                     profile_model.save()
