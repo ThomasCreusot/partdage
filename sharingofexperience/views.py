@@ -121,6 +121,10 @@ def allocation_of_new_sharings_of_experiences(request, number_of_new_sharings):
     for sharing in sample_sharings_of_experience_age_plus_minus_one:
         user_profile_model_dictionnary[sharing.id] = True
 
+    # CREDITS
+    if total_sharings_of_experience_age_plus_minus_one < ACCESS_TO_SHARINGS_MINIMUM_NUMBER:
+        user_profile_model_dictionnary['credits'] = ACCESS_TO_SHARINGS_MINIMUM_NUMBER-total_sharings_of_experience_age_plus_minus_one
+
     user_profile_model.save()
 # """
 
