@@ -9,6 +9,8 @@ from random import sample
 LOWER_LIMIT_AGE_TO_BE_SHARED = 10  # years old
 GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES = 1  # years old
 ACCESS_TO_SHARINGS_MINIMUM_NUMBER = 5
+DEFAULT_NUMBER_GIVE_ACCESS_TO_SHARINGS_AT_EACH_PARTICIPATION = 3
+NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS = 2
 
 def age_calculation(birth_date):
     today = date.today()
@@ -173,9 +175,11 @@ def user_has_already_access_to_all_sharings_age_minus_plus(request):
     else :
         return False
 
+def access_to_some_sharings_age_minus_plus(request, number_of_sharings_to_give_access):
+    print("lets go for access_to_some_sharings_age_minus_plus()")
+    pass
 
 def access_to_new_sharings_of_experience(request):
-
     user_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
     user_profile_model_dictionnary = user_profile_model.sharing_of_experiences_user_has_access
 
@@ -183,17 +187,12 @@ def access_to_new_sharings_of_experience(request):
         user_profile_model_dictionnary['full access sharings age plus minus'] = True
         user_profile_model.save()
 
-    print(user_profile_model_dictionnary)
-
-def all_sharings_completed_and_not_yet_full_access(request):
-
-
-
-    #Sinon (pas encore tout complété)
-    #définir fonction access_to_some_sharings_of_experience_age_minus_plus:
-    # tous les deux ajouts, on donne accès à 3 nouveaux sharings
-    # C'est à dire si la longueur du nombre de sharings of exp MODULE 2 = 0 -> ajout de CONSTANTE NUMBER NEW SHARINGS ADDED
-    pass
+    else:
+        count_sharings_by_user = len(SharingOfExperience.objects.filter(user_id_id = request.user.id))
+        print('count_sharings_by_user', count_sharings_by_user)
+        if count_sharings_by_user % NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS == 0:
+            print('count_sharings_by_user', count_sharings_by_user)
+            access_to_some_sharings_age_minus_plus(request, DEFAULT_NUMBER_GIVE_ACCESS_TO_SHARINGS_AT_EACH_PARTICIPATION)
 
 
 @login_required
