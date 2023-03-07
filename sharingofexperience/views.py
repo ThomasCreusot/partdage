@@ -4,7 +4,7 @@ from django.db.models import Q
 from datetime import date
 from .models import SharingOfExperience, ProfileModelSharingOfExperiencesUserHasAccess
 from sharingofexperience.forms import SharingOfExperienceFormCreate
-
+from random import sample
 
 LOWER_LIMIT_AGE_TO_BE_SHARED = 10  # years old
 GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES = 1  # years old
@@ -89,42 +89,47 @@ def queryset_sharing_of_experiences_from_others(request):
     )
     return sharing_of_experiences_from_others
 
-
+# import timeit
+# code_test="""
 def allocation_of_new_sharings_of_experiences(request, number_of_new_sharings):
-    profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
-    profile_model_dictionnary = profile_model.sharing_of_experiences_user_has_access
-    
+    user_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
+    user_profile_model_dictionnary = user_profile_model.sharing_of_experiences_user_has_access
     # {"dictionary initialisation": 1} -> {}
-    # profile_model_dictionnary = {}  # does not works for the actual purpose
-    del profile_model_dictionnary['dictionary initialisation']
+    del user_profile_model_dictionnary['dictionary initialisation']
 
-    total_sharing_of_experience_age_plus_minus_one = queryset_sharing_of_experiences_from_others(request).count()
+    sharings_of_experience_age_plus_minus_one = queryset_sharing_of_experiences_from_others(request)
+    total_sharings_of_experience_age_plus_minus_one = sharings_of_experience_age_plus_minus_one.count()
 
-    i=0
-    while len(profile_model_dictionnary) < min(ACCESS_TO_SHARINGS_MINIMUM_NUMBER, total_sharing_of_experience_age_plus_minus_one):
-        profile_model_dictionnary[i]=i
-        i+=1
-        print(i)
-    profile_model.save()
-    print("2", profile_model_dictionnary)
+    # while len(profile_model_dictionnary) < min(ACCESS_TO_SHARINGS_MINIMUM_NUMBER, total_sharing_of_experience_age_plus_minus_one):
+        # Using random.sample(listName, x) (x=number of draws) on sharing_of_experience_age_plus_minus_one :
+        # Population must be a sequence.  For dicts or sets, use sorted(d).
 
+    number_of_draws = min(ACCESS_TO_SHARINGS_MINIMUM_NUMBER, total_sharings_of_experience_age_plus_minus_one)
+
+    # METHOD A : Equivalent of pop applied on dictionnary 
+    # timeit.timeit(10000) : 0.0004363999469205737
+    #sharings_of_experience_age_plus_minus_one_sample = sharings_of_experience_age_plus_minus_one.order_by('?')[:number_of_draws]
+    #for i in range(len(sharings_of_experience_age_plus_minus_one_sample)):
+    #    sharing_access_given = sharings_of_experience_age_plus_minus_one_sample[0]
+    #    sharings_of_experience_age_plus_minus_one_sample = sharings_of_experience_age_plus_minus_one_sample[1:]
+    #    user_profile_model_dictionnary[sharing_access_given.id] = True
+
+    # METHOD B : Conversion queryset to list + random.sample()
+    # timeit.timeit(10000) : 0.0004342000465840101
+    list_sharings_of_experience_age_plus_minus_one = list(sharings_of_experience_age_plus_minus_one)
+    sample_sharings_of_experience_age_plus_minus_one = sample(list_sharings_of_experience_age_plus_minus_one, number_of_draws)
+    for sharing in sample_sharings_of_experience_age_plus_minus_one:
+        user_profile_model_dictionnary[sharing.id] = True
+
+    user_profile_model.save()
+# """
 
 
 @login_required
 def home(request):
-    profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
-    profile_model_dictionnary = profile_model.sharing_of_experiences_user_has_access
-    print("1", profile_model_dictionnary)
-
-    print('initialisation', user_has_not_yet_access_to_sharings_of_experiences(request))
     if user_has_not_yet_access_to_sharings_of_experiences(request):
         allocation_of_new_sharings_of_experiences(request, ACCESS_TO_SHARINGS_MINIMUM_NUMBER)
-
-    #{test to understand}
-    profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
-    profile_model_dictionnary = profile_model.sharing_of_experiences_user_has_access
-    print("3", profile_model_dictionnary)
-
+        # print(timeit.timeit(code_test, number=10000))
     return render(request, 'sharingofexperience/home.html')
 
 
