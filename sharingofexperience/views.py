@@ -153,33 +153,41 @@ def sharing_experiences_menu(request):
     }
     return render(request, 'sharingofexperience/sharing_experiences_menu.html', context=context)
 
-def access_to_new_sharings_of_experience(request):
 
-    #définir fonction access_to_ALL_sharings_of_experience_age_minus_plus
-    # SI l'utilisateur a renseigné tous ses ages et qu'il n'a pas encore accès à tous les sharings 
-    # of exp,--> ALORS il a accès à tous les sharings of experience
-    #c'est à dire SI request.user.sharings == request.user.age ET que len(request.user.dictionnaire) < total du nombre de sharings of exp auquel il a access
-    #   ALORS --> JUSQUA CE QUE il y ait égalité : request.user.dictionnaire d'access[] --> compléter le dictionnaire d'access
-    
-    #def access_to_ALL_sharings_of_experience_age_minus_plus(request):
+def user_has_completed_all_his_sharings(request):
     count_user_sharing_of_experiences = len(SharingOfExperience.objects.filter(user_id_id = request.user.id))
     user_age = age_calculation(request.user.birth_date)
+
     # user_age - 1 as the user must wait his/her birthday to complete a sharing about the current year
     max_number_of_sharings_depends_on_user_age = user_age -1 - LOWER_LIMIT_AGE_TO_BE_SHARED
-    user_has_completed_all_his_sharings = count_user_sharing_of_experiences == max_number_of_sharings_depends_on_user_age
 
+    return count_user_sharing_of_experiences == max_number_of_sharings_depends_on_user_age
+
+
+def user_has_already_access_to_all_sharings_age_minus_plus(request):
     user_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
     user_profile_model_dictionnary = user_profile_model.sharing_of_experiences_user_has_access
 
     if 'full access sharings age plus minus' in user_profile_model_dictionnary:
-        user_has_already_access_to_all_sharings_age_minus_plus = user_profile_model_dictionnary['user_profile_model_dictionnary'] == True
+        return user_profile_model_dictionnary['user_profile_model_dictionnary'] == True
     else :
-        user_has_already_access_to_all_sharings_age_minus_plus = False
+        return False
 
-    if user_has_completed_all_his_sharings and not user_has_already_access_to_all_sharings_age_minus_plus:
+
+def access_to_new_sharings_of_experience(request):
+
+    user_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
+    user_profile_model_dictionnary = user_profile_model.sharing_of_experiences_user_has_access
+
+    if user_has_completed_all_his_sharings(request) and not user_has_already_access_to_all_sharings_age_minus_plus(request):
         user_profile_model_dictionnary['full access sharings age plus minus'] = True
+        user_profile_model.save()
 
     print(user_profile_model_dictionnary)
+
+def all_sharings_completed_and_not_yet_full_access(request):
+
+
 
     #Sinon (pas encore tout complété)
     #définir fonction access_to_some_sharings_of_experience_age_minus_plus:
