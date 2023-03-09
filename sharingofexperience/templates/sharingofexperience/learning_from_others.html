@@ -10,4 +10,29 @@
         <button><a href="{% url 'like_a_sharing_of_experience' sharing_of_experience.id %}">Like</a></button>
     {% endfor %}
 
+
+    <p>
+        My main philosophy is to be in the moment (present) ; however, as the number of shared
+        experience may be limited ; I choose to give you the opportunity to acces experiences
+        corresponding to an age you already experienced or you will experience. 
+        HOW DOES IT WORK ?
+        When you should have had access to an experience share but none is available for your
+        current age (+/- 1 year), you accumulate credit(s) (1). You can spend credits (n=
+        {{ COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS }})
+        to get access to experience share(s) (n=
+        {{ NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS }}) corresponding to a
+        different age than the one you are currently living in.
+    </p>
+
+    <button><a href="{% url 'spend_credits' %}">
+        Spend credits and access to already lived age
+    </a></button>
+
+    <button><a href="{% url 'spend_credits' %}">
+        Spend credits and access to a future age
+    </a></button>
+
+
+
+
 {% endblock content %}

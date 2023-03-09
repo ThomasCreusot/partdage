@@ -11,6 +11,9 @@ GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES = 1  # years old
 ACCESS_TO_SHARINGS_MINIMUM_NUMBER = 5
 DEFAULT_NUMBER_GIVE_ACCESS_TO_SHARINGS_AT_EACH_PARTICIPATION = 3
 NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS = 2
+COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS = 5
+NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS = 1
+
 
 def age_calculation(birth_date):
     today = date.today()
@@ -327,7 +330,9 @@ def learning_from_others(request):
         sharing_of_experience.total_likes_calculation()
 
     context = {
-        'sharing_of_experiences':sharing_of_experiences_from_others
+        'sharing_of_experiences':sharing_of_experiences_from_others,
+        'COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS':COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS,
+        'NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS':NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS
     }
     return render(request, 'sharingofexperience/learning_from_others.html', context=context)
 
@@ -339,3 +344,7 @@ def like_a_sharing_of_experience(request, id_sharing_of_experience_to_be_liked):
     sharing_of_experience_to_be_liked.receive_like(request.user.id)
 
     return redirect('learning_from_others')
+
+@login_required
+def spend_credits(request, future_or_past):
+    pass
