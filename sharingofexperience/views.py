@@ -79,7 +79,7 @@ def user_has_not_yet_access_to_sharings_of_experiences(request):
 
     # see views.py of authentication app : 
     # -> sharing_of_experiences_user_has_access = {"dictionary initialisation": 1}
-    # + see allocation_of_new_sharings_of_experiences : {"dictionary initialisation": 1} -> {}
+    # + see if condition in def home() : {"dictionary initialisation": 1} -> {}
     return 'dictionary initialisation' in profile_model_dictionnary
 
 
@@ -95,43 +95,73 @@ def queryset_sharing_of_experiences_from_others(request):
 def add_credits_to_user(user_profile_model_dictionnary, number_of_credits):
     """Credits are attributed to users who should have access to sharings_of_experience but
     database is not big enough, for future consultation of sharings"""
-    user_profile_model_dictionnary['credits'] = number_of_credits
+    if 'credits' in user_profile_model_dictionnary:
+        user_profile_model_dictionnary['credits'] += number_of_credits
+    else:
+        user_profile_model_dictionnary['credits'] = number_of_credits
 
 
-# import timeit
-# code_test="""
-def allocation_of_new_sharings_of_experiences(request, number_of_new_sharings):
+
+
+def user_profile_model_dictionnary_reinitialisation(request):
     user_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
     user_profile_model_dictionnary = user_profile_model.sharing_of_experiences_user_has_access
     # {"dictionary initialisation": 1} -> {}
     del user_profile_model_dictionnary['dictionary initialisation']
+    user_profile_model.save()
 
-    sharings_of_experience_age_plus_minus_one = queryset_sharing_of_experiences_from_others(request)
-    total_sharings_of_experience_age_plus_minus_one = sharings_of_experience_age_plus_minus_one.count()
+
+# import timeit
+# code_test="""
+def allocation_of_new_sharings_of_experiences(request, number_of_new_sharings, sharings_queryset_in_which_we_sample):
+    user_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
+    user_profile_model_dictionnary = user_profile_model.sharing_of_experiences_user_has_access
+
+    total_sharings_queryset_in_which_we_sample = sharings_queryset_in_which_we_sample.count()
+    print('total_sharings_of_experience_age_plus_minus_one', total_sharings_queryset_in_which_we_sample)
 
     # while len(profile_model_dictionnary) < min(ACCESS_TO_SHARINGS_MINIMUM_NUMBER, total_sharing_of_experience_age_plus_minus_one):
         # Using random.sample(listName, x) (x=number of draws) on sharing_of_experience_age_plus_minus_one :
         # Population must be a sequence.  For dicts or sets, use sorted(d).
 
-    number_of_draws = min(ACCESS_TO_SHARINGS_MINIMUM_NUMBER, total_sharings_of_experience_age_plus_minus_one)
+    number_of_draws = min(number_of_new_sharings, total_sharings_queryset_in_which_we_sample)
+    print('number_of_draws', number_of_draws)
+
+    # Initial version for comparison of Methods A and B
+    # sharings_of_experience_age_plus_minus_one = queryset_sharing_of_experiences_from_others(request)
+    # total_sharings_of_experience_age_plus_minus_one = sharings_of_experience_age_plus_minus_one.count()
+    # print('total_sharings_of_experience_age_plus_minus_one', total_sharings_of_experience_age_plus_minus_one)
 
     # METHOD A : Equivalent of pop applied on dictionnary 
     # timeit.timeit(10000) : 0.0004363999469205737
-    #sharings_of_experience_age_plus_minus_one_sample = sharings_of_experience_age_plus_minus_one.order_by('?')[:number_of_draws]
-    #for i in range(len(sharings_of_experience_age_plus_minus_one_sample)):
+    # sharings_of_experience_age_plus_minus_one_sample = sharings_of_experience_age_plus_minus_one.order_by('?')[:number_of_draws]
+    # for i in range(len(sharings_of_experience_age_plus_minus_one_sample)):
     #    sharing_access_given = sharings_of_experience_age_plus_minus_one_sample[0]
     #    sharings_of_experience_age_plus_minus_one_sample = sharings_of_experience_age_plus_minus_one_sample[1:]
     #    user_profile_model_dictionnary[sharing_access_given.id] = True
 
     # METHOD B : Conversion queryset to list + random.sample()
     # timeit.timeit(10000) : 0.0004342000465840101
-    list_sharings_of_experience_age_plus_minus_one = list(sharings_of_experience_age_plus_minus_one)
-    sample_sharings_of_experience_age_plus_minus_one = sample(list_sharings_of_experience_age_plus_minus_one, number_of_draws)
-    for sharing in sample_sharings_of_experience_age_plus_minus_one:
-        user_profile_model_dictionnary[sharing.id] = True
+    # list_sharings_of_experience_age_plus_minus_one = list(sharings_of_experience_age_plus_minus_one)
+    # sample_sharings_of_experience_age_plus_minus_one = sample(list_sharings_of_experience_age_plus_minus_one, number_of_draws)
+    # for sharing in sample_sharings_of_experience_age_plus_minus_one:
+    #    user_profile_model_dictionnary[sharing.id] = True
+    #    print('user_profile_model_dictionnary', user_profile_model_dictionnary)
+    #
+    # if total_sharings_of_experience_age_plus_minus_one < number_of_new_sharings:
+    #    number_of_credits = number_of_new_sharings-total_sharings_of_experience_age_plus_minus_one
+    #    add_credits_to_user(user_profile_model_dictionnary, number_of_credits)
 
-    if total_sharings_of_experience_age_plus_minus_one < ACCESS_TO_SHARINGS_MINIMUM_NUMBER:
-        number_of_credits = ACCESS_TO_SHARINGS_MINIMUM_NUMBER-total_sharings_of_experience_age_plus_minus_one
+    # METHOD C : Method B adapted to a queryset in which will sample sharings
+    #REPRENDRE ICI et ajouter un queryset en parametre de la fonction :)
+    list_sharings_queryset_in_which_we_sample = list(sharings_queryset_in_which_we_sample)
+    sample_sharings_of_experience = sample(list_sharings_queryset_in_which_we_sample, number_of_draws)
+    for sharing in sample_sharings_of_experience:
+        user_profile_model_dictionnary[sharing.id] = True
+        print('user_profile_model_dictionnary', user_profile_model_dictionnary)
+
+    if total_sharings_queryset_in_which_we_sample < number_of_new_sharings:
+        number_of_credits = number_of_new_sharings-total_sharings_queryset_in_which_we_sample
         add_credits_to_user(user_profile_model_dictionnary, number_of_credits)
 
     user_profile_model.save()
@@ -141,7 +171,9 @@ def allocation_of_new_sharings_of_experiences(request, number_of_new_sharings):
 @login_required
 def home(request):
     if user_has_not_yet_access_to_sharings_of_experiences(request):
-        allocation_of_new_sharings_of_experiences(request, ACCESS_TO_SHARINGS_MINIMUM_NUMBER)
+        user_profile_model_dictionnary_reinitialisation(request)
+        sharings_of_experience_age_plus_minus_one = queryset_sharing_of_experiences_from_others(request)
+        allocation_of_new_sharings_of_experiences(request, ACCESS_TO_SHARINGS_MINIMUM_NUMBER, sharings_of_experience_age_plus_minus_one)
         # print(timeit.timeit(code_test, number=10000))
     return render(request, 'sharingofexperience/home.html')
 
@@ -176,8 +208,28 @@ def user_has_already_access_to_all_sharings_age_minus_plus(request):
         return False
 
 def access_to_some_sharings_age_minus_plus(request, number_of_sharings_to_give_access):
-    print("lets go for access_to_some_sharings_age_minus_plus()")
-    pass
+    # list of existing sharings to which the user has already access
+    user_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
+    user_profile_model_dictionnary = user_profile_model.sharing_of_experiences_user_has_access
+    # >>> {"22": true, "23": true, "26": true, "credits": 5}
+
+    # only numeric keys kept for research with Q objects
+    user_profile_model_dictionnary_only_numeric_keys=[]
+    # try/except not necessary; but better practice ?
+    for key in user_profile_model_dictionnary:
+        if key.isnumeric():
+            user_profile_model_dictionnary_only_numeric_keys.append(key)
+
+    # list of existing sharings to which the user does not yet have access (plus or minus a year old)
+    sharing_of_experiences_from_others = queryset_sharing_of_experiences_from_others(request)
+    # >>> <QuerySet [<SharingOfExperience: SharingOfExperience object (23)>, ...>
+
+    sharings_from_others_user_does_have_access_yet = sharing_of_experiences_from_others.filter(
+        ~Q(id__in = user_profile_model_dictionnary_only_numeric_keys)
+    )
+
+    allocation_of_new_sharings_of_experiences(request, number_of_sharings_to_give_access, sharings_from_others_user_does_have_access_yet)
+
 
 def access_to_new_sharings_of_experience(request):
     user_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
