@@ -32,7 +32,9 @@
         Spend credits and access to a future age
     </a></button>
 
-    
+    {% if request.session.message %}
+        <p>{{ request.session.message }}</p>
+    {% endif %}
 
 
 {% endblock content %}

@@ -172,8 +172,16 @@ def allocation_of_new_sharings_of_experiences(request, number_of_new_sharings, s
 # """
 
 
+def cleaning_session_message(request):
+    # Message could come from redirection (e.g. spend_credits())
+    if 'message' in request.session:
+        del request.session['message']
+
+
 @login_required
 def home(request):
+    cleaning_session_message(request)
+
     if user_has_not_yet_access_to_sharings_of_experiences(request):
         user_profile_model_dictionnary_reinitialisation(request)
         sharings_of_experience_age_plus_minus_one = queryset_sharing_of_experiences_from_others(request)
@@ -328,7 +336,6 @@ def sharing_an_experience_update(request, sharing_of_experience_id):
 
 @login_required
 def learning_from_others(request):
-
     sharing_of_experiences_from_others = queryset_sharing_of_experiences_from_others(request)
 
     for sharing_of_experience in sharing_of_experiences_from_others:
@@ -375,29 +382,16 @@ def spend_credits(request, past_or_future_sharings):
                 ~Q(user_id_id = request.user.id) & Q(experienced_age__in=future_ages_after_gap) & ~Q(id__in = user_profile_model_dictionnary_only_numeric_keys)
             )
 
-        print(past_or_future_sharings_from_other_users)
-        queryset_is_empty = past_or_future_sharings_from_other_users == 0
-        print(queryset_is_empty)
+        queryset_is_empty = past_or_future_sharings_from_other_users.count() == 0
         if queryset_is_empty == False :
-            # RESUME HERE : to be done : git add. git commit -m "working on spend_credits : if conditions and definition of past_or_future_sharings_from_other_users queryset "
-            # then, : to be done : suivre le pseudo code : reprendre à Si le query set n’est pas vide (fait)
+                allocation_of_new_sharings_of_experiences(request, NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS, past_or_future_sharings_from_other_users)
+                user_credits -= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS
         elif queryset_is_empty == True :
+                message = "You have enough credits to access past or futures experiences shares; however, our database is not yet enough complete to satisfy your demand. Please try again later. Thanks for your comprehension"
 
     else:
-        # MESSAGE DOES NOT WORK !!!!!
         message = "You do not have enough credits {0} to access past or futures experiences shares".format(COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS)
 
-    context = {
-        'message':message,
-    }
-
-    return redirect('learning_from_others')  
-    # si le nombre de crédits est suffisant : comparer à COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS 
-        # définir le query set : ages vécus ou définir le query set : ages à vivre
-            # Si le query set n’est pas vide : 
-                #	appeler la fonction qui attribue des sharings donner accès à UN (utiliser constante NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS) nouveau sharing (passé ou futur en fonction de ce qui a été choisi) pour CINQ (constante à créer)
-                #	déduction du nombre de crédits --> NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS
-            #	Si le query set est vide : 
-                #  redirection vers la page learning_from_others.html avec un message « Vos crédits sont suffisants mais la base de données n’est pas encore assez complétée, veuillez réessayer de dépenser vos crédits plus tards. Merci pour votre compréhension. »
-    #	si le nombre de crédits n’est pas suffisant : 
-        #	redirection vers la page learning_from_others.html avec un message « Vous n’avez pas assez de crédits »
+    print(message)
+    request.session['message'] = message
+    return redirect('learning_from_others')
