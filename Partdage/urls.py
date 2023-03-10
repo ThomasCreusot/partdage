@@ -35,5 +35,7 @@ urlpatterns = [
 
     path('like_a_sharing_of_experience/<int:id_sharing_of_experience_to_be_liked>/', sharingofexperience.views.like_a_sharing_of_experience, name='like_a_sharing_of_experience'),
 
-    path('spend_credits/', sharingofexperience.views.spend_credits, name='spend_credits'),
+    # https://docs.djangoproject.com/en/4.1/topics/http/urls/#how-django-processes-a-request
+    # slug: Matches any slug string consisting of ASCII letters or numbers, plus the hyphen and underscore characters. 
+    path('spend_credits/<slug:past_or_future_sharings>/', sharingofexperience.views.spend_credits, name='spend_credits'),
 ]

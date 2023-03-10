@@ -24,15 +24,15 @@
         different age than the one you are currently living in.
     </p>
 
-    <button><a href="{% url 'spend_credits' %}">
+    <button><a href="{% url 'spend_credits' past_sharings %}">
         Spend credits and access to already lived age
     </a></button>
 
-    <button><a href="{% url 'spend_credits' %}">
+    <button><a href="{% url 'spend_credits' future_sharings %}">
         Spend credits and access to a future age
     </a></button>
 
-
+    
 
 
 {% endblock content %}

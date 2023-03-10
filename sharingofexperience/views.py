@@ -7,6 +7,7 @@ from sharingofexperience.forms import SharingOfExperienceFormCreate
 from random import sample
 
 LOWER_LIMIT_AGE_TO_BE_SHARED = 10  # years old
+HIGHER_LIMIT_AGE_TO_BE_SHARED = 150  # years old
 GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES = 1  # years old
 ACCESS_TO_SHARINGS_MINIMUM_NUMBER = 5
 DEFAULT_NUMBER_GIVE_ACCESS_TO_SHARINGS_AT_EACH_PARTICIPATION = 3
@@ -210,6 +211,14 @@ def user_has_already_access_to_all_sharings_age_minus_plus(request):
     else :
         return False
 
+def user_profile_model_dictionnary_only_numeric_keys_kept(user_profile_model_dictionnary):
+    user_profile_model_dictionnary_only_numeric_keys=[]
+    # try/except not necessary; but better practice ?
+    for key in user_profile_model_dictionnary:
+        if key.isnumeric():
+            user_profile_model_dictionnary_only_numeric_keys.append(key)
+    return user_profile_model_dictionnary_only_numeric_keys
+
 def access_to_some_sharings_age_minus_plus(request, number_of_sharings_to_give_access):
     # list of existing sharings to which the user has already access
     user_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
@@ -217,11 +226,7 @@ def access_to_some_sharings_age_minus_plus(request, number_of_sharings_to_give_a
     # >>> {"22": true, "23": true, "26": true, "credits": 5}
 
     # only numeric keys kept for research with Q objects
-    user_profile_model_dictionnary_only_numeric_keys=[]
-    # try/except not necessary; but better practice ?
-    for key in user_profile_model_dictionnary:
-        if key.isnumeric():
-            user_profile_model_dictionnary_only_numeric_keys.append(key)
+    user_profile_model_dictionnary_only_numeric_keys=user_profile_model_dictionnary_only_numeric_keys_kept(user_profile_model_dictionnary)
 
     # list of existing sharings to which the user does not yet have access (plus or minus a year old)
     sharing_of_experiences_from_others = queryset_sharing_of_experiences_from_others(request)
@@ -332,7 +337,9 @@ def learning_from_others(request):
     context = {
         'sharing_of_experiences':sharing_of_experiences_from_others,
         'COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS':COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS,
-        'NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS':NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS
+        'NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS':NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS,
+        'past_sharings':"past_sharings",
+        'future_sharings':"future_sharings",
     }
     return render(request, 'sharingofexperience/learning_from_others.html', context=context)
 
@@ -345,6 +352,52 @@ def like_a_sharing_of_experience(request, id_sharing_of_experience_to_be_liked):
 
     return redirect('learning_from_others')
 
+
 @login_required
-def spend_credits(request, future_or_past):
-    pass
+def spend_credits(request, past_or_future_sharings):
+    message = ""
+    user_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
+    user_profile_model_dictionnary = user_profile_model.sharing_of_experiences_user_has_access
+    user_credits = user_profile_model_dictionnary['credits']
+
+    if user_credits >= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS:
+        user_age = age_calculation(request.user.birth_date)
+        user_profile_model_dictionnary_only_numeric_keys=user_profile_model_dictionnary_only_numeric_keys_kept(user_profile_model_dictionnary)
+
+        if past_or_future_sharings == "past_sharings":
+            past_ages_before_gap = [age for age in range(LOWER_LIMIT_AGE_TO_BE_SHARED, user_age - GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES)]
+            past_or_future_sharings_from_other_users = SharingOfExperience.objects.filter(
+                ~Q(user_id_id = request.user.id) & Q(experienced_age__in=past_ages_before_gap) & ~Q(id__in = user_profile_model_dictionnary_only_numeric_keys)
+            )
+        elif past_or_future_sharings == "future_sharings":
+            future_ages_after_gap = [age for age in range(user_age + GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES + 1, HIGHER_LIMIT_AGE_TO_BE_SHARED)]
+            past_or_future_sharings_from_other_users = SharingOfExperience.objects.filter(
+                ~Q(user_id_id = request.user.id) & Q(experienced_age__in=future_ages_after_gap) & ~Q(id__in = user_profile_model_dictionnary_only_numeric_keys)
+            )
+
+        print(past_or_future_sharings_from_other_users)
+        queryset_is_empty = past_or_future_sharings_from_other_users == 0
+        print(queryset_is_empty)
+        if queryset_is_empty == False :
+            # RESUME HERE : to be done : git add. git commit -m "working on spend_credits : if conditions and definition of past_or_future_sharings_from_other_users queryset "
+            # then, : to be done : suivre le pseudo code : reprendre à Si le query set n’est pas vide (fait)
+        elif queryset_is_empty == True :
+
+    else:
+        # MESSAGE DOES NOT WORK !!!!!
+        message = "You do not have enough credits {0} to access past or futures experiences shares".format(COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS)
+
+    context = {
+        'message':message,
+    }
+
+    return redirect('learning_from_others')  
+    # si le nombre de crédits est suffisant : comparer à COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS 
+        # définir le query set : ages vécus ou définir le query set : ages à vivre
+            # Si le query set n’est pas vide : 
+                #	appeler la fonction qui attribue des sharings donner accès à UN (utiliser constante NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS) nouveau sharing (passé ou futur en fonction de ce qui a été choisi) pour CINQ (constante à créer)
+                #	déduction du nombre de crédits --> NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS
+            #	Si le query set est vide : 
+                #  redirection vers la page learning_from_others.html avec un message « Vos crédits sont suffisants mais la base de données n’est pas encore assez complétée, veuillez réessayer de dépenser vos crédits plus tards. Merci pour votre compréhension. »
+    #	si le nombre de crédits n’est pas suffisant : 
+        #	redirection vers la page learning_from_others.html avec un message « Vous n’avez pas assez de crédits »
