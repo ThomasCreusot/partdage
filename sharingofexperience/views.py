@@ -366,9 +366,10 @@ def learning_from_others(request):
             sharing.total_likes_calculation()
 
     if at_least_a_numeric_key_is_true == False:
-        if 'credits' in user_profile_model_dictionnary:
-            if user_profile_model_dictionnary['credits'] > 1:
-                sharings_not_yet_accessible = True
+        #if 'credits' in user_profile_model_dictionnary:
+        #    if user_profile_model_dictionnary['credits'] > 1:
+        #        sharings_not_yet_accessible = True
+        sharings_not_yet_accessible = True
 
     if 'full access sharings age plus minus' in user_profile_model_dictionnary:
         if user_profile_model_dictionnary['full access sharings age plus minus'] == True:
