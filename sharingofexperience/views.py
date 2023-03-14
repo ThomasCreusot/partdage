@@ -336,17 +336,53 @@ def sharing_an_experience_update(request, sharing_of_experience_id):
 
 @login_required
 def learning_from_others(request):
-    sharing_of_experiences_from_others = queryset_sharing_of_experiences_from_others(request)
+    # initial version 
+    # sharing_of_experiences_from_others = queryset_sharing_of_experiences_from_others(request)
+    # for sharing_of_experience in sharing_of_experiences_from_others:
+    #    sharing_of_experience.total_likes_calculation()
 
-    for sharing_of_experience in sharing_of_experiences_from_others:
-        sharing_of_experience.total_likes_calculation()
+    sharings_of_experiences_to_display = []
+    sharings_not_yet_accessible = False
+
+    user_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
+    user_profile_model_dictionnary = user_profile_model.sharing_of_experiences_user_has_access
+    print(user_profile_model_dictionnary)
+
+    if 'dictionary initialisation' in user_profile_model_dictionnary:
+        if user_profile_model_dictionnary['dictionary initialisation'] == 1:
+            return redirect('home')
+
+    at_least_a_numeric_key_is_true = False
+    for key in user_profile_model_dictionnary:
+        if key.isnumeric():
+            if user_profile_model_dictionnary[key] == True:
+                print(key)
+                at_least_a_numeric_key_is_true = True
+                break
+
+    user_profile_model_dictionnary_int = [int(key) for key in user_profile_model_dictionnary if key.isnumeric()]
+
+    if at_least_a_numeric_key_is_true == True:
+        sharings_of_experiences_to_display = SharingOfExperience.objects.filter(id__in=user_profile_model_dictionnary_int)
+        for sharing in sharings_of_experiences_to_display:
+            sharing.total_likes_calculation()
+
+    if at_least_a_numeric_key_is_true == False:
+        if 'credits' in user_profile_model_dictionnary:
+            if user_profile_model_dictionnary['credits'] > 1:
+                sharings_not_yet_accessible = True
+
+    if 'full access sharings age plus minus' in user_profile_model_dictionnary:
+        if user_profile_model_dictionnary['full access sharings age plus minus'] == True:
+            sharings_of_experiences_to_display = queryset_sharing_of_experiences_from_others(request)
 
     context = {
-        'sharing_of_experiences':sharing_of_experiences_from_others,
+        'sharing_of_experiences':sharings_of_experiences_to_display,
         'COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS':COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS,
         'NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS':NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS,
         'past_sharings':"past_sharings",
         'future_sharings':"future_sharings",
+        'sharings_not_yet_accessible': sharings_not_yet_accessible
     }
     return render(request, 'sharingofexperience/learning_from_others.html', context=context)
 
