@@ -346,7 +346,6 @@ def learning_from_others(request):
 
     user_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
     user_profile_model_dictionnary = user_profile_model.sharing_of_experiences_user_has_access
-    print(user_profile_model_dictionnary)
 
     if 'dictionary initialisation' in user_profile_model_dictionnary:
         if user_profile_model_dictionnary['dictionary initialisation'] == 1:
