@@ -355,7 +355,6 @@ def learning_from_others(request):
     for key in user_profile_model_dictionnary:
         if key.isnumeric():
             if user_profile_model_dictionnary[key] == True:
-                print(key)
                 at_least_a_numeric_key_is_true = True
                 break
 
