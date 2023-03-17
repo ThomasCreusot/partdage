@@ -27,7 +27,13 @@ class TestSharingofExperienceUrls:
 
 
     def test_like_a_sharing_of_experience(self):
-        assert 1 == 1
+        """Testing if the 'like_a_sharing_of_experience' (name) route is mapping to like_a_sharing_of_experience (view)"""
+
+        url = reverse('like_a_sharing_of_experience', args=[1])
+
+        assert url == "/like_a_sharing_of_experience/1/"
+        assert resolve(url).view_name == 'like_a_sharing_of_experience'
+        assert resolve(url).func == like_a_sharing_of_experience
 
     def test_spend_credits(self):
         assert 1 == 1
