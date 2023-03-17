@@ -69,8 +69,8 @@ class TestIndexView:
         response = client.get(path)
         content = response.content.decode()
 
-        expected_content = "<h1>Welcome !</h1>"
-
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/index.html")
-        assert content.find(expected_content) != -1
+
+        assert content.find("<h1>Welcome !</h1>") != -1 
+        assert content.find(">Login</a></button>") != -1 
