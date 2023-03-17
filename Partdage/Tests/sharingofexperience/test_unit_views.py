@@ -60,10 +60,14 @@ class TestIndexView:
         #fonction appelée à la fin d'un test unitaire faisant partie d'une classe
 """
 
+from authentication.models import User
+import pytest
 
-class TestIndexView:
+class TestIndexView():
 
-    def test_index(self):
+    def test_index_user_not_logged_in(self):
+        """Tests if a user not logged in can access index view with rigth content"""
+
         client = Client()
         path = reverse('index')
         response = client.get(path)
@@ -71,6 +75,43 @@ class TestIndexView:
 
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/index.html")
-
         assert content.find("<h1>Welcome !</h1>") != -1 
         assert content.find(">Login</a></button>") != -1 
+
+
+    @pytest.mark.django_db
+    def test_index_user_logged_in(self):
+        """Tests if a user logged in can access index view with rigth content"""
+
+        user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        user_A.save()
+
+        client_test_user_A = Client()
+        client_test_user_A.force_login(user_A)
+
+        path = reverse('index')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/index.html")
+
+        assert content.find("<h1>Welcome !</h1>") != -1 
+        assert content.find(">Home</a></button>") != -1 
+
+
+class TestHomeView:
+
+    def test_home_user_has_already_access_to_sharings(self):
+        pass
+
+    def test_home_user_has_not_access_to_sharings_yet(self):
+        pass
+
+    def test_home_user_not_logged_in(self):
+        pass
