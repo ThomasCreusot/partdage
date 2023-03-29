@@ -32,7 +32,7 @@ def login_page(request):
 
                 return redirect('home') 
             else:
-                message = 'Invalide credentials.'
+                message = 'Invalid credentials.'
     return render(
         request, 'authentication/login.html', context={'form': form, 'message': message})
 

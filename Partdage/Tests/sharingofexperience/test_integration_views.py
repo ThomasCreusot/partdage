@@ -98,10 +98,6 @@ class TestAuthenticationViews():
         assert ProfileModelSharingOfExperiencesUserHasAccess.objects.all().count() == 1
 
 
-
-        # NEXT COMMIT : adding an assertion related to creation of ProfileModelSharingOfExperiencesUserHasAccess object in test_signup_page_and_login_page_right_credentials()
-
-
     @pytest.mark.django_db
     def test_signup_page_and_login_page_wrong_credentials(self):
         """Tests if a user can not log-in with wrong credentials"""
@@ -123,7 +119,7 @@ class TestAuthenticationViews():
 
         assert response.status_code == 200
         content = response.content.decode()
-        assert content.find("Invalide credentials.") != -1 
+        assert content.find("Invalid credentials.") != -1 
 
 
 class TestIndexView():
