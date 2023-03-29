@@ -83,6 +83,8 @@ class TestAuthenticationViews():
         }
 
         temp_user = client.post(reverse('signup'), credentials)
+        assert ProfileModelSharingOfExperiencesUserHasAccess.objects.all().count() == 0
+
         response = client.post(reverse('login'), {'username': 'test_user_signup', 'password': 'TestUserPassword'})
 
         assert response.status_code == 302
@@ -91,6 +93,13 @@ class TestAuthenticationViews():
         # Test that the user is well authenticated -> to be studied.
         # user = auth.get_user(client)
         # assert user.is_authenticated
+
+        # ProfileModelSharingOfExperiencesUserHasAccess.sharing_of_experiences_user_has_access = {"dictionary initialisation": 1}
+        assert ProfileModelSharingOfExperiencesUserHasAccess.objects.all().count() == 1
+
+
+
+        # NEXT COMMIT : adding an assertion related to creation of ProfileModelSharingOfExperiencesUserHasAccess object in test_signup_page_and_login_page_right_credentials()
 
 
     @pytest.mark.django_db
@@ -111,11 +120,6 @@ class TestAuthenticationViews():
 
         temp_user = client.post(reverse('signup'), credentials)
         response = client.post(reverse('login'), {'username': 'test_user_signup', 'password': 'WrongPassword'})
-
-        # TO BE DONE : testing the creation of a ProfileModelSharingOfExperiencesUserHasAccess object, with 
-        # ProfileModelSharingOfExperiencesUserHasAccess.sharing_of_experiences_user_has_access = {"dictionary initialisation": 1}
-        # print(ProfileModelSharingOfExperiencesUserHasAccess.objects.all())
-        # >>> <QuerySet []>  # empty ?
 
         assert response.status_code == 200
         content = response.content.decode()
