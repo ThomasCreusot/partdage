@@ -346,7 +346,7 @@ class TestSharing_experiences_menuView:
 
     @pytest.mark.django_db
     def test_menu_user_logged_in(self):
-        """Tests if a user logged-in -> can access sharing_experiences_menu view with rigth content + tests the context value
+        """Tests if a user logged-in -> can access sharing_experiences_menu view with rigth content + tests the context value + presence of html buttons
         
         Scenario : 
         User A gets a request towards sharing_experiences_menu
@@ -383,4 +383,26 @@ class TestSharing_experiences_menuView:
         # Test presence of the first and last buttons
         assert content.find(">{0}</a></button>".format(LOWER_LIMIT_AGE_TO_BE_SHARED+1)) != -1 
         assert content.find(">{0}</a></button>".format(test_user_A_age-1)) != -1 
+
+
+    @pytest.mark.django_db
+    def test_menu_user_not_logged_in(self):
+        """Tests if a user not logged-in -> can NOT access sharing_experiences_menu view"""
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        # user does not not log in : client_test_user_A.force_login(test_user_A)
+
+        # User A makes a GET request towards sharing_experiences_menu
+        path = reverse('sharing_experiences_menu')
+        response = client_test_user_A.get(path)
+        assert response.status_code == 302
+        assert response.url == '/login/?next=/sharing_experiences_menu/'
 
