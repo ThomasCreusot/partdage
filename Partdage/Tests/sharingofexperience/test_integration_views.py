@@ -406,3 +406,30 @@ class TestSharing_experiences_menuView:
         assert response.status_code == 302
         assert response.url == '/login/?next=/sharing_experiences_menu/'
 
+
+
+class TestSharing_an_experience_createView:
+
+    @pytest.mark.django_db
+    def test_creation_of_sharing_user_not_logged_in(self):
+        """Tests if a user not logged-in -> can NOT access sharing_an_experience_create view"""
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        # user does not not log in : client_test_user_A.force_login(test_user_A)
+
+        # User A makes a GET request towards sharing_an_experience_create
+        path = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED+1])
+        response = client_test_user_A.get(path)
+        assert response.status_code == 302
+        assert response.url == '/login/?next=/sharing_an_experience_create/{0}/'.format(LOWER_LIMIT_AGE_TO_BE_SHARED+1)
+
+
+# next commit : creation of TestSharing_an_experience_createView + first version of test_creation_of_sharing_user_not_logged_in()
