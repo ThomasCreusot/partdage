@@ -432,4 +432,92 @@ class TestSharing_an_experience_createView:
         assert response.url == '/login/?next=/sharing_an_experience_create/{0}/'.format(LOWER_LIMIT_AGE_TO_BE_SHARED+1)
 
 
-# next commit : creation of TestSharing_an_experience_createView + first version of test_creation_of_sharing_user_not_logged_in()
+    @pytest.mark.django_db
+    def test_creation_of_sharing_all_conditions_meet_and_user_completed_all_his_sharings(self):
+        """Tests that a user who meets the conditions :
+        - logged-in
+        - + valid form
+        - + no sharing is already created for the age concerned by the post request
+        - + the age concerned by the post request is lower than the actual age of the user 
+        - + which has completed all his/her sharings yet 
+
+
+        -> can access sharing_an_experience_create view with rigth content (redirection to menu)
+        -> tests that the sharing of experience is well recorded in the database
+        -> access given to all sharings from other users (age +/- GAP)
+
+        
+        Scenario : 
+        User A gets a request towards sharing_an_experience_create with valid form
+        TO BE DONE"""
+
+        pass
+
+
+    def test_creation_of_sharing_all_conditions_meet_and_user_did_not_completed_all_his_sharings(self):
+        """Tests that a user who meets the conditions :
+        - logged-in
+        - + valid form
+        - + no sharing is already created for the age concerned by the post request
+        - + the age concerned by the post request is lower than the actual age of the user 
+        - + which has not completed all his/her sharings yet 
+        - + the number of sharings % NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS == 0
+
+        -> can access sharing_an_experience_create view with rigth content (redirection to menu)
+        -> tests that the sharing of experience is well recorded in the database
+        -> as the number of sharings % NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS == 0 --> new sharings from other users or new credits are available
+
+        
+        Scenario : 
+        User A gets a request towards sharing_an_experience_create with valid form
+        For x in range(NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS) : creation of sharings --> then test the update of user_profile_model_dictionnary with sharings id and/or credits
+        Note : via access_to_some_sharings_age_minus_plus() which calls allocation_of_new_sharings_of_experiences()
+        TO BE DONE"""
+
+        pass
+
+
+    @pytest.mark.django_db
+    def test_creation_of_sharing_invalid_form(self):
+        """Tests that a user who meets the conditions except that :
+        - the form is not valid (Description field not filled in)
+
+        -> error message
+
+        Scenario : 
+        User A gets a request towards sharing_an_experience_create with valid form
+        TO BE DONE"""
+
+        pass
+
+
+    @pytest.mark.django_db
+    def test_creation_of_sharing_age_already_filled(self):
+        """Tests that a user who meets the conditions except that :
+        - The age concerned by the post request is already filled (a sharing of experience already exist for this user at this age)
+
+        -> redirection towards update
+        code : redirect('sharing_an_experience_update', sharing_of_experience_already_created_id)
+
+        Scenario : 
+        User A gets a request towards sharing_an_experience_create with valid form
+        User creates a sharing and then try again to create a sharing for the same age
+        TO BE DONE"""
+
+        pass
+
+
+    @pytest.mark.django_db
+    def test_creation_of_sharing_age_is_too_high(self):
+        """Tests that a user who meets the conditions except that :
+        - The age concerned by the post request is too high compared to user current age
+
+        -> redirection towards be sharingofexperience/be_patient.html
+
+        Scenario : 
+        User A gets a request towards sharing_an_experience_create with valid form
+        TO BE DONE"""
+        
+        pass
+
+
