@@ -253,6 +253,8 @@ def access_to_new_sharings_of_experience(request):
 
     if user_has_completed_all_his_sharings(request) and not user_has_already_access_to_all_sharings_age_minus_plus(request):
         user_profile_model_dictionnary['full access sharings age plus minus'] = True
+        #added 2023 03 31
+        add_credits_to_user(user_profile_model_dictionnary, DEFAULT_NUMBER_GIVE_ACCESS_TO_SHARINGS_AT_EACH_PARTICIPATION)
         user_profile_model.save()
 
     else:
@@ -270,7 +272,13 @@ def sharing_an_experience_create(request, experienced_age):
 
     global url_to_be_returned_for_experience_create_view
 
-    if request.method == 'POST':
+    age_already_filled_boolean = sharing_of_experience_already_created_for_an_age(request, experienced_age)
+    experienced_age_to_be_created_low_enough_boolean = experienced_age_to_be_created_lower_than_user_age_boolean(experienced_age, request)
+
+    # initial version
+    # if request.method == 'POST':
+    if request.method == 'POST' and experienced_age_to_be_created_low_enough_boolean and not age_already_filled_boolean:
+
         form = SharingOfExperienceFormCreate(request.POST)
         if form.is_valid():
             # first functional version 
@@ -291,10 +299,6 @@ def sharing_an_experience_create(request, experienced_age):
             return redirect('sharing_experiences_menu')
     else:
         form = SharingOfExperienceFormCreate()
-
-
-    age_already_filled_boolean = sharing_of_experience_already_created_for_an_age(request, experienced_age)
-    experienced_age_to_be_created_low_enough_boolean = experienced_age_to_be_created_lower_than_user_age_boolean(experienced_age, request)
 
     url_to_be_returned = url_to_be_returned_for_experience_create_view(
         request, experienced_age_to_be_created_low_enough_boolean, age_already_filled_boolean,

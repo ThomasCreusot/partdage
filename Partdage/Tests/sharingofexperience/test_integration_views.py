@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import date, datetime, timedelta
+
 import pytest
 
 from django.urls import reverse
@@ -10,7 +11,7 @@ from pytest_django.asserts import assertTemplateUsed
 from authentication.models import User
 from sharingofexperience.models import ProfileModelSharingOfExperiencesUserHasAccess, SharingOfExperience
 
-from sharingofexperience.views import ACCESS_TO_SHARINGS_MINIMUM_NUMBER, GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES, LOWER_LIMIT_AGE_TO_BE_SHARED
+from sharingofexperience.views import ACCESS_TO_SHARINGS_MINIMUM_NUMBER, GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES, LOWER_LIMIT_AGE_TO_BE_SHARED, DEFAULT_NUMBER_GIVE_ACCESS_TO_SHARINGS_AT_EACH_PARTICIPATION
 from sharingofexperience.views import age_calculation
 
 """
@@ -145,7 +146,6 @@ class TestIndexView():
     def test_index_user_logged_in(self):
         """Tests if a user logged-in can access index view with rigth content"""
 
-        # initial version
         test_user_A = User.objects.create(
                 username = 'test_user_A',
                 password = 'test_user_A',
@@ -349,7 +349,7 @@ class TestSharing_experiences_menuView:
         """Tests if a user logged-in -> can access sharing_experiences_menu view with rigth content + tests the context value + presence of html buttons
         
         Scenario : 
-        User A gets a request towards sharing_experiences_menu
+        User A makes a request towards sharing_experiences_menu
         """
 
         # Users creation and connection 
@@ -434,13 +434,12 @@ class TestSharing_an_experience_createView:
 
     @pytest.mark.django_db
     def test_creation_of_sharing_all_conditions_meet_and_user_completed_all_his_sharings(self):
-        """Tests that a user who meets the conditions :
+        """Tests that a user who meets the conditions:
         - logged-in
         - + valid form
         - + no sharing is already created for the age concerned by the post request
         - + the age concerned by the post request is lower than the actual age of the user 
-        - + which has completed all his/her sharings yet 
-
+        - + which has completed all his/her sharings yet -> for this point; the age of user A will evolve each year in order to make the present test sustainable over time 
 
         -> can access sharing_an_experience_create view with rigth content (redirection to menu)
         -> tests that the sharing of experience is well recorded in the database
@@ -448,12 +447,109 @@ class TestSharing_an_experience_createView:
 
         
         Scenario : 
-        User A gets a request towards sharing_an_experience_create with valid form
-        TO BE DONE"""
+        Creation of users A and B
+        Creation of user A profile model
+        Creation of sharings (user B) : a sharing corresponding to age of user A and another too high to be accessed by user A by default
+        User A makes a request towards sharing_an_experience_create with valid form and valid age and so complete all his sharings.
+        """
 
-        pass
+        # Users creation and connection 
+        # Note : the age of user A will evolve each year in order to make the present test sustainable over time 
+        # the goal is that User A has only one age to complete in order to complete all his sharings
+        # LOWER_LIMIT_AGE_TO_BE_SHARED (=10 by default) ; on the website, a user can complete a sharing from LOWER_LIMIT_AGE_TO_BE_SHARED + 1 year
+        # birth_date_user_A_for_a_relevant_test = Current date - (LOWER_LIMIT_AGE_TO_BE_SHARED + 1) years
+        today = date.today()
+        # 365.25 to account leap years ; 
+        # + 1 year as on the website, a user can complete a sharing from LOWER_LIMIT_AGE_TO_BE_SHARED + 1 year ; 
+        # e.g : LOWER_LIMIT_AGE_TO_BE_SHARED is 10 years old <=> the lowest age an user can complete is 11 years old
+        # + 1 year as the user must have experienced a year before sharing an experience about it
+        # e.g. : the lowest age an user can complete is 11 years old <=> the user must have at least 12 years old
+        # + 1 day to be sure the birthday has passed
+        birth_date_user_A_for_a_relevant_test = today - timedelta(days = 365.25 * (LOWER_LIMIT_AGE_TO_BE_SHARED + 1 + 1) +1)
+        birth_date_user_A_for_a_relevant_test_str = str(birth_date_user_A_for_a_relevant_test)
 
 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = birth_date_user_A_for_a_relevant_test_str,
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+        # Profile models creation 
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits': 1,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # Sharings of experience creation 
+        # Creation of sharings (user B) : a sharing corresponding to age of user A and another too high to be accessed by user A by default
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_age_userA = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_age_userA.save()
+
+        test_sharing_user_B_higher_than_age_userA = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age + GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES + 1,  # innacessible by user A by default
+                description = "description test_sharing",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_higher_than_age_userA.save()
+
+        number_of_sharings_in_database_before_post_request_by_userA = len(SharingOfExperience.objects.all())
+
+        # User A makes a request towards sharing_an_experience_create with valid form and valid age and so complete all his sharings
+        # +1 year because menu values for creation of sharings begins at LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
+        path = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
+
+        response = client_test_user_A.post(path, {'description': 'Description of the sharing of experience by user A', })
+
+        # Test that User A -> can access sharing_an_experience_create view with rigth content (redirection to menu)
+        assert response.status_code == 302
+        assert response.url == reverse('sharing_experiences_menu')
+
+
+        # Test that -> the sharing of experience is well recorded in the database
+        number_of_sharings_in_database_after_post_request_by_userA = len(SharingOfExperience.objects.all())
+        assert number_of_sharings_in_database_before_post_request_by_userA + 1 == number_of_sharings_in_database_after_post_request_by_userA
+
+        # Test that User A -> access given to all sharings from other users (age +/- GAP)
+        # print(test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.sharing_of_experiences_user_has_access)
+        # >>> {'credits': 1}
+        
+        # initial : 
+        # expected_value = {str(test_sharing_user_B_age_userA.id): True, 'credits': ACCESS_TO_SHARINGS_MINIMUM_NUMBER -1}
+        # reflexion -> The access is not given to test_sharing_user_B_age_userA as full access is given
+        expected_value = {'credits': 1 + DEFAULT_NUMBER_GIVE_ACCESS_TO_SHARINGS_AT_EACH_PARTICIPATION, 'full access sharings age plus minus': True}
+
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+
+        assert user_A_profile_model_dictionnary == expected_value
+
+
+    @pytest.mark.django_db
     def test_creation_of_sharing_all_conditions_meet_and_user_did_not_completed_all_his_sharings(self):
         """Tests that a user who meets the conditions :
         - logged-in
@@ -469,7 +565,7 @@ class TestSharing_an_experience_createView:
 
         
         Scenario : 
-        User A gets a request towards sharing_an_experience_create with valid form
+        User A makes a request towards sharing_an_experience_create with valid form
         For x in range(NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS) : creation of sharings --> then test the update of user_profile_model_dictionnary with sharings id and/or credits
         Note : via access_to_some_sharings_age_minus_plus() which calls allocation_of_new_sharings_of_experiences()
         TO BE DONE"""
@@ -485,7 +581,7 @@ class TestSharing_an_experience_createView:
         -> error message
 
         Scenario : 
-        User A gets a request towards sharing_an_experience_create with valid form
+        User A makes a request towards sharing_an_experience_create with valid form
         TO BE DONE"""
 
         pass
@@ -500,7 +596,7 @@ class TestSharing_an_experience_createView:
         code : redirect('sharing_an_experience_update', sharing_of_experience_already_created_id)
 
         Scenario : 
-        User A gets a request towards sharing_an_experience_create with valid form
+        User A makes a request towards sharing_an_experience_create with valid form
         User creates a sharing and then try again to create a sharing for the same age
         TO BE DONE"""
 
@@ -515,9 +611,10 @@ class TestSharing_an_experience_createView:
         -> redirection towards be sharingofexperience/be_patient.html
 
         Scenario : 
-        User A gets a request towards sharing_an_experience_create with valid form
+        User A makes a request towards sharing_an_experience_create with valid form
         TO BE DONE"""
         
         pass
 
 
+# next commit : redaction of scenarios for tests of class TestSharing_an_experience_createView: test_creation_of_sharing_all_conditions_meet_and_user_completed_all_his_sharings(), test_creation_of_sharing_all_conditions_meet_and_user_did_not_completed_all_his_sharings(), test_creation_of_sharing_invalid_form(), test_creation_of_sharing_age_already_filled(), test_creation_of_sharing_age_is_too_high()
