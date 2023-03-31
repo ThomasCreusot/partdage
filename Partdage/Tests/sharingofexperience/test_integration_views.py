@@ -441,11 +441,11 @@ class TestSharing_an_experience_createView:
         - + the age concerned by the post request is lower than the actual age of the user 
         - + which has completed all his/her sharings yet -> for this point; the age of user A will evolve each year in order to make the present test sustainable over time 
 
-        -> can access sharing_an_experience_create view with rigth content (redirection to menu)
+        -> GET method : url_to_be_returned = render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
+        -> POST method : can access sharing_an_experience_create view with rigth content (redirection to menu)
         -> tests that the sharing of experience is well recorded in the database
         -> access given to all sharings from other users (age +/- GAP)
 
-        
         Scenario : 
         Creation of users A and B
         Creation of user A profile model
@@ -456,18 +456,17 @@ class TestSharing_an_experience_createView:
         # Users creation and connection 
         # Note : the age of user A will evolve each year in order to make the present test sustainable over time 
         # the goal is that User A has only one age to complete in order to complete all his sharings
-        # LOWER_LIMIT_AGE_TO_BE_SHARED (=10 by default) ; on the website, a user can complete a sharing from LOWER_LIMIT_AGE_TO_BE_SHARED + 1 year
-        # birth_date_user_A_for_a_relevant_test = Current date - (LOWER_LIMIT_AGE_TO_BE_SHARED + 1) years
+        # LOWER_LIMIT_AGE_TO_BE_SHARED (=10 initialy) ; on the website, an user can complete a sharing from LOWER_LIMIT_AGE_TO_BE_SHARED + 1 year
         today = date.today()
-        # 365.25 to account leap years ; 
-        # + 1 year as on the website, a user can complete a sharing from LOWER_LIMIT_AGE_TO_BE_SHARED + 1 year ; 
-        # e.g : LOWER_LIMIT_AGE_TO_BE_SHARED is 10 years old <=> the lowest age an user can complete is 11 years old
-        # + 1 year as the user must have experienced a year before sharing an experience about it
-        # e.g. : the lowest age an user can complete is 11 years old <=> the user must have at least 12 years old
-        # + 1 day to be sure the birthday has passed
+        # Explanation of birth_date_user_A_for_a_relevant_test calculation:
+            # 365.25 to account leap years ; 
+            # + 1 year as on the website, a user can complete a sharing from LOWER_LIMIT_AGE_TO_BE_SHARED + 1 year ; 
+              # e.g : LOWER_LIMIT_AGE_TO_BE_SHARED is 10 years old <=> the lowest age an user can complete is 11 years old
+            # + 1 year as the user must have experienced a year before sharing an experience about it
+              # e.g. : the lowest age an user can complete is 11 years old <=> the user must have at least 12 years old
+            # + 1 day to be sure the birthday has passed
         birth_date_user_A_for_a_relevant_test = today - timedelta(days = 365.25 * (LOWER_LIMIT_AGE_TO_BE_SHARED + 1 + 1) +1)
         birth_date_user_A_for_a_relevant_test_str = str(birth_date_user_A_for_a_relevant_test)
-
 
         test_user_A = User.objects.create(
                 username = 'test_user_A',
@@ -519,16 +518,28 @@ class TestSharing_an_experience_createView:
 
         number_of_sharings_in_database_before_post_request_by_userA = len(SharingOfExperience.objects.all())
 
+        # -> GET method : url_to_be_returned = render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
+        # User A makes a GET request towards sharing_an_experience_create and so access the form
+        # +1 year because menu values for creation of sharings begins at LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
+        path_get = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
+        response_get = client_test_user_A.get(path_get, {'description': 'Description of the sharing of experience by user A', })
+        content_get = response_get.content.decode()
+
+        assert response_get.status_code == 200
+        assertTemplateUsed(response_get, "sharingofexperience/sharing_an_experience_create.html")
+        assert content_get.find('<form action="" method="post">') != -1
+        assert content_get.find('<input type="submit" value="Send">') != -1
+
+
+
         # User A makes a request towards sharing_an_experience_create with valid form and valid age and so complete all his sharings
         # +1 year because menu values for creation of sharings begins at LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
-        path = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
+        path_post = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
+        response_post = client_test_user_A.post(path_post, {'description': 'Description of the sharing of experience by user A', })
 
-        response = client_test_user_A.post(path, {'description': 'Description of the sharing of experience by user A', })
-
-        # Test that User A -> can access sharing_an_experience_create view with rigth content (redirection to menu)
-        assert response.status_code == 302
-        assert response.url == reverse('sharing_experiences_menu')
-
+        # Test that User A -> POST method : can access sharing_an_experience_create view with rigth content (redirection to menu)
+        assert response_post.status_code == 302
+        assert response_post.url == reverse('sharing_experiences_menu')
 
         # Test that -> the sharing of experience is well recorded in the database
         number_of_sharings_in_database_after_post_request_by_userA = len(SharingOfExperience.objects.all())
