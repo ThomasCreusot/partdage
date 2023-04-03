@@ -11,7 +11,7 @@ from pytest_django.asserts import assertTemplateUsed
 from authentication.models import User
 from sharingofexperience.models import ProfileModelSharingOfExperiencesUserHasAccess, SharingOfExperience
 
-from sharingofexperience.views import ACCESS_TO_SHARINGS_MINIMUM_NUMBER, GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES, LOWER_LIMIT_AGE_TO_BE_SHARED, DEFAULT_NUMBER_GIVE_ACCESS_TO_SHARINGS_AT_EACH_PARTICIPATION
+from sharingofexperience.views import ACCESS_TO_SHARINGS_MINIMUM_NUMBER, GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES, LOWER_LIMIT_AGE_TO_BE_SHARED, DEFAULT_NUMBER_GIVE_ACCESS_TO_SHARINGS_AT_EACH_PARTICIPATION, NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS
 from sharingofexperience.views import age_calculation
 
 """
@@ -434,7 +434,8 @@ class TestSharing_an_experience_createView:
 
     @pytest.mark.django_db
     def test_creation_of_sharing_all_conditions_meet_and_user_completed_all_his_sharings(self):
-        """Tests that a user who meets the conditions:
+        """
+        Tests that a user who meets the conditions:
         - logged-in
         - + valid form
         - + no sharing is already created for the age concerned by the post request
@@ -450,7 +451,7 @@ class TestSharing_an_experience_createView:
         Creation of users A and B
         Creation of user A profile model
         Creation of sharings (user B) : a sharing corresponding to age of user A and another too high to be accessed by user A by default
-        User A makes a request towards sharing_an_experience_create with valid form and valid age and so complete all his sharings.
+        User A makes a GET request towards sharing_an_experience_create and then a POST request with valid form and valid age and so complete all his sharings.
         """
 
         # Users creation and connection 
@@ -518,7 +519,7 @@ class TestSharing_an_experience_createView:
 
         number_of_sharings_in_database_before_post_request_by_userA = len(SharingOfExperience.objects.all())
 
-        # -> GET method : url_to_be_returned = render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
+        # Test that User A -> GET method : url_to_be_returned = render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
         # User A makes a GET request towards sharing_an_experience_create and so access the form
         # +1 year because menu values for creation of sharings begins at LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
         path_get = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
@@ -562,7 +563,8 @@ class TestSharing_an_experience_createView:
 
     @pytest.mark.django_db
     def test_creation_of_sharing_all_conditions_meet_and_user_did_not_completed_all_his_sharings(self):
-        """Tests that a user who meets the conditions :
+        """
+        Tests that a user who meets the conditions :
         - logged-in
         - + valid form
         - + no sharing is already created for the age concerned by the post request
@@ -570,18 +572,113 @@ class TestSharing_an_experience_createView:
         - + which has not completed all his/her sharings yet 
         - + the number of sharings % NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS == 0
 
-        -> can access sharing_an_experience_create view with rigth content (redirection to menu)
+
+        -> GET method : url_to_be_returned = render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
+        -> POST method : can access sharing_an_experience_create view with rigth content (redirection to menu)
         -> tests that the sharing of experience is well recorded in the database
-        -> as the number of sharings % NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS == 0 --> new sharings from other users or new credits are available
+        -> as the number of sharings % NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS == 0 --> access given to credits and/or some (but not all) sharings from other users (age +/- GAP)
 
-        
         Scenario : 
-        User A makes a request towards sharing_an_experience_create with valid form
-        For x in range(NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS) : creation of sharings --> then test the update of user_profile_model_dictionnary with sharings id and/or credits
-        Note : via access_to_some_sharings_age_minus_plus() which calls allocation_of_new_sharings_of_experiences()
-        TO BE DONE"""
+        Creation of users A and B
+        Creation of user A profile model
+        Creation of sharings (user B) : a sharing corresponding to age of user A and another too high to be accessed by user A by default
+        User A makes a GET request towards sharing_an_experience_create and then a POST request with valid form and valid age and so complete a sharing.
 
-        pass
+        Note : For x in range(NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS) : creation of sharings --> then test the update of user_profile_model_dictionnary with sharings id and/or credits
+        Note : The tested action is done via access_to_some_sharings_age_minus_plus() which calls allocation_of_new_sharings_of_experiences()
+        """
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+        # Profile models creation 
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits': 1,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # Sharings of experience creation 
+        # Creation of sharings (user B) : a sharing corresponding to age of user A and another too high to be accessed by user A by default
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_age_userA = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_age_userA.save()
+
+        test_sharing_user_B_higher_than_age_userA = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age + GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES + 1,  # innacessible by user A by default
+                description = "description test_sharing",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_higher_than_age_userA.save()
+
+        number_of_sharings_in_database_before_post_request_by_userA = len(SharingOfExperience.objects.all())
+
+        # Test that User A -> GET method : url_to_be_returned = render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
+        # User A makes a GET request towards sharing_an_experience_create and so access the form
+        # +1 year because menu values for creation of sharings begins at LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
+        path_get = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
+        response_get = client_test_user_A.get(path_get, {'description': 'Description of the sharing of experience by user A', })
+        content_get = response_get.content.decode()
+
+        assert response_get.status_code == 200
+        assertTemplateUsed(response_get, "sharingofexperience/sharing_an_experience_create.html")
+        assert content_get.find('<form action="" method="post">') != -1
+        assert content_get.find('<input type="submit" value="Send">') != -1
+
+
+        for i in range(NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS):
+            # User A makes a POST request towards sharing_an_experience_create with valid form and valid age and so complete a sharing
+            # +1 year because menu values for creation of sharings begins at LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
+            # + i  for the boucle + the assertion of well recording
+            path_post = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1 + i])
+            response_post = client_test_user_A.post(path_post, {'description': 'Description of the sharing of experience by user A', })
+
+            # Test that User A -> POST method : can access sharing_an_experience_create view with rigth content (redirection to menu)
+            assert response_post.status_code == 302
+            assert response_post.url == reverse('sharing_experiences_menu')
+
+            # Test that -> the sharing of experience is well recorded in the database
+            number_of_sharings_in_database_after_post_request_by_userA = len(SharingOfExperience.objects.all())
+            assert number_of_sharings_in_database_before_post_request_by_userA + 1 + i == number_of_sharings_in_database_after_post_request_by_userA
+
+            
+        # Test that User A -> access given to all sharings from other users (age +/- GAP)
+        # print(test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.sharing_of_experiences_user_has_access)
+        # >>> {'credits': 1}
+        
+        # Note : credits : +1 is the initial value (when user A dictionary was created) ; -1 is because of the access given to a sharing of experience of user B
+        expected_value = {str(test_sharing_user_B_age_userA.id): True, 'credits': 1 + DEFAULT_NUMBER_GIVE_ACCESS_TO_SHARINGS_AT_EACH_PARTICIPATION -1}
+
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+
+        assert user_A_profile_model_dictionnary == expected_value
 
 
     @pytest.mark.django_db

@@ -122,14 +122,14 @@ def allocation_of_new_sharings_of_experiences(request, number_of_new_sharings, s
     user_profile_model_dictionnary = user_profile_model.sharing_of_experiences_user_has_access
 
     total_sharings_queryset_in_which_we_sample = sharings_queryset_in_which_we_sample.count()
-    print('total_sharings_of_experience_age_plus_minus_one', total_sharings_queryset_in_which_we_sample)
+    #print('total_sharings_of_experience_age_plus_minus_one', total_sharings_queryset_in_which_we_sample)
 
     # while len(profile_model_dictionnary) < min(ACCESS_TO_SHARINGS_MINIMUM_NUMBER, total_sharing_of_experience_age_plus_minus_one):
         # Using random.sample(listName, x) (x=number of draws) on sharing_of_experience_age_plus_minus_one :
         # Population must be a sequence.  For dicts or sets, use sorted(d).
 
     number_of_draws = min(number_of_new_sharings, total_sharings_queryset_in_which_we_sample)
-    print('number_of_draws', number_of_draws)
+    #print('number_of_draws', number_of_draws)
 
     # Initial version for comparison of Methods A and B
     # sharings_of_experience_age_plus_minus_one = queryset_sharing_of_experiences_from_others(request)
@@ -162,7 +162,7 @@ def allocation_of_new_sharings_of_experiences(request, number_of_new_sharings, s
     sample_sharings_of_experience = sample(list_sharings_queryset_in_which_we_sample, number_of_draws)
     for sharing in sample_sharings_of_experience:
         user_profile_model_dictionnary[sharing.id] = True
-        print('user_profile_model_dictionnary', user_profile_model_dictionnary)
+        #print('user_profile_model_dictionnary', user_profile_model_dictionnary)
 
     if total_sharings_queryset_in_which_we_sample < number_of_new_sharings:
         number_of_credits = number_of_new_sharings-total_sharings_queryset_in_which_we_sample
@@ -259,9 +259,9 @@ def access_to_new_sharings_of_experience(request):
 
     else:
         count_sharings_by_user = len(SharingOfExperience.objects.filter(user_id_id = request.user.id))
-        print('count_sharings_by_user', count_sharings_by_user)
+        #print('count_sharings_by_user', count_sharings_by_user)
         if count_sharings_by_user % NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS == 0:
-            print('count_sharings_by_user', count_sharings_by_user)
+            #print('count_sharings_by_user', count_sharings_by_user)
             access_to_some_sharings_age_minus_plus(request, DEFAULT_NUMBER_GIVE_ACCESS_TO_SHARINGS_AT_EACH_PARTICIPATION)
 
 
@@ -431,6 +431,6 @@ def spend_credits(request, past_or_future_sharings):
     else:
         message = "You do not have enough credits {0} to access past or futures experiences shares".format(COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS)
 
-    print(message)
+    #print(message)
     request.session['message'] = message
     return redirect('learning_from_others')
