@@ -880,3 +880,87 @@ class TestSharing_an_experience_createView:
         assert content_post.find("<p>Please wait until you are sure you have the necessary hindsight before entering this age.</p>") != -1 
 
 
+class TestSharing_an_experience_updateView:
+
+    @pytest.mark.django_db
+    def test_update_of_sharing_user_not_logged_in(self):
+        """Tests if a user not logged-in -> can NOT access sharing_an_experience_update view"""
+
+        pass
+
+
+    @pytest.mark.django_db
+    def test_update_of_sharing_all_conditions_meet(self):
+        """
+        Tests that a user who meets the conditions :
+        - logged-in
+        - updates a sharing of experience which exists
+        - updates one of its own sharing of experience (not the ID of another user)
+        - valid form
+
+        -> GET method : url_to_be_returned = render(request, 'sharingofexperience/sharing_an_experience_update.html', {'form': form})
+        -> POST method : can access sharing_an_experience_update view with rigth content (redirection to menu)
+        -> tests that the sharing of experience is well updated in the database
+
+        Scenario : 
+        Creation of users A and user A profile model
+        Creation of sharings (user A) : a sharing corresponding to the minimal age + 1
+        User A makes a GET request towards sharing_an_experience_update and then a POST request with valid form and valid sharing ID and so updates a sharing
+        """
+
+        pass
+
+
+    @pytest.mark.django_db
+    def test_update_of_sharing_which_does_not_exist(self):
+        """
+        Tests that a user who meets the conditions except that :
+        - the id of the sharing asked to be updated does not exist
+
+        -> GET method : go to page sharing_of_experience_not_yet_created.html
+        -> POST method : go to page sharing_of_experience_not_yet_created.html
+        
+        Scenario : 
+        Creation of users A and user A profile model
+        Creation of sharings (user A) : a sharing corresponding to the minimal age + 1
+        User A makes a GET request towards sharing_an_experience_update and then a POST request with valid form but NOT a valid sharing ID (does not exists) and so ca not update the sharing
+        """
+
+        pass
+
+
+    @pytest.mark.django_db
+    def test_update_of_sharing_of_another_user(self):
+        """
+        Tests that a user who meets the conditions except that :
+        - the id of the sharing asked to be updated was created by another user
+
+        -> GET method : go to page not_your_experience.html
+        -> POST method : go to page not_your_experience.html
+        
+        Scenario : 
+        Creation of users A and B
+        Creation of user A profile model
+        Creation of sharings (user B) : a sharing corresponding to the minimal age + 1
+        User A makes a GET request towards sharing_an_experience_update and then a POST request with valid form but NOT a valid sharing ID (id of sharing created by user B) and so ca not update the sharing
+        """
+
+        pass
+
+
+    @pytest.mark.django_db
+    def test_update_of_sharing_which_does_not_exist(self):
+        """
+        Tests that a user who meets the conditions except that :
+        - the form is invalid
+
+        -> GET method : url_to_be_returned = render(request, 'sharingofexperience/sharing_an_experience_update.html', {'form': form})
+        -> POST method : no redirection
+
+        Scenario : 
+        Creation of users A and user A profile model
+        Creation of sharings (user A) : a sharing corresponding to the minimal age + 1
+        User A makes a GET request towards sharing_an_experience_update and then a POST request with valid form and a valid sharing ID but an INvalid form and so ca not update the sharing
+        """
+
+        pass
