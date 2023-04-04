@@ -696,7 +696,7 @@ class TestSharing_an_experience_createView:
 
         Scenario : 
         Creation of user A 
-        User A makes a GET request towards sharing_an_experience_create and then a POST request with an INvalid form and valid age and so complete a sharing.
+        User A makes a GET request towards sharing_an_experience_create and then a POST request with an INvalid form and valid age and so complete a sharing
         """
 
         # Users creation and connection 
@@ -750,18 +750,78 @@ class TestSharing_an_experience_createView:
 
     @pytest.mark.django_db
     def test_creation_of_sharing_age_already_filled(self):
-        """Tests that a user who meets the conditions except that :
+        """
+        Tests that a user who meets the conditions except that :
         - The age concerned by the post request is already filled (a sharing of experience already exist for this user at this age)
 
-        -> redirection towards update
+        -> redirection towards update view
         code : redirect('sharing_an_experience_update', sharing_of_experience_already_created_id)
 
-        Scenario : 
-        User A makes a request towards sharing_an_experience_create with valid form
-        User creates a sharing and then try again to create a sharing for the same age
-        TO BE DONE"""
+        -> GET method : redirection towards update view
+        -> POST method : redirection towards update view
+        -> tests that the sharing of experience is NOT recorded in the database
 
-        pass
+        Scenario : 
+        Creation of user A 
+        Creation of a first sharing of experience for User A 
+        User A makes a GET request towards sharing_an_experience_create and then a POST request with an valid form but the age is not
+        valid as it corresponds to the age of the previously created sharing of experience
+        """
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        # Profile models creation 
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits': 1,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+        
+        # Sharings of experience creation 
+        # Creation of a first sharing of experience for User A 
+        test_sharing_user_A_first = SharingOfExperience.objects.create(
+                user_id = test_user_A,
+                experienced_age = LOWER_LIMIT_AGE_TO_BE_SHARED + 1,
+                description = "description test_sharing",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_A_first.save()
+
+        number_of_sharings_in_database_before_post_request_by_userA = len(SharingOfExperience.objects.all())
+
+
+        # User A makes a GET request towards sharing_an_experience_create and then a POST request with an valid form but the age is not
+        # valid as it corresponds to the age of the previously created sharing of experience
+
+        # Test that User A -> GET method: redirection towards update view 
+        # +1 year because menu values for creation of sharings begins at LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
+        path_get = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
+        response_get = client_test_user_A.get(path_get)
+        assert response_get.status_code == 302
+        assert response_get.url == '/sharing_an_experience_update/{0}/'.format(test_sharing_user_A_first.id)
+
+        # User A makes a POST request towards sharing_an_experience_create with valid form but not valid age and so does not create a sharing
+        # +1 year because menu values for creation of sharings begins at LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
+        path_post = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
+        response_post = client_test_user_A.post(path_post, {'description': 'Description of the sharing of experience by user A', })
+
+        # Tests that User A -> POST method : redirection towards update view
+        assert response_post.status_code == 302
+        assert response_post.url == '/sharing_an_experience_update/{0}/'.format(test_sharing_user_A_first.id)
+
+        # Test that -> the sharing of experience is NOT recorded in the database
+        number_of_sharings_in_database_after_post_request_by_userA = len(SharingOfExperience.objects.all())
+        assert number_of_sharings_in_database_before_post_request_by_userA + 0 == number_of_sharings_in_database_after_post_request_by_userA
 
 
     @pytest.mark.django_db
