@@ -457,11 +457,11 @@ class TestSharing_an_experience_createView:
         # Users creation and connection 
         # Note : the age of user A will evolve each year in order to make the present test sustainable over time 
         # the goal is that User A has only one age to complete in order to complete all his sharings
-        # LOWER_LIMIT_AGE_TO_BE_SHARED (=10 initialy) ; on the website, an user can complete a sharing from LOWER_LIMIT_AGE_TO_BE_SHARED + 1 year
+        # LOWER_LIMIT_AGE_TO_BE_SHARED (=10 initialy) ; on the website, an user can create a sharing from LOWER_LIMIT_AGE_TO_BE_SHARED + 1 year
         today = date.today()
         # Explanation of birth_date_user_A_for_a_relevant_test calculation:
             # 365.25 to account leap years ; 
-            # + 1 year as on the website, a user can complete a sharing from LOWER_LIMIT_AGE_TO_BE_SHARED + 1 year ; 
+            # + 1 year as on the website, a user can create a sharing from LOWER_LIMIT_AGE_TO_BE_SHARED + 1 year ; 
               # e.g : LOWER_LIMIT_AGE_TO_BE_SHARED is 10 years old <=> the lowest age an user can complete is 11 years old
             # + 1 year as the user must have experienced a year before sharing an experience about it
               # e.g. : the lowest age an user can complete is 11 years old <=> the user must have at least 12 years old
@@ -582,7 +582,7 @@ class TestSharing_an_experience_createView:
         Creation of users A and B
         Creation of user A profile model
         Creation of sharings (user B) : a sharing corresponding to age of user A and another too high to be accessed by user A by default
-        User A makes a GET request towards sharing_an_experience_create and then a POST request with valid form and valid age and so complete a sharing.
+        User A makes a GET request towards sharing_an_experience_create and then a POST request with valid form and valid age and so create a sharing.
 
         Note : For x in range(NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS) : creation of sharings --> then test the update of user_profile_model_dictionnary with sharings id and/or credits
         Note : The tested action is done via access_to_some_sharings_age_minus_plus() which calls allocation_of_new_sharings_of_experiences()
@@ -653,7 +653,7 @@ class TestSharing_an_experience_createView:
 
 
         for i in range(NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS):
-            # User A makes a POST request towards sharing_an_experience_create with valid form and valid age and so complete a sharing
+            # User A makes a POST request towards sharing_an_experience_create with valid form and valid age and so create a sharing
             # +1 year because menu values for creation of sharings begins at LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
             # + i  for the boucle + the assertion of well recording
             path_post = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1 + i])
@@ -696,7 +696,7 @@ class TestSharing_an_experience_createView:
 
         Scenario : 
         Creation of user A 
-        User A makes a GET request towards sharing_an_experience_create and then a POST request with an INvalid form and valid age and so complete a sharing
+        User A makes a GET request towards sharing_an_experience_create and then a POST request with an INvalid form and valid age and so create a sharing
         """
 
         # Users creation and connection 
@@ -732,7 +732,7 @@ class TestSharing_an_experience_createView:
         assert content_get.find('<form action="" method="post">') != -1
         assert content_get.find('<input type="submit" value="Send">') != -1
 
-        # User A makes a POST request towards sharing_an_experience_create with INvalid form and valid age and so does NOT complete a sharing
+        # User A makes a POST request towards sharing_an_experience_create with INvalid form and valid age and so does NOT create a sharing
         # +1 year because menu values for creation of sharings begins at LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
         path_post = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
         response_post = client_test_user_A.post(path_post, {'description': ''})
@@ -799,7 +799,6 @@ class TestSharing_an_experience_createView:
 
         number_of_sharings_in_database_before_post_request_by_userA = len(SharingOfExperience.objects.all())
 
-
         # User A makes a GET request towards sharing_an_experience_create and then a POST request with an valid form but the age is not
         # valid as it corresponds to the age of the previously created sharing of experience
 
@@ -829,13 +828,55 @@ class TestSharing_an_experience_createView:
         """Tests that a user who meets the conditions except that :
         - The age concerned by the post request is too high compared to user current age
 
-        -> redirection towards be sharingofexperience/be_patient.html
-
-        Scenario : 
-        User A makes a request towards sharing_an_experience_create with valid form
-        TO BE DONE"""
+        -> GET method : go to page sharingofexperience/be_patient.html
+        -> POST method : go to page sharingofexperience/be_patient.html
         
-        pass
+        Scenario : 
+        Creation of user A 
+        User A makes a GET request towards sharing_an_experience_create and then a POST request
+        with a valid form and an INvalid age (current age) and so does NOT create a sharing
+        """
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        # Profile models creation 
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits': 1,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # Test that User A -> GET method : go to page sharingofexperience/be_patient.html
+        # User A makes a GET request towards sharing_an_experience_create with a age under the lower limit and so does NOT access the form
+
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        path_get = reverse('sharing_an_experience_create', args=[test_user_A_age])
+        response_get = client_test_user_A.get(path_get)
+
+        assert response_get.status_code == 200
+        assertTemplateUsed(response_get, "sharingofexperience/be_patient.html")
+        content_get = response_get.content.decode()
+        assert content_get.find("<p>Please wait until you are sure you have the necessary hindsight before entering this age.</p>") != -1 
+
+        # User A makes a POST request towards sharing_an_experience_create with valid form and with a age under the lower limit and so does NOT access the form
+        path_post = reverse('sharing_an_experience_create', args=[test_user_A_age])
+        response_post = client_test_user_A.post(path_post, {'description': 'Description of the sharing of experience by user A', })
+
+        # Test that User A -> POST method : go to page sharingofexperience/be_patient.html
+        assert response_post.status_code == 200
+        assertTemplateUsed(response_post, "sharingofexperience/be_patient.html")
+        content_post = response_post.content.decode()
+        assert content_post.find("<p>Please wait until you are sure you have the necessary hindsight before entering this age.</p>") != -1 
 
 
-# next commit : redaction of scenarios for tests of class TestSharing_an_experience_createView: test_creation_of_sharing_all_conditions_meet_and_user_completed_all_his_sharings(), test_creation_of_sharing_all_conditions_meet_and_user_did_not_completed_all_his_sharings(), test_creation_of_sharing_invalid_form(), test_creation_of_sharing_age_already_filled(), test_creation_of_sharing_age_is_too_high()
