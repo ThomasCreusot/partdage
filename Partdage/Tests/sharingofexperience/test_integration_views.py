@@ -886,7 +886,39 @@ class TestSharing_an_experience_updateView:
     def test_update_of_sharing_user_not_logged_in(self):
         """Tests if a user not logged-in -> can NOT access sharing_an_experience_update view"""
 
-        pass
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        # user does not log in : client_test_user_A.force_login(test_user_A)
+
+        # Sharings of experience creation 
+        # Creation of a first sharing of experience for User A 
+        test_sharing_user_A = SharingOfExperience.objects.create(
+                user_id = test_user_A,
+                experienced_age = LOWER_LIMIT_AGE_TO_BE_SHARED + 1,
+                description = "description test_sharing",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_A.save()
+
+        # User A makes a GET request towards sharing_an_experience_update
+        path_get = reverse('sharing_an_experience_update', args=[test_sharing_user_A.id])
+        response_get = client_test_user_A.get(path_get)
+        assert response_get.status_code == 302
+        assert response_get.url == '/login/?next=/sharing_an_experience_update/{0}/'.format(test_sharing_user_A.id)
+
+        # User A makes a POST request towards sharing_an_experience_update
+        path_post = reverse('sharing_an_experience_update', args=[test_sharing_user_A.id])
+        response_post = client_test_user_A.post(path_post, {'description': 'Updated description of the sharing of experience by user A', })
+        assert response_post.status_code == 302
+        assert response_post.url == '/login/?next=/sharing_an_experience_update/{0}/'.format(test_sharing_user_A.id)
 
 
     @pytest.mark.django_db
