@@ -523,7 +523,7 @@ class TestSharing_an_experience_createView:
         # User A makes a GET request towards sharing_an_experience_create and so access the form
         # +1 year because menu values for creation of sharings begins at LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
         path_get = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
-        response_get = client_test_user_A.get(path_get, {'description': 'Description of the sharing of experience by user A', })
+        response_get = client_test_user_A.get(path_get)
         content_get = response_get.content.decode()
 
         assert response_get.status_code == 200
@@ -643,7 +643,7 @@ class TestSharing_an_experience_createView:
         # User A makes a GET request towards sharing_an_experience_create and so access the form
         # +1 year because menu values for creation of sharings begins at LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
         path_get = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
-        response_get = client_test_user_A.get(path_get, {'description': 'Description of the sharing of experience by user A', })
+        response_get = client_test_user_A.get(path_get)
         content_get = response_get.content.decode()
 
         assert response_get.status_code == 200
@@ -683,16 +683,69 @@ class TestSharing_an_experience_createView:
 
     @pytest.mark.django_db
     def test_creation_of_sharing_invalid_form(self):
-        """Tests that a user who meets the conditions except that :
+        """
+        Tests that a user who meets the conditions except that :
         - the form is not valid (Description field not filled in)
 
         -> error message
 
-        Scenario : 
-        User A makes a request towards sharing_an_experience_create with valid form
-        TO BE DONE"""
+        -> GET method : url_to_be_returned = render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
+        -> POST method : no redirection
+        -> tests that the sharing of experience is NOT recorded in the database
 
-        pass
+
+        Scenario : 
+        Creation of user A 
+        User A makes a GET request towards sharing_an_experience_create and then a POST request with an INvalid form and valid age and so complete a sharing.
+        """
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        # Profile models creation 
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits': 1,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+
+        number_of_sharings_in_database_before_post_request_by_userA = len(SharingOfExperience.objects.all())
+
+        # Test that User A -> GET method : url_to_be_returned = render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
+        # User A makes a GET request towards sharing_an_experience_create and so access the form
+        # +1 year because menu values for creation of sharings begins at LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
+        path_get = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
+        response_get = client_test_user_A.get(path_get)
+        content_get = response_get.content.decode()
+
+        assert response_get.status_code == 200
+        assertTemplateUsed(response_get, "sharingofexperience/sharing_an_experience_create.html")
+        assert content_get.find('<form action="" method="post">') != -1
+        assert content_get.find('<input type="submit" value="Send">') != -1
+
+        # User A makes a POST request towards sharing_an_experience_create with INvalid form and valid age and so does NOT complete a sharing
+        # +1 year because menu values for creation of sharings begins at LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
+        path_post = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
+        response_post = client_test_user_A.post(path_post, {'description': ''})
+
+
+        # Test that User A -> POST method : no redirection
+        assert response_post.status_code == 200
+        assertTemplateUsed(response_post, "sharingofexperience/sharing_an_experience_create.html")
+        #content_post = response_post.content.decode()  # --> No new text/message
+
+        # Test that -> the sharing of experience is NOT recorded in the database
+        number_of_sharings_in_database_after_post_request_by_userA = len(SharingOfExperience.objects.all())
+        assert number_of_sharings_in_database_before_post_request_by_userA + 0 == number_of_sharings_in_database_after_post_request_by_userA
 
 
     @pytest.mark.django_db
