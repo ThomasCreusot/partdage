@@ -940,7 +940,7 @@ class TestSharing_an_experience_updateView:
         User A makes a GET request towards sharing_an_experience_update and then a POST request with valid form and valid sharing ID and so updates a sharing
         """
 
-        # Users creation and connection 
+        # Users creation and connection
         test_user_A = User.objects.create(
                 username = 'test_user_A',
                 password = 'test_user_A',
@@ -1004,7 +1004,52 @@ class TestSharing_an_experience_updateView:
         User A makes a GET request towards sharing_an_experience_update and then a POST request with valid form but NOT a valid sharing ID (does not exists) and so ca not update the sharing
         """
 
-        pass
+        # Users creation and connection
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        # Sharings of experience creation 
+        # Creation of sharings (user A) : a sharing corresponding to the minimal age + 1
+        test_sharing_user_A = SharingOfExperience.objects.create(
+                user_id = test_user_A,
+                experienced_age = LOWER_LIMIT_AGE_TO_BE_SHARED + 1,
+                description = "description test_sharing",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_A.save()
+
+
+        # Test that User A -> GET method : go to page sharing_of_experience_not_yet_created.html
+        # User A makes a GET request towards sharing_an_experience_update and so access the form
+        path_get = reverse('sharing_an_experience_update', args=[test_sharing_user_A.id + 1])
+        response_get = client_test_user_A.get(path_get)
+        content_get = response_get.content.decode()
+
+        assert response_get.status_code == 200
+        assertTemplateUsed(response_get, "sharingofexperience/sharing_of_experience_not_yet_created.html")
+        assert content_get.find('<p>Please create a sharing of exeprience before trying to update it.</p>') != -1
+
+        # User A makes a POST request towards sharing_an_experience_update with valid form and valid age and so updates a sharing
+        path_post = reverse('sharing_an_experience_update', args=[test_sharing_user_A.id + 1])
+        response_post = client_test_user_A.post(path_post, {'description': 'Updated description of the sharing of experience by user A', })
+
+        # Test that User A -> POST method : go to page sharing_of_experience_not_yet_created.html
+        assert response_get.status_code == 200
+        assertTemplateUsed(response_get, "sharingofexperience/sharing_of_experience_not_yet_created.html")
+        assert content_get.find('<p>Please create a sharing of exeprience before trying to update it.</p>') != -1
+
+        # Test that -> tests that the sharing of experience is not updated in the database
+        updated_sharing_of_experience = SharingOfExperience.objects.filter(id=test_sharing_user_A.id)[0]
+        expected_value = "description test_sharing"
+        assert updated_sharing_of_experience.description == expected_value
 
 
     @pytest.mark.django_db
@@ -1027,7 +1072,7 @@ class TestSharing_an_experience_updateView:
 
 
     @pytest.mark.django_db
-    def test_update_of_sharing_which_does_not_exist(self):
+    def test_update_of_sharing_invalid_form(self):
         """
         Tests that a user who meets the conditions except that :
         - the form is invalid
