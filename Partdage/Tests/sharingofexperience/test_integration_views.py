@@ -1180,3 +1180,123 @@ class TestSharing_an_experience_updateView:
         not_updated_sharing_of_experience = SharingOfExperience.objects.filter(id=test_sharing_user_A.id)[0]
         expected_value = "description test_sharing"
         assert not_updated_sharing_of_experience.description == expected_value
+
+
+class TestLearning_from_othersView:
+
+    @pytest.mark.django_db
+    def test_learning_from_others_all_conditions_meet_not_full_access(self):
+        """
+        Tests that a couple user/sharing who meets the conditions:
+        - user is logged-in
+        - + user dictionnary does not have 'dictionary initialisation' = 1 in its profile model (redirection home)
+        - + user dictionnary has a key corresponding to a sharing id equal to true in its profile model
+            ->at_least_a_numeric_key_is_true ; if not : impacts HTML content (sharings_not_yet_accessible)
+
+        - Note : for this test, the user does not have 'full access sharings age plus minus' in its profile model
+
+        -> tests that the sharing of experience corresponding to userA age is well displayed
+        -> tests that the sharing of experience which does not correspond to userA age is not displayed
+        
+        Scenario : 
+        Creation of users A and B and profile model of user A
+        User B shared two experiences : the first one corresponds to userA age, the second one is out of the range age_plus_minus (initially gap = 1 year) 
+        User A logs-in the application and makes a GET request towards learning_from_others page.
+        User A should have access to the sharing of experience corresponding to his/her age but no access to the sharing of experience which does not correspond to his/her
+        """
+
+        pass
+
+
+    @pytest.mark.django_db
+    def test_learning_from_others_all_conditions_meet_full_access(self):
+        """
+        Tests that a couple user/sharing who meets the conditions:
+        - user is logged-in
+        - + user dictionnary does not have 'dictionary initialisation' = 1 in its profile model (redirection home)
+        - + user dictionnary has NOT a key corresponding to a sharing id equal to true in its profile model
+            ->at_least_a_numeric_key_is_true ; if not : impacts HTML content (sharings_not_yet_accessible)
+
+        - Note : for this test, the user has 'full access sharings age plus minus' in its profile model
+
+        -> tests that the sharing of experience corresponding to userA age is well displayed
+        -> tests that the sharing of experience which does not correspond to userA age is not displayed
+        
+        Scenario : 
+        Creation of users A and B and profile model of user A
+        User B shared two experiences : the first one corresponds to userA age, the second one is out of the range age_plus_minus (initially gap = 1 year) 
+        User A logs-in the application and makes a GET request towards learning_from_others page.
+        User A should have access to the sharing of experience corresponding to his/her age but no access to the sharing of experience which does not correspond to his/her
+        """
+
+        pass
+
+
+    @pytest.mark.django_db
+    def test_learning_from_others_user_not_logged_in(self):
+        """
+        Tests that a couple user/sharing who meets the conditions:
+        - user is NOT logged-in
+        - + user dictionnary does not have 'dictionary initialisation' = 1 in its profile model (redirection home)
+        - + user dictionnary has a key corresponding to a sharing id equal to true in its profile model
+            ->at_least_a_numeric_key_is_true ; if not : impacts HTML content (sharings_not_yet_accessible)
+
+        - Note : for this test, the user does not have 'full access sharings age plus minus' in its profile model
+
+        -> tests that the user is redirected towards home page
+        
+        Scenario : 
+        Creation of users A and B and profile model of user A
+        User B shared two experiences : the first one corresponds to userA age, the second one is out of the range age_plus_minus (initially gap = 1 year) 
+        User A does NOT log-in the application and makes a GET request towards learning_from_others page.
+        User A should NOT have access to the sharing of experience as he/she is not logged-in
+        """
+
+        pass
+
+
+    @pytest.mark.django_db
+    def test_learning_from_others_dictionary_initialisation_redirects_user(self):
+        """
+        Tests that a couple user/sharing who meets the conditions:
+        - user is logged-in
+        - + user dictionnary HAS 'dictionary initialisation' = 1 in its profile model (redirection home)
+        - + user dictionnary has a key corresponding to a sharing id equal to true in its profile model
+            ->at_least_a_numeric_key_is_true ; if not : impacts HTML content (sharings_not_yet_accessible)
+
+        - Note : for this test, the user does not have 'full access sharings age plus minus' in its profile model
+
+        -> tests that the user is redirected towards home page
+        
+        Scenario : 
+        Creation of users A and B and profile model of user A
+        User B shared two experiences : the first one corresponds to userA age, the second one is out of the range age_plus_minus (initially gap = 1 year) 
+        User A logs-in the application and makes a GET request towards learning_from_others page.
+        User A should be redirected towards home page
+        """
+
+        pass
+
+
+    @pytest.mark.django_db
+    def test_learning_from_others_no_numeric_key_equal_to_true(self):
+        """
+        Tests that a couple user/sharing who meets the conditions:
+        - user is logged-in
+        - + user dictionnary does not have 'dictionary initialisation' = 1 in its profile model (redirection home)
+        - + user dictionnary has NOT ANY key corresponding to a sharing id equal to true in its profile model
+            ->at_least_a_numeric_key_is_true ; if not : impacts HTML content (sharings_not_yet_accessible)
+
+        - Note : for this test, the user does not have 'full access sharings age plus minus' in its profile model
+
+        -> tests that the 'sharings_not_yet_accessible' is displayed on HTML 
+        
+        Scenario : 
+        Creation of users A and B and profile model of user A
+        User B shared two experiences : the first one corresponds to userA age, the second one is out of the range age_plus_minus (initially gap = 1 year) 
+        User A logs-in the application and makes a GET request towards learning_from_others page.
+        User A should have access to a text "My main philosophy is ..."
+        """
+
+        pass
+
