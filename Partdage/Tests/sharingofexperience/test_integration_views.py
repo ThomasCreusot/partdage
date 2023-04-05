@@ -951,13 +951,6 @@ class TestSharing_an_experience_updateView:
         client_test_user_A = Client()
         client_test_user_A.force_login(test_user_A)
 
-        # Profile models creation 
-        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
-            user = test_user_A,
-            sharing_of_experiences_user_has_access = {'credits': 1,},
-        )
-        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
-
         # Sharings of experience creation 
         # Creation of sharings (user A) : a sharing corresponding to the minimal age + 1
         test_sharing_user_A = SharingOfExperience.objects.create(
