@@ -1134,4 +1134,49 @@ class TestSharing_an_experience_updateView:
         User A makes a GET request towards sharing_an_experience_update and then a POST request with valid form and a valid sharing ID but an INvalid form and so ca not update the sharing
         """
 
-        pass
+        # Users creation and connection
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        # Sharings of experience creation 
+        # Creation of sharings (user A) : a sharing corresponding to the minimal age + 1
+        test_sharing_user_A = SharingOfExperience.objects.create(
+                user_id = test_user_A,
+                experienced_age = LOWER_LIMIT_AGE_TO_BE_SHARED + 1,
+                description = "description test_sharing",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_A.save()
+
+        # Test that User A -> GET method : url_to_be_returned = render(request, 'sharingofexperience/sharing_an_experience_update.html', {'form': form})
+        # User A makes a GET request towards sharing_an_experience_update and so access the form
+        path_get = reverse('sharing_an_experience_update', args=[test_sharing_user_A.id])
+        response_get = client_test_user_A.get(path_get)
+        content_get = response_get.content.decode()
+
+        assert response_get.status_code == 200
+        assertTemplateUsed(response_get, "sharingofexperience/sharing_an_experience_update.html")
+        assert content_get.find('{0}</textarea>'.format(test_sharing_user_A.description)) != -1
+        assert content_get.find('<input type="submit" value="Send">') != -1
+
+        # User A makes a POST request towards sharing_an_experience_update with an INvalid form and valid age and so does NOT update a sharing
+        path_post = reverse('sharing_an_experience_update', args=[test_sharing_user_A.id])
+        response_post = client_test_user_A.post(path_post, {'description': '', })
+
+        # Test that User A -> POST method : no redirection
+        assert response_post.status_code == 200
+        assertTemplateUsed(response_post, "sharingofexperience/sharing_an_experience_update.html")
+        #content_post = response_post.content.decode()  # --> No new text/message
+
+        # Test that -> tests that the sharing of experience is NOT updated in the database
+        not_updated_sharing_of_experience = SharingOfExperience.objects.filter(id=test_sharing_user_A.id)[0]
+        expected_value = "description test_sharing"
+        assert not_updated_sharing_of_experience.description == expected_value
