@@ -1712,3 +1712,102 @@ class TestLike_a_sharing_of_experienceView:
         liked_sharing_of_experience = SharingOfExperience.objects.filter(id = test_sharing_user_B_1.id)[0]
         expected_value = {'likes': {}}
         assert liked_sharing_of_experience.likes == expected_value
+
+
+class TestSpend_creditsView:
+
+    @pytest.mark.django_db
+    def test_spend_credits_all_condition_met(self):
+        """
+        Tests that a user can spend credits to access past or futures sharings of experience
+        - user is logged-in
+        - user has enought credits to spend it (2 * COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS)
+        - there is at least a sharing he/she does not have access yet (both past and future)
+        
+        - Note : user dictionnary does not have 'dictionary initialisation' = 1 in its profile model (redirection home)
+        - Note : for this test, the user does not have 'full access sharings age plus minus' in its profile model
+
+        -> tests that the user can access a new sharing wich is not in the range user_age - GAP - user_age + GAP
+
+        Scenario : 
+        Creation of users A and B and profile model of user A
+        User B shared two experiences which are OUT of the range age_plus_minus (initially gap = 1 year) : a past and a future experience
+        User A logs-in the application and makes two GET requests towards spend_creadits() : for past and future experiences
+        The user has access to the two sharings of experience which are OUT of the range age_plus_minus (initially gap = 1 year)
+        Note : return redirect('learning_from_others')
+        Note : user_credits -= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS to be checked
+        """
+
+        pass
+
+
+    @pytest.mark.django_db
+    def test_spend_credits_user_not_logged_in(self):
+        """
+        Tests that a user can NOT spend credits to access past or futures sharings of experience as
+        - user is NOT logged-in
+        - user has enought credits to spend it (2 * COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS)
+        - there is at least a sharing he/she does not have access yet (both past and future)
+        
+        - Note : user dictionnary does not have 'dictionary initialisation' = 1 in its profile model (redirection home)
+        - Note : for this test, the user does not have 'full access sharings age plus minus' in its profile model
+
+        -> tests that the user can access a new sharing wich is not in the range user_age - GAP - user_age + GAP
+
+        Scenario : 
+        Creation of users A and B and profile model of user A
+        User B shared two experiences which are OUT of the range age_plus_minus (initially gap = 1 year) : a past and a future experience
+        User A DOES NOT log-in the application and makes two GET requests towards spend_creadits() : for past and future experiences
+        The user has NOT access to the two sharings of experience which are OUT of the range age_plus_minus (initially gap = 1 year)
+        """
+
+        pass
+
+
+    @pytest.mark.django_db
+    def test_spend_credits_not_enough_credits(self):
+        """
+        Tests that a user can NOT spend credits to access past or futures sharings of experience if he/she has NO enough credits
+        - user is logged-in
+        - user has NOT enough credits to spend it (< COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS)
+        - there is at least a sharing he/she does not have access yet (both past and future)
+        
+        - Note : user dictionnary does not have 'dictionary initialisation' = 1 in its profile model (redirection home)
+        - Note : for this test, the user does not have 'full access sharings age plus minus' in its profile model
+
+        -> tests that the user can NOT access a new sharing wich is not in the range user_age - GAP - user_age + GAP
+
+        Scenario : 
+        Creation of users A and B and profile model of user A
+        User B shared two experiences which are OUT of the range age_plus_minus (initially gap = 1 year) : a past and a future experience
+        User A logs-in the application and makes two GET requests towards spend_creadits() : for past and future experiences
+        The user has NOT access to the two sharings of experience which are OUT of the range age_plus_minus (initially gap = 1 year)
+        The user has access to the message = "You do not have enough credits ..."
+        Note : return redirect('learning_from_others')
+        """
+
+        pass
+
+
+    @pytest.mark.django_db
+    def test_spend_credits_empty_queryset_of_sharings_to_buy_access_for(self):
+        """
+        Tests that a user can NOT spend credits to access past or futures sharings of experience
+        - user is logged-in
+        - user has enought credits to spend it (2 * COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS)
+        - there is NOT ANY sharing he/she does not have access yet (neither past nor future)
+
+        - Note : user dictionnary does not have 'dictionary initialisation' = 1 in its profile model (redirection home)
+        - Note : for this test, the user does not have 'full access sharings age plus minus' in its profile model
+
+        -> tests that the user can NOT access a new sharing wich is not in the range user_age - GAP - user_age + GAP
+        -> User has access to the message = "You have enough credits to access past or futures experiences shares; however, our database ..."        
+
+        Scenario : 
+        Creation of users A and B and profile model of user A
+        User B shared two experiences which are OUT of the range age_plus_minus (initially gap = 1 year) : a past and a future experience
+        User A logs-in the application and makes two GET requests towards spend_creadits() : for past and future experiences
+        The user has NOT access to the two sharings of experience which are OUT of the range age_plus_minus (initially gap = 1 year)
+        """
+
+        pass
