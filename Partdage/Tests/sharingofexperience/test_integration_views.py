@@ -1375,13 +1375,27 @@ class TestLearning_from_othersView:
         -> tests that the user is redirected towards home page
         
         Scenario : 
-        Creation of users A and B and profile model of user A
-        User B shared an experience which corresponds to userA age
+        Creation of users A
         User A does NOT log-in the application and makes a GET request towards learning_from_others page.
-        User A should NOT have access to the sharing of experience as he/she is not logged-in
+        User A should NOT have access to the learning_from_others as he/she is not logged-in
         """
 
-        pass
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        # user does not not log in : client_test_user_A.force_login(test_user_A)
+
+        # User A makes a GET request towards learning_from_others
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        assert response.status_code == 302
+        assert response.url == '/login/?next=/learning_from_others/'
 
 
     @pytest.mark.django_db
