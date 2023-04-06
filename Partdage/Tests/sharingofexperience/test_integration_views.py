@@ -1410,7 +1410,8 @@ class TestLearning_from_othersView:
         - Note : for this test, the user does not have 'full access sharings age plus minus' in its profile model
 
         -> tests that the user is redirected towards home page
-        
+        -> tests that the redirection towards home page reinitialised the user profile model dictionary
+
         Scenario : 
         Creation of users A and B and profile model of user A
         User B shared an experience which corresponds to userA age
@@ -1418,7 +1419,75 @@ class TestLearning_from_othersView:
         User A should be redirected towards home page
         """
 
-        pass
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+
+        # Sharings of experience creation 
+        # User B shared two experiences : the first one corresponds to userA age, the second one is out of the range age_plus_minus (initially gap = 1 year) 
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_1= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_1.save()
+
+        test_sharing_user_B_2 = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+1,
+                description = "description test_sharing test_sharing_user_B_2",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_2.save()
+
+        # Profile models creation 
+        # Reminder : + user dictionnary has a key corresponding to a sharing id equal to true in its profile model
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {str (test_sharing_user_B_1.id) : 1, 'dictionary initialisation' : 1},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # User A makes a GET request towards learning_from_others page
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+
+        # User A should be redirected towards home page
+        # -> tests that the user is redirected towards home page
+        assert response.status_code == 302
+        assert response.url == reverse('home')
+
+        path = reverse('home')
+        response = client_test_user_A.get(path)
+
+        # -> tests that the redirection towards home page reinitialised the user profile model dictionary
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+        expected_value = {str (test_sharing_user_B_1.id) : 1, 'credits': ACCESS_TO_SHARINGS_MINIMUM_NUMBER-1}
+        assert user_A_profile_model_dictionnary == expected_value
 
 
     @pytest.mark.django_db
