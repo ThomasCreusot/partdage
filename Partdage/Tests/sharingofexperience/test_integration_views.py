@@ -1363,22 +1363,7 @@ class TestLearning_from_othersView:
 
     @pytest.mark.django_db
     def test_learning_from_others_user_not_logged_in(self):
-        """
-        Tests that a couple user/sharing who meets the conditions:
-        - user is NOT logged-in
-        - + user dictionnary does not have 'dictionary initialisation' = 1 in its profile model (redirection home)
-        - + user dictionnary has a key corresponding to a sharing id equal to true in its profile model
-            ->at_least_a_numeric_key_is_true ; if not : impacts HTML content (sharings_not_yet_accessible)
-
-        - Note : for this test, the user does not have 'full access sharings age plus minus' in its profile model
-
-        -> tests that the user is redirected towards home page
-        
-        Scenario : 
-        Creation of users A
-        User A does NOT log-in the application and makes a GET request towards learning_from_others page.
-        User A should NOT have access to the learning_from_others as he/she is not logged-in
-        """
+        """Tests if a user not logged-in -> can NOT access learning_from_others view"""
 
         # Users creation and connection 
         test_user_A = User.objects.create(
@@ -1653,4 +1638,77 @@ class TestLike_a_sharing_of_experienceView:
         # -> tests that the user can like the sharing of experience <=> sharing_of_experience.likes['likes'] -> user id
         liked_sharing_of_experience = SharingOfExperience.objects.filter(id = test_sharing_user_B_1.id)[0]
         expected_value = {'likes': {str(test_user_A.id): 1}}
+        assert liked_sharing_of_experience.likes == expected_value
+
+
+    @pytest.mark.django_db
+    def test_like_a_sharing_user_not_logged_in(self):
+        """
+        Tests if a user not logged-in -> can NOT like a sharing of experience
+        - user is not logged-in
+        - + user dictionnary does not have 'dictionary initialisation' = 1 in its profile model (redirection home)
+        - + user dictionnary has a key corresponding to a sharing id equal to true in its profile model
+
+        - Note : for this test, the user does not have 'full access sharings age plus minus' in its profile model
+
+        -> tests that the user can NOT like the sharing of experience if not logged in <=> sharing_of_experience.likes['likes'] -> user id
+
+        Scenario : 
+        Creation of users A and B and profile model of user A
+        User B shared an experience corresponding to user A age
+        User A does NOT log-in the application and makes a GET request towards like_a_sharing_of_experience()
+        The sharing of experience DOES NOT get a new like in its likes dictionary
+        """
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        # user does not not log in : client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+
+        # Sharings of experience creation 
+        # User B shared an experience corresponding to userA age
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_1= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_1.save()
+
+        # Profile models creation 
+        # Reminder : + user dictionnary has a key corresponding to a sharing id equal to true in its profile model
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {str (test_sharing_user_B_1.id) : 1,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # User A makes a GET request towards like_a_sharing_of_experience
+        path = reverse('like_a_sharing_of_experience', args=[test_sharing_user_B_1.id])
+        response = client_test_user_A.get(path)
+        assert response.status_code == 302
+        assert response.url == '/login/?next=/like_a_sharing_of_experience/{0}/'.format(test_sharing_user_B_1.id)
+
+        # -> tests that the user can NOT like the sharing of experience <=> sharing_of_experience.likes['likes'] -> user id
+        liked_sharing_of_experience = SharingOfExperience.objects.filter(id = test_sharing_user_B_1.id)[0]
+        expected_value = {'likes': {}}
         assert liked_sharing_of_experience.likes == expected_value
