@@ -1281,18 +1281,84 @@ class TestLearning_from_othersView:
         - + user dictionnary has NOT a key corresponding to a sharing id equal to true in its profile model
             ->at_least_a_numeric_key_is_true ; if not : impacts HTML content (sharings_not_yet_accessible)
 
-        - Note : for this test, the user has 'full access sharings age plus minus' in its profile model
+        - Note : for this test, the user has 'full access sharings age plus minus' = True in its profile model
 
-        -> tests that the sharing of experience corresponding to userA age is well displayed
-        
+        -> tests that the sharing of experience corresponding to userA age is well displayed even if the corresponding numeric key is not equal to one
+
         Scenario : 
         Creation of users A and B and profile model of user A
-        User B shared an experience which corresponds to userA age
+        User B shared two experiences : the first one corresponds to userA age, the second one is out of the range age_plus_minus (initially gap = 1 year) 
         User A logs-in the application and makes a GET request towards learning_from_others page.
         User A should have access to the sharing of experience corresponding to his/her age but no access to the sharing of experience which does not correspond to his/her
         """
 
-        pass
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+
+        # Sharings of experience creation 
+        # User B shared two experiences : the first one corresponds to userA age, the second one is out of the range age_plus_minus (initially gap = 1 year) 
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_1= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_1.save()
+
+        test_sharing_user_B_2 = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+1,
+                description = "description test_sharing test_sharing_user_B_2",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_2.save()
+
+        # Profile models creation 
+        # Reminder : + user dictionnary has NOT a key corresponding to a sharing id equal to true in its profile model
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {str (test_sharing_user_B_1.id) : 0, 'full access sharings age plus minus' : True},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # User A makes a GET request towards learning_from_others page
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+
+        # User A should have access to the sharing of experience corresponding to his/her age but no access to the sharing of experience which does not correspond to his/her
+        # -> tests that the sharing of experience corresponding to userA age is well displayed
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
+        assert content.find("<p>{0}</p>".format(test_sharing_user_B_1.description)) != -1 
+        assert content.find("<p>Likes :") != -1 
+        assert content.find('<button><a href="/like_a_sharing_of_experience/{0}/">Like</a></button>'.format(test_sharing_user_B_1.id)) != -1 
+        # -> tests that the sharing of experience which does not correspond to userA age is not displayed
+        assert content.find("<p>{0}</p>".format(test_sharing_user_B_2.description)) == -1
+
 
 
     @pytest.mark.django_db
