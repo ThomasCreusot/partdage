@@ -1972,10 +1972,113 @@ class TestSpend_creditsView:
         User A logs-in the application and makes two GET requests towards spend_creadits() : for past and future experiences
         The user has NOT access to the two sharings of experience which are OUT of the range age_plus_minus (initially gap = 1 year)
         The user has access to the message = "You do not have enough credits ..."
-        Note : return redirect('learning_from_others')
         """
 
-        pass
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+
+        # Profile models creation 
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits' : COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS-1},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+
+        # Sharings of experience creation 
+        # User B shared four experiences which are OUT of the range age_plus_minus (initially gap = 1 year) : two pasts and two futures experiences
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_past_1= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age-GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES-1,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_past_1.save()
+
+        test_sharing_user_B_past_2= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age-GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES-2,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_past_2.save()
+
+        test_sharing_user_B_future_1 = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+1,
+                description = "description test_sharing test_sharing_user_B_2",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_future_1.save()
+
+        test_sharing_user_B_future_2 = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+2,
+                description = "description test_sharing test_sharing_user_B_2",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_future_2.save()
+
+        # User A makes a GET request towards spend_credits page
+        path_past_experiences = reverse('spend_credits', args=['past_sharings'])
+        response_past_experiences = client_test_user_A.get(path_past_experiences)
+        assert response_past_experiences.status_code == 302
+        assert response_past_experiences.url == reverse('learning_from_others')
+
+        path_future_experiences = reverse('spend_credits', args=['future_sharings'])
+        response_future_experiences = client_test_user_A.get(path_future_experiences)
+        assert response_future_experiences.status_code == 302
+        assert response_future_experiences.url == reverse('learning_from_others')
+
+        
+        #The user has NOT access to the two sharings of experience which are OUT of the range age_plus_minus (initially gap = 1 year)
+        #The user has access to the message = "You do not have enough credits ..."
+
+        # User A makes a GET request towards learning_from_others page (in reality : automated with redirection)
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
+
+        #-> User A does not have access to sharings wich are not in the range 'user_age - GAP ; user_age + GAP)
+        assert content.find("<p>{0}</p>".format(test_sharing_user_B_past_1.description)) == -1
+        assert content.find("<p>{0}</p>".format(test_sharing_user_B_past_2.description)) == -1
+        assert content.find("<p>{0}</p>".format(test_sharing_user_B_future_1.description)) == -1
+        assert content.find("<p>{0}</p>".format(test_sharing_user_B_future_2.description)) == -1
+
+        # Test that : user_credits did not change
+        expected_value = {'credits': COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS-1}
+
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+        assert user_A_profile_model_dictionnary == expected_value
 
 
     @pytest.mark.django_db
