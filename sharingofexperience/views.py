@@ -424,7 +424,11 @@ def spend_credits(request, past_or_future_sharings):
         queryset_is_empty = past_or_future_sharings_from_other_users.count() == 0
         if queryset_is_empty == False :
                 allocation_of_new_sharings_of_experiences(request, NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS, past_or_future_sharings_from_other_users)
-                user_credits -= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS
+                # initial version : user_credits -= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS
+                user_profile_model_after_allocation_of_credits = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
+                user_profile_model_dictionnary_after_allocation_of_credits = user_profile_model_after_allocation_of_credits.sharing_of_experiences_user_has_access
+                user_profile_model_dictionnary_after_allocation_of_credits['credits'] -= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS
+                user_profile_model_after_allocation_of_credits.save()
         elif queryset_is_empty == True :
                 message = "You have enough credits to access past or futures experiences shares; however, our database is not yet enough complete to satisfy your demand. Please try again later. Thanks for your comprehension"
 
