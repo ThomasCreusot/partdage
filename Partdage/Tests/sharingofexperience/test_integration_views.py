@@ -2096,13 +2096,88 @@ class TestSpend_creditsView:
         - Note : for this test, the user does not have 'full access sharings age plus minus' in its profile model
 
         -> tests that the user can NOT access a new sharing wich is not in the range user_age - GAP - user_age + GAP
-        -> User has access to the message = "You have enough credits to access past or futures experiences shares; however, our database ..."        
-
+        -> tests that User has access to the message = "You have enough credits to access past or futures experiences shares; however, our database ..."        
+        -> tests that : user_credits are not spent
+        
         Scenario : 
         Creation of users A and B and profile model of user A
-        User B shared two experiences which are OUT of the range age_plus_minus (initially gap = 1 year) : a past and a future experience
+        User B did not shared any experiences
         User A logs-in the application and makes two GET requests towards spend_creadits() : for past and future experiences
-        The user has NOT access to the two sharings of experience which are OUT of the range age_plus_minus (initially gap = 1 year)
+        The user has NOT access to any sharings of experience (they do not exist)
         """
 
-        pass
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+
+        # Profile models creation 
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits' : 2*COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+
+        # Sharings of experience creation 
+        # there is NOT ANY sharing he/she does not have access yet (neither past nor future)
+
+        # User A makes a GET request towards spend_credits page (both past and future) : PAST
+        path_past_experiences = reverse('spend_credits', args=['past_sharings'])
+        response_past_experiences = client_test_user_A.get(path_past_experiences)
+        assert response_past_experiences.status_code == 302
+        assert response_past_experiences.url == reverse('learning_from_others')
+        #-> Past : tests that the user can NOT access a new sharing wich is not in the range user_age - GAP - user_age + GAP
+        path_past = reverse('learning_from_others')
+        response_past = client_test_user_A.get(path_past)
+        content_past = response_past.content.decode()
+        assert response_past.status_code == 200
+        assertTemplateUsed(response_past, "sharingofexperience/learning_from_others.html")
+        assert content_past.find('<p>Likes :') == -1
+        assert content_past.find('<button><a href="/like_a_sharing_of_experience/') == -1
+
+        # User A makes a GET request towards spend_credits page (both past and future) : FUTURE
+        path_future_experiences = reverse('spend_credits', args=['future_sharings'])
+        response_future_experiences = client_test_user_A.get(path_future_experiences)
+        assert response_future_experiences.status_code == 302
+        assert response_future_experiences.url == reverse('learning_from_others')
+        #-> Future : tests that the user can NOT access a new sharing wich is not in the range user_age - GAP - user_age + GAP
+        path_future = reverse('learning_from_others')
+        response_future = client_test_user_A.get(path_future)
+        content_future = response_future.content.decode()
+        assert response_future.status_code == 200
+        assertTemplateUsed(response_future, "sharingofexperience/learning_from_others.html")
+        assert content_future.find('<p>Likes :') == -1
+        assert content_future.find('<button><a href="/like_a_sharing_of_experience/') == -1
+
+
+        # Both Past and future : User has access to the message = "You have enough credits to access past or futures experiences shares; however, our database ..."        
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
+
+        assert content.find("You have enough credits to access past or futures experiences shares; however") != -1
+
+        # Test that : user_credits are not spent
+        expected_value = {'credits': 2 * COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS}
+
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+        assert user_A_profile_model_dictionnary == expected_value
