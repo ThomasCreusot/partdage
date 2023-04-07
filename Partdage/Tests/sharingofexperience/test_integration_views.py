@@ -1864,8 +1864,6 @@ class TestSpend_creditsView:
         - Note : user dictionnary does not have 'dictionary initialisation' = 1 in its profile model (redirection home)
         - Note : for this test, the user does not have 'full access sharings age plus minus' in its profile model
 
-        -> tests that the user can access a new sharing wich is not in the range user_age - GAP - user_age + GAP
-
         Scenario : 
         Creation of users A and B and profile model of user A
         User B shared two experiences which are OUT of the range age_plus_minus (initially gap = 1 year) : a past and a future experience
@@ -1873,7 +1871,86 @@ class TestSpend_creditsView:
         The user has NOT access to the two sharings of experience which are OUT of the range age_plus_minus (initially gap = 1 year)
         """
 
-        pass
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        # user does not not log in : client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+
+        # Profile models creation 
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits' : 2*COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+
+        # Sharings of experience creation 
+        # User B shared four experiences which are OUT of the range age_plus_minus (initially gap = 1 year) : two pasts and two futures experiences
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_past_1= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age-GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES-1,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_past_1.save()
+
+        test_sharing_user_B_past_2= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age-GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES-2,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_past_2.save()
+
+        test_sharing_user_B_future_1 = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+1,
+                description = "description test_sharing test_sharing_user_B_2",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_future_1.save()
+
+        test_sharing_user_B_future_2 = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+2,
+                description = "description test_sharing test_sharing_user_B_2",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_future_2.save()
+
+        # User A makes a GET request towards spend_credits page
+        path_past = reverse('spend_credits', args=['past_sharings'])
+        response_past = client_test_user_A.get(path_past)
+        assert response_past.status_code == 302
+        assert response_past.url == '/login/?next=/spend_credits/past_sharings/'
+
+        path_future = reverse('spend_credits', args=['future_sharings'])
+        response_future = client_test_user_A.get(path_future)
+        assert response_future.status_code == 302
+        assert response_future.url == '/login/?next=/spend_credits/future_sharings/'
 
 
     @pytest.mark.django_db
