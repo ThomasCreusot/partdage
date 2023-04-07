@@ -2073,6 +2073,9 @@ class TestSpend_creditsView:
         assert content.find("<p>{0}</p>".format(test_sharing_user_B_future_1.description)) == -1
         assert content.find("<p>{0}</p>".format(test_sharing_user_B_future_2.description)) == -1
 
+        #The user has access to the message = "You do not have enough credits ..."
+        assert content.find("You have enough credits to access past or futures experiences shares; however") == -1
+
         # Test that : user_credits did not change
         expected_value = {'credits': COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS-1}
 
