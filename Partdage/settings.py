@@ -167,6 +167,16 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# https://docs.djangoproject.com/en/4.1/howto/static-files/
+# In addition to using a static/ directory inside your apps, you can define a list of directories 
+# (STATICFILES_DIRS) in your settings file where Django will also look for static files. 
+# You can namespace static assets in STATICFILES_DIRS by specifying prefixes.
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    '/var/www/static/',
+]
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -188,3 +198,5 @@ AUTH_USER_MODEL = 'authentication.User'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
+
+
