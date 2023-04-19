@@ -5,15 +5,23 @@ _SIGN-UP PAGE
 _BUTTONS
 */
 
+/*===============================*/
+/*========== VARIABLES ==========*/
+:root {
+    --main-beige-color: #FFFAEC; /*rbg(255, 250, 236);*/
+    --main-green-color: #00704A /*rbg(0, 112, 74);*/
+    --main-grey-color: #404040 /*rbg(64, 64, 64);*/
+}
+
 
 /*=================================*/
 /*========== ALL WEBSITE ==========*/
 
 /*Default font*/
-*{
-    color: rgb(255, 0, 0);
+* {
+    color: var(--main-beige-color);
 }
-
+  
 
 /*==============================*/
 /*========== HOMEPAGE ==========*/
