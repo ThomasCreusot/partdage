@@ -73,6 +73,10 @@ def how_partdage_was_made(request):
     return render(request, 'sharingofexperience/how_partdage_was_made.html')
 
 
+def policy_and_rules(request):
+    return render(request, 'sharingofexperience/policy_and_rules.html')
+
+
 def user_age_plus_minus_range_generation(user_age):
     GAP = GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES
     plus_minus_range = 2 * GAP + 1

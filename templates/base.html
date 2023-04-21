@@ -14,8 +14,8 @@
             <img id="partdage_slogan" src="static/partdage_slogan_20230420_17h42.png" alt="logo du l'application Partdage">
             </div>
             <nav>
-                <div><a href=#tobedone>Partager mes expérience</a></div>
-                <div><a href=#tobedone>Apprendre des autres</a></div>
+                <div><a href="{% url 'sharing_experiences_menu' %}">Partager mes expérience</a></div>
+                <div><a href="{% url 'learning_from_others' %}">Apprendre des autres</a></div>
             </nav>
         </header>
 
@@ -30,7 +30,7 @@
         
         <footer>
             <div><a href=#tobedone>Contacts</a></div>
-            <div><a href=#tobedone>Données à caractère personnel et modération</a></div>
+            <div><a href="{% url 'policy_and_rules' %}">Données à caractère personnel et modération</a></div>
         </footer>
     </body>
 </html>

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div id=blocPagePolicyRules>
+    <p><strong>POLITIQUE DE L'APPLICATION RELATIVE AUX DONNÉES À CARACTÈRE PERSONNEL</strong></p>
+
+    <p>
+        PARTDAGE est initialement un projet pour réunir, concrétiser et améliorer certaines de mes compétences informatiques.
+        S'il s'agissait d'une application professionnelle, je prendrais soin de faire rédiger des Conditions Générales d'Utilisation, une charte propre aux données à caractère personnel, etc. 
+        Cependant (dans un premier temps en tout cas), compte tenu du contexte du développement, l'auteur de la présente application décline toute responsabilité liée aux données que les utilisateurs choisissent de partager en ligne.
+        Les utilisateurs de la présentation application sont libres de modifier les propose partagées.
+        Les utilisateurs peuvent contacter l'auteur pour demander la suppression de leur partage d'expérience et/ou leur compte.
+        L'auteur de la présentation application vous invite donc à ne pas communiquer une ou plusieurs donnée(s) trop sensible(s), surtout si elle(s) peu(ven)t être reliée à votre personne (utilisation de pseudo, modération de vos propos, etc.).
+    </p>
+
+    <br>
+
+    <p><strong>RÈGLES DE MODÉRATION</strong></p>
+
+    <p>
+        Des personnes sensibles, des enfants, etc. peuvent accéder à vos données partagées. L'auteur de la présente application se réserve donc le droit de modérer vos partages d'expériences et, en ce sens, d'en restreindre l'affichage auprès des autres utilisateurs.
+        Il est donc interdit de partager, sur le présent site, des propos de nature raciste, sexiste, discriminatoire, diffamatoires, et/ou portant atteinte a la dignité, etc.
+    </p>
+
+
+    {%  if user.is_authenticated %}
+        <button><a href="{% url 'home' %}">Home</a></button>
+    {%  else %}
+        <button><a href="{% url 'login' %}">Login</a></button>
+    {% endif %}
+</div>
+
+{% endblock content %}

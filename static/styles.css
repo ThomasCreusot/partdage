@@ -136,7 +136,7 @@ footer * {
     text-align: center;
 }
 
-#blocPageIndex, #blocPageWhy, #blocPageMenu {
+#blocPageIndex, #blocPageWhy, #blocPageMenu, #blocPagePolicyRules {
     text-align: justify;
     width: 80%;
 }
