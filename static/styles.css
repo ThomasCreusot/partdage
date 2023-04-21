@@ -238,6 +238,7 @@ h2 {
     /*max-height: 30%;*/
 }
 
+
 #blocPageLogin .login_form_container {
     width: 20%;
     display: flex;
@@ -253,12 +254,18 @@ h2 {
     padding-bottom: 2%;
 }
 
+
 #blocPageLogin .login_form_container form {
     display: flex;
     flex-direction: column;
     justify-content: baseline;
     align-items: center;
 }
+
+#blocPageLogin .login_form_container form input{
+    color: #00704A;
+}
+
 
 
 #blocPageLogin .login_form_container button{
@@ -268,6 +275,19 @@ h2 {
     font-family: 'lane_-_narrowregular', georgia, sans-serif;
     font-size: 1.1em;
 }
+
+
+
+/*==================================*/
+/*========== SIGNUP PAGE ==========*/
+
+
+
+
+
+
+
+
 
 
 /*=============================*/
