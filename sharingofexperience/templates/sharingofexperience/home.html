@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-    <button><a href="{% url 'sharing_experiences_menu' %}">Sharing experiences</a></button>
-    <button><a href="{% url 'learning_from_others' %}">Learing from other people</a></button>
+
+<div id=blocPageHome>
+    <button id="home_page_left_button"><a href="{% url 'sharing_experiences_menu' %}">PARTAGER MES EXPERIENCES</a></button>
+    <button id="home_page_right_button"><a href="{% url 'learning_from_others' %}">APPRENDRE DES AUTRES</a></button>
+</div>
+
 {% endblock content %}

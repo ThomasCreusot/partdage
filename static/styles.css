@@ -9,9 +9,9 @@ _BUTTONS
 /*===============================*/
 /*========== VARIABLES ==========*/
 :root {
-    --main-beige-color: #FFFAEC; /*rbg(255, 250, 236);*/
-    --main-green-color: #00704A; /*rbg(0, 112, 74);*/
-    --main-grey-color: #404040; /*rbg(64, 64, 64);*/
+    --main-beige-color: #FFFAEC; /*rgb(255, 250, 236);*/
+    --main-green-color: #00704A; /*rgb(0, 112, 74);*/
+    --main-grey-color: #404040; /*rgb(64, 64, 64);*/
 
     --header-height: 110px; /*rbg(64, 64, 64);*/
     --footer-height: 20px; /*rbg(64, 64, 64);*/    
@@ -165,7 +165,7 @@ h2 {
 }
 
 
-#blocPageIndex, #blocPageWhy, #blocPageMenu, #blocPagePolicyRules, #blocPageHowWasMade, {
+#blocPageIndex, #blocPageWhy, #blocPageMenu, #blocPagePolicyRules, #blocPageHowWasMade {
     text-align: justify;
     width: 80%;
 }
@@ -229,7 +229,6 @@ h2 {
     flex-direction: column;
     justify-content: baseline;
     align-items: center;
-
 }
 
 
@@ -344,6 +343,71 @@ h2 {
     font-size: 0.9em;
     font-style: italic;
 }
+
+
+
+/*==================================*/
+/*========== HOME PAGE ==========*/
+
+#blocPageHome {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+
+    background-image: url('partDage_wallpaper_001_centered_splited.jpg');
+    background-size:cover;
+    background-attachment: fixed;
+    background-position: center;
+
+    height: 600px;
+}
+
+
+#blocPageHome button{
+    margin-top: 15%;
+    height: 80px;
+    font-size: 1.2em;
+}
+
+#blocPageHome #home_page_left_button{
+    width: 20%;
+
+    border-width: 10 px;
+    border-color: var(--main-green-color);
+    border-style: solid;
+
+    /*background-color: var(--main-beige-color);*/
+    background-color: rgba(255, 250, 236, 0.5);
+}
+
+#blocPageHome #home_page_left_button *{
+    color: var(--main-green-color);
+}
+
+#blocPageHome #home_page_right_button{
+    width: 20%;
+
+    border-width: 10 px;
+    border-color: var(--main-beige-color);
+    border-style: solid;
+
+    /*background-color: var(--main-grey-color);*/
+    background-color: rgba(64, 64, 64, 0.5);
+}
+
+#blocPageHome #home_page_right_button *{
+    color: var(--main-beige-color);
+}
+
+
+
+
+
+
+
+
 
 
 /*=============================*/

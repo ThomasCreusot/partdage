@@ -176,8 +176,8 @@ class TestHomeView:
 
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/home.html")
-        assert content.find(">Sharing experiences</a></button>") != -1 
-        assert content.find(">Learing from other people</a></button>") != -1 
+        assert content.find(">PARTAGER MES EXPERIENCES</a></button>") != -1 
+        assert content.find(">APPRENDRE DES AUTRES</a></button>") != -1 
 
         # Tests that user A dictionnary is not modified
         expected_value = {'credits': 1,}
@@ -260,8 +260,8 @@ class TestHomeView:
 
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/home.html")
-        assert content.find(">Sharing experiences</a></button>") != -1 
-        assert content.find(">Learing from other people</a></button>") != -1 
+        assert content.find(">PARTAGER MES EXPERIENCES</a></button>") != -1 
+        assert content.find(">APPRENDRE DES AUTRES</a></button>") != -1 
 
         # Test that user A dictionnary is updated
         expected_value = {str(test_sharing_user_B_1.id): True, 'credits': ACCESS_TO_SHARINGS_MINIMUM_NUMBER -1}
