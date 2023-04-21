@@ -74,12 +74,6 @@ body {
     width: 100%;
 }
 
-#blocPage * {
-    text-align: justify;
-    width: 80%;
-}
-
-
 header {
     display: flex;
     flex-direction: row;
@@ -128,10 +122,24 @@ footer * {
     color: var(--main-grey-color);
 }
 
+
+.secondary_text {
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+.centered_text {
+    text-align: center;
+    font-size: 1.2em;
+}
+
 /*==============================*/
 /*========== HOMEPAGE ==========*/
 
-
+#blocPageIndex {
+    text-align: justify;
+    width: 90%;
+}
 
 /*==================================*/
 /*========== SIGN-UP PAGE ==========*/
