@@ -263,7 +263,7 @@ h2 {
 }
 
 #blocPageLogin .login_form_container form input{
-    color: #00704A;
+    color: var(--main-green-color);
 }
 
 
