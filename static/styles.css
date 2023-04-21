@@ -154,7 +154,7 @@ h2 {
     text-align: center;
 }
 
-#blocPageIndex, #blocPageWhy, #blocPageMenu, #blocPagePolicyRules {
+#blocPageIndex, #blocPageWhy, #blocPageMenu, #blocPagePolicyRules, #blocPageHowWasMade {
     text-align: justify;
     width: 80%;
 }
@@ -164,10 +164,42 @@ h2 {
 
 #blocPageIndex button {
     width: 14%;
-    height: 8%;
+    height: 50px;
     position:relative;
     left: 43%; /*50% - 14%/2 with 14% <-> button width*/
+}
 
+
+/*==============================*/
+/*========== WHY PAGE ==========*/
+
+#blocPageWhy button {
+    width: 14%;
+    height: 50px;
+    position:relative;
+    left: 43%; /*50% - 14%/2 with 14% <-> button width*/
+}
+
+
+/*==============================*/
+/*========== HOW WAS MADE PAGE ==========*/
+
+#blocPageHowWasMade button {
+    width: 14%;
+    height: 50px;
+    position:relative;
+    left: 43%; /*50% - 14%/2 with 14% <-> button width*/
+}
+
+
+/*==============================*/
+/*========== POLICY RULES PAGE ==========*/
+
+#blocPagePolicyRules button {
+    width: 14%;
+    height: 50px;
+    position:relative;
+    left: 43%; /*50% - 14%/2 with 14% <-> button width*/
 }
 
 

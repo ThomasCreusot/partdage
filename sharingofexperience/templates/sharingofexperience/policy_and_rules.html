@@ -2,7 +2,7 @@
 {% block content %}
 
 <div id=blocPagePolicyRules>
-    <p><strong>POLITIQUE DE L'APPLICATION RELATIVE AUX DONNÉES À CARACTÈRE PERSONNEL</strong></p>
+    <h2>POLITIQUE DE L'APPLICATION RELATIVE AUX DONNÉES À CARACTÈRE PERSONNEL</h2>
 
     <p>
         PARTDAGE est initialement un projet pour réunir, concrétiser et améliorer certaines de mes compétences informatiques.
@@ -15,18 +15,19 @@
 
     <br>
 
-    <p><strong>RÈGLES DE MODÉRATION</strong></p>
+    <h2>RÈGLES DE MODÉRATION</h2>
 
     <p>
         Des personnes sensibles, des enfants, etc. peuvent accéder à vos données partagées. L'auteur de la présente application se réserve donc le droit de modérer vos partages d'expériences et, en ce sens, d'en restreindre l'affichage auprès des autres utilisateurs.
         Il est donc interdit de partager, sur le présent site, des propos de nature raciste, sexiste, discriminatoire, diffamatoires, et/ou portant atteinte a la dignité, etc.
     </p>
+    <br>
 
 
     {%  if user.is_authenticated %}
-        <button><a href="{% url 'home' %}">Home</a></button>
+        <button><a href="{% url 'home' %}">HOME</a></button>
     {%  else %}
-        <button><a href="{% url 'login' %}">Login</a></button>
+        <button><a href="{% url 'login' %}">LOGIN</a></button>
     {% endif %}
 </div>
 

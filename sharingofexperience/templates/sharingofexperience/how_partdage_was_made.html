@@ -2,7 +2,7 @@
 {% block content %}
 
 <div id=blocPageHowWasMade>
-    <p><strong>COMMENT J'AI RÉALISÉ PARTDAGE ?</strong></p>
+    <h2>COMMENT J'AI RÉALISÉ PARTDAGE ?</h2>
 
     <p>
         Etapes 1 : ...
@@ -14,11 +14,11 @@
 
     <br>
 
-    
+
     {%  if user.is_authenticated %}
-        <button><a href="{% url 'home' %}">Home</a></button>
+        <button><a href="{% url 'home' %}">HOME</a></button>
     {%  else %}
-        <button><a href="{% url 'login' %}">Login</a></button>
+        <button><a href="{% url 'login' %}">LOGIN</a></button>
     {% endif %}
 </div>
 

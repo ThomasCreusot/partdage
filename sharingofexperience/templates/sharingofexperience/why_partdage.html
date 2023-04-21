@@ -2,7 +2,7 @@
 {% block content %}
 
 <div id=blocPageWhy>
-    <p><strong>POURQUOI PARTDAGE ?</strong></p>
+    <h2>POURQUOI PARTDAGE ?</h2>
     <p>
         Initialement, j'ai cherché une idée de projet pour <strong>pratiquer</strong> la conception et le développement informatiques. Je souhaitais développer une application <strong>simple</strong>, mais avec de multiples subtilités lorsque l'on s'intéresse aux détails. L'idée était de réunir plusieurs de mes <strong>compétences</strong> en un seul et même projet (à la suite d'une formation en développement, constituée d'une douzaine de projets indépendants les uns des autres et mettant chacun en lumière une compétence principale), et de continuer à <strong>apprendre</strong>. Cette application constitue également une <strong>démonstration concrète</strong> de mes savoirs pour ma recherche d'une nouvelle opportunité professionnelle. PARTDAGE s'est également révélée être un <strong>moyen d'expression</strong> pour moi, ainsi qu'un moyen de partager mon engouement pour le développement personnel et l'introspection.
     </p>
@@ -16,9 +16,9 @@
 
 
     {%  if user.is_authenticated %}
-        <button><a href="{% url 'home' %}">Home</a></button>
+        <button><a href="{% url 'home' %}">HOME</a></button>
     {%  else %}
-        <button><a href="{% url 'login' %}">Login</a></button>
+        <button><a href="{% url 'login' %}">LOGIN</a></button>
     {% endif %}
 </div>
 
