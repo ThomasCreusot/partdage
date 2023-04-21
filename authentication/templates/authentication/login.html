@@ -1,13 +1,20 @@
 {% extends 'base.html' %}
-
 {% block content %}
-    <p>{{ message }}</p>
-    <form method="post">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <button type="submit" >Log in</button>
-    </form>
 
-    <button><a href="{% url 'signup' %}">Sign up</a></button>
+<div id=blocPageLogin>
+    <div class="filling_space_in_login_page"></div>
 
+    <div class = login_form_container>
+        <p>{{ message }}</p>
+        <form method="post">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <button type="submit" >Log in</button>
+        </form>
+
+        <button><a href="{% url 'signup' %}">Sign up</a></button>
+    </div>
+
+    <div class="filling_space_in_login_page"></div>
+</div>
 {% endblock content %}

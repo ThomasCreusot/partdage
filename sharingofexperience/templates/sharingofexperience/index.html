@@ -14,11 +14,11 @@
     <p>Pour en savoir plus, je t'invite à cliquer sur les liens suivants : le <a href="{% url 'why_partdage' %}">POURQUOI</a>. le <a href="{% url 'how_partdage_was_made' %}">COMMENT</a>.</p>
     <br>
 
+
     {%  if user.is_authenticated %}
         <button><a href="{% url 'home' %}">HOME</a></button>
     {%  else %}
         <button><a href="{% url 'login' %}">LOGIN</a></button>
     {% endif %}
 </div>
-
 {% endblock content %}
