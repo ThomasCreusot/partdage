@@ -1,12 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<div id=blocPageSignup>
+
     <h2>Inscription</h2>
-    {% if form.errors %}
-        {{ form.errors }}
-    {% endif %}
-    <form method="post">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <button type="submit" >Sign up</button>
-    </form>
+    <div class = signup_form_container>
+        {% if form.errors %}
+            {{ form.errors }}
+        {% endif %}
+        <form method="post">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <button type="submit" >Sign up</button>
+        </form>
+    </div>
+
+    <div class="filling_space_in_signup_page"></div>
+</div>
 {% endblock content %}

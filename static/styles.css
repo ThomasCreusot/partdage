@@ -234,7 +234,7 @@ h2 {
 
 
 .filling_space_in_login_page {
-    height: 230px;
+    height: 140px;
     /*max-height: 30%;*/
 }
 
@@ -281,13 +281,69 @@ h2 {
 /*==================================*/
 /*========== SIGNUP PAGE ==========*/
 
+#blocPageSignup {
+    background-image: url('partDage_wallpaper_004_dark.jpg');
+    background-size:cover;
+    background-attachment: fixed;
+    background-position: center;
+
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: center;
+
+}
+
+.filling_space_in_signup_page {
+    height: 60px;
+    /*max-height: 30%;*/
+}
 
 
+#blocPageSignup .signup_form_container {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items:baseline;
+
+    border-width:  2px;
+    border-color: var(--main-green-color);
+    border-style: solid;
+
+    padding-top: 1%;
+    padding-bottom: 2%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
 
 
+#blocPageSignup .signup_form_container form {
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: baseline;
+}
 
+#blocPageSignup .signup_form_container form input{
+    color: var(--main-green-color);
+}
 
+#blocPageSignup .signup_form_container button{
+    width: 150px;
 
+    color: var(--main-green-color);
+    font-family: 'lane_-_narrowregular', georgia, sans-serif;
+    font-size: 1.1em;
+}
+
+#blocPageSignup .helptext, ul, li {
+    color: rgb(130,130,130);
+    font-size: 0.9em;
+    font-style: italic;
+}
 
 
 /*=============================*/
