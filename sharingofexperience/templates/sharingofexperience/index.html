@@ -7,13 +7,13 @@
     <br>
     <p><strong>QUOI ?</strong></p>
     <p>Concrètement, PARTDAGE est une application web permettant de <strong>partager ses expériences</strong> et d'<strong>apprendre des autres</strong>. Il s'agit donc d'une invitation à l'introspection et au partage, au développement personnel et sociétal, à la <strong>prise de conscience et</strong> à la <strong>reconnaissance</strong>, au plaisir d'offrir et de recevoir.</p>
-    <div class = 'secondary_text'><p>J'ai eu la chance de recevoir des phrases qui continuent de prendre sens même des années après avoir été entendues pour la première fois. Par exemple, <strong>m'a dit que</strong> « le bonheur est en soi » dès mon plus jeune âge. Et <strong>mon interprétation</strong> de cette phrase <strong>a évolué</strong> au cours des années, à travers différentes situations, différentes lectures, différentes prises de conscience, différentes épreuves, etc. Il en va de même pour la définition du lâcher-prise : au début interprétée comme un abandon, <strong>j'ai ensuite compris</strong> (à ma manière) qu'en <strong>théorie</strong> il s'agissait d'une manière de ne pas trop forcer. Mon expérience se limitait à une compréhension théorique. Puis <strong>j'ai vécu</strong> le sentiment d'acceptation des choses qui ne peuvent être changées pour se concentrer sur celles qui peuvent l'être. Aujourd'hui je continue de m'exercer pour accepter avec sérénité les choses qui ne peuvent être changées, pour investir ma force pour changer celles qui peuvent l'être, et surtout, pour avoir la sagesse de distinguer les unes des autres.</p></div>
+    <div class='secondary_text'><p>J'ai eu la chance de recevoir des phrases qui continuent de prendre sens même des années après avoir été entendues pour la première fois. Par exemple, <strong>m'a dit que</strong> « le bonheur est en soi » dès mon plus jeune âge. Et <strong>mon interprétation</strong> de cette phrase <strong>a évolué</strong> au cours des années, à travers différentes situations, différentes lectures, différentes prises de conscience, différentes épreuves, etc. Il en va de même pour la définition du lâcher-prise : au début interprétée comme un abandon, <strong>j'ai ensuite compris</strong> (à ma manière) qu'en <strong>théorie</strong> il s'agissait d'une manière de ne pas trop forcer. Mon expérience se limitait à une compréhension théorique. Puis <strong>j'ai vécu</strong> le sentiment d'acceptation des choses qui ne peuvent être changées pour se concentrer sur celles qui peuvent l'être. Aujourd'hui je continue de m'exercer pour accepter avec sérénité les choses qui ne peuvent être changées, pour investir ma force pour changer celles qui peuvent l'être, et surtout, pour avoir la sagesse de distinguer les unes des autres.</p></div>
     <br>
-    <div class = 'centered_text'><p><strong>Ce sont ces expériences et compréhensions de la vie que je t'invite à partager et à recevoir.</strong></p></div>
+    <div class='centered_text' class = 'primary_text'><p><strong>Ce sont ces expériences et compréhensions de la vie que je t'invite à partager et à recevoir.</strong></p></div>
     <br>
-    <div class = 'secondary_text'><p>Cela ne te parle pas ? C'est vraiment « perché » ? C'est très bien ! Ce qui compte pour toi est le temps optimal d'une marinade de poulet ? Parfait ! Dis nous en plus ! Dis nous pourquoi ! Dis nous depuis quand ! Laisse nous apprendre des choses qui n'ont plus de mystère pour toi, ou qui au contraire, sont loin d'être évidentes. Quelle place a l'alimentation dans ta vie ? Et ton sens du partage de cette marinade de poulet ? Tes amis ? Ta famille ? Pourquoi ? Dis nous. Disons nous les choses, et partageons.</p></div>
+    <div class='secondary_text'><p>Cela ne te parle pas ? C'est vraiment « perché » ? C'est très bien ! Ce qui compte pour toi est le temps optimal d'une marinade de poulet ? Parfait ! Dis nous en plus ! Dis nous pourquoi ! Dis nous depuis quand ! Laisse nous apprendre des choses qui n'ont plus de mystère pour toi, ou qui au contraire, sont loin d'être évidentes. Quelle place a l'alimentation dans ta vie ? Et ton sens du partage de cette marinade de poulet ? Tes amis ? Ta famille ? Pourquoi ? Dis nous. Disons nous les choses, et partageons.</p></div>
     <br>
-    <p>Pour en savoir plus, je t'invite à cliquer sur les liens suivants : le <a href="{% url 'home' %}">POURQUOI</a>. le <a href="{% url 'home' %}">COMMENT</a>.</p>
+    <p>Pour en savoir plus, je t'invite à cliquer sur les liens suivants : le <a href="{% url 'why_partdage' %}">POURQUOI</a>. le <a href="{% url 'home' %}">COMMENT</a>.</p>
 
 
     {%  if user.is_authenticated %}
@@ -21,7 +21,6 @@
     {%  else %}
         <button><a href="{% url 'login' %}">Login</a></button>
     {% endif %}
-
 </div>
 
 {% endblock content %}

@@ -21,6 +21,8 @@ import sharingofexperience.views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', sharingofexperience.views.index, name='index'),
+    path('why_partdage/', sharingofexperience.views.why_partdage, name='why_partdage'),
+
     path('login/', authentication.views.login_page, name='login'),
     path('logout/', authentication.views.logout_user, name='logout'),
 

@@ -123,23 +123,28 @@ footer * {
 }
 
 
+.primary_text {
+    font-size: 1.2em;
+}
+
 .secondary_text {
     font-style: italic;
-    font-size: 0.9em;
+    font-size: 0.85em;
 }
 
 .centered_text {
     text-align: center;
-    font-size: 1.2em;
+}
+
+#blocPageIndex, #blocPageWhy {
+    text-align: justify;
+    width: 80%;
 }
 
 /*==============================*/
 /*========== HOMEPAGE ==========*/
 
-#blocPageIndex {
-    text-align: justify;
-    width: 90%;
-}
+
 
 /*==================================*/
 /*========== SIGN-UP PAGE ==========*/

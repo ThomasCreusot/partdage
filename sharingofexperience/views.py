@@ -65,6 +65,10 @@ def index(request):
     return render(request, 'sharingofexperience/index.html')
 
 
+def why_partdage(request):
+    return render(request, 'sharingofexperience/why_partdage.html')
+
+
 def user_age_plus_minus_range_generation(user_age):
     GAP = GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES
     plus_minus_range = 2 * GAP + 1
