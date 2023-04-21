@@ -8,11 +8,29 @@
         <link rel="stylesheet" href="{% static './styles.css' %}" />
     </head>
     <body>
-        {% block content %}
-        {% endblock content %}
+        <header>
+            <div>
+            <img id="partdage_logo" src="static/partdage_logo_20230420_17h42.png" alt="logo du l'application Partdage">
+            <img id="partdage_slogan" src="static/partdage_slogan_20230420_17h42.png" alt="logo du l'application Partdage">
+            </div>
+            <nav>
+                <div><a href=#tobedone>Partager mes expérience</a></div>
+                <div><a href=#tobedone>Apprendre des autres</a></div>
+            </nav>
+        </header>
 
-        {%  if user.is_authenticated %}
-            <p>You are logged as {{ request.user }}. <a href="{% url 'logout' %}">Log out</a></p>
-        {% endif %}
+        <div id=blocPage>
+            {% block content %}
+            {% endblock content %}
+
+            {%  if user.is_authenticated %}
+                <p>You are logged as {{ request.user }}. <a href="{% url 'logout' %}">Log out</a></p>
+            {% endif %}
+        </div>
+        
+        <footer>
+            <div><a href=#tobedone>Contacts</a></div>
+            <div><a href=#tobedone>Données à caractère personnel et modération</a></div>
+        </footer>
     </body>
 </html>

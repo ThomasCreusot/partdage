@@ -5,26 +5,132 @@ _SIGN-UP PAGE
 _BUTTONS
 */
 
+
 /*===============================*/
 /*========== VARIABLES ==========*/
 :root {
     --main-beige-color: #FFFAEC; /*rbg(255, 250, 236);*/
-    --main-green-color: #00704A /*rbg(0, 112, 74);*/
-    --main-grey-color: #404040 /*rbg(64, 64, 64);*/
+    --main-green-color: #00704A; /*rbg(0, 112, 74);*/
+    --main-grey-color: #404040; /*rbg(64, 64, 64);*/
 }
+
+
+
+/*========== FONTS ==========*/
+@font-face {
+    font-family: 'lane_-_narrowregular';
+    src: url('fonts/lane-narrow_regular_macroman/LANENAR_-webfont.eot');
+    src: url('fonts/lane-narrow_regular_macroman/LANENAR_-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/lane-narrow_regular_macroman/LANENAR_-webfont.woff2') format('woff2'),
+         url('fonts/lane-narrow_regular_macroman/LANENAR_-webfont.woff') format('woff'),
+         url('fonts/lane-narrow_regular_macroman/LANENAR_-webfont.ttf') format('truetype'),
+         url('fonts/lane-narrow_regular_macroman/LANENAR_-webfont.svg#lane_-_narrowregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'archivo_narrowregular';
+    src: url('fonts/webfontkit-20230420-104159-ArchivoNarrow/archivonarrow-regular-webfont.woff2') format('woff2'),
+         url('fonts/webfontkit-20230420-104159-ArchivoNarrow/archivonarrow-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 
 
 /*=================================*/
 /*========== ALL WEBSITE ==========*/
 
+
 /*Default font*/
 * {
     color: var(--main-beige-color);
+    font-family: 'archivo_narrowregular', 'lane_-_narrowregular', georgia, sans-serif;
 }
-  
+
+
+/*Common page elements*/
+body {
+    background-color: var(--main-grey-color);
+    background-image: url('partDage_wallpaper_001_centered_dark.jpg');
+    background-size:cover;
+    background-attachment: fixed;
+    background-position: center;
+
+    margin-top: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+}
+
+
+#blocPage {
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: center;
+    width: 100%;
+}
+
+#blocPage * {
+    text-align: justify;
+    width: 80%;
+}
+
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    align-items: center;
+    width: 100%;
+
+    Flex-wrap: nowrap;
+
+    background-color: rgb(255,255,255);
+}
+
+#partdage_logo {
+    width: 25%;
+}
+
+#partdage_slogan {
+    width: 30%;
+}
+
+header nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: baseline;
+    width: 45%;
+}
+
+header nav * {
+    color: var(--main-green-color);
+}
+
+footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around; 
+    align-items: center;
+    width: 100%;
+
+    Flex-wrap: nowrap;
+
+    background-color: rgb(0,0,0);
+}
+
+footer * {
+    color: var(--main-grey-color);
+}
 
 /*==============================*/
 /*========== HOMEPAGE ==========*/
+
 
 
 /*==================================*/
