@@ -16,7 +16,7 @@
     <br>
 
     {% for user_age in user_ages %}
-        <button><a href="{% url 'sharing_an_experience_create' user_age %}">{{ user_age }}</a></button>
+        <button class="age_button_in_menu"><a href="{% url 'sharing_an_experience_create' user_age %}">{{ user_age }}</a></button>
     {% endfor %}
 
 </div>

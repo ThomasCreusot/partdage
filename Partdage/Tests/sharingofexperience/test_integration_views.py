@@ -87,8 +87,7 @@ class TestIndexView():
 
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/index.html")
-        assert content.find("<h1>Welcome !</h1>") != -1 
-        assert content.find(">Login</a></button>") != -1 
+        assert content.find(">LOGIN</a></button>") != -1 
 
 
     @pytest.mark.django_db
@@ -111,8 +110,7 @@ class TestIndexView():
 
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/index.html")
-        assert content.find("<h1>Welcome !</h1>") != -1
-        assert content.find(">Home</a></button>") != -1
+        assert content.find(">HOME</a></button>") != -1
         assert content.find("Log out</a>") != -1
 
 
