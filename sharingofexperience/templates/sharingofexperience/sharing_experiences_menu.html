@@ -14,11 +14,17 @@
     <br>
     <p>Gardez à l'esprit cette idée de <strong>bienveillance</strong>, ainsi que <a href="{% url 'policy_and_rules' %}">la politique de l'application relative aux données à caractère personnel et aux règles de modération</a>.</p>
     <br>
+    <p class="centered_text">Pour créer ou mettre à jour un partage d'expérience, selectionnez l'age correspondant ci-dessous:</p>
 
+    <div id="menu_of_age_button">
     {% for user_age in user_ages %}
-        <button class="age_button_in_menu"><a href="{% url 'sharing_an_experience_create' user_age %}">{{ user_age }}</a></button>
+        {% if user_age in already_filled_ages %}
+            <button class="age_button_in_menu_already_created"><a href="{% url 'sharing_an_experience_create' user_age %}">{{ user_age }}</a></button>
+        {% else %}
+            <button class="age_button_in_menu_not_yet_created"><a href="{% url 'sharing_an_experience_create' user_age %}">{{ user_age }}</a></button>
+        {% endif %}
     {% endfor %}
-
+    </div>
 </div>
 
 {% endblock content %}

@@ -13,8 +13,8 @@ _BUTTONS
     --main-green-color: #00704A; /*rgb(0, 112, 74);*/
     --main-grey-color: #404040; /*rgb(64, 64, 64);*/
 
-    --header-height: 110px; /*rbg(64, 64, 64);*/
-    --footer-height: 20px; /*rbg(64, 64, 64);*/    
+    --header-height: 110px; /*rgb(64, 64, 64);*/
+    --footer-height: 20px; /*rgb(64, 64, 64);*/    
 }
 
 
@@ -374,7 +374,7 @@ h2 {
 #blocPageHome #home_page_left_button{
     width: 20%;
 
-    border-width: 10 px;
+    border-width: 2px;
     border-color: var(--main-green-color);
     border-style: solid;
 
@@ -389,7 +389,7 @@ h2 {
 #blocPageHome #home_page_right_button{
     width: 20%;
 
-    border-width: 10 px;
+    border-width: 2px;
     border-color: var(--main-beige-color);
     border-style: solid;
 
@@ -403,10 +403,26 @@ h2 {
 
 
 
+/*=============================*/
+/*========== MENU SHARING MY EXPERIENCES PAGE ==========*/
+
+#menu_of_age_button {
+    display: flex;
+    flex-direction: row;
+    justify-content: baseline;
+    align-items: center;
+    width: 100%;
+
+    flex-wrap: wrap;
+}
+
+#menu_of_age_button a {
+    text-decoration: none;
+}
 
 
-
-
+/*=============================*/
+/*========== CREATION OF A NEW EXPERIENCE PAGE ==========*/
 
 
 
@@ -418,7 +434,7 @@ h2 {
 button {
     width: 10%;
 
-    border-width: 10 px;
+    border-width: 2px;
     border-color: var(--main-green-color);
     border-style: solid;
 
@@ -434,19 +450,38 @@ button * {
 
 /* Specific buttons */
 
-.age_button_in_menu {
-    width: 10%;
+.age_button_in_menu_already_created, .age_button_in_menu_not_yet_created {
+    /*width: 10%;*/
+    width: 150px;
+    height: 40px;
 
-    border-width: 10 px;
-    border-color: var(--main-beige-color);
+    border-width: 2px;
     border-style: solid;
 
-    background-color: var(--main-grey-color);
+    margin-bottom: 1%;
+    margin-right: 0.5%;
+
+    border-color: var(--main-beige-color);
 }
 
-.age_button_in_menu * {
-    color: var(--main-beige-color);
+.age_button_in_menu_already_created {
+    background-color: rgba(255, 250, 236, 0.75);
+}
+
+.age_button_in_menu_not_yet_created {
+    background-color: rgba(64, 64, 64, 0.5);
+}
+
+
+.age_button_in_menu_already_created *,  .age_button_in_menu_not_yet_created *{
     font-family: 'archivo_narrowregular', 'lane_-_narrowregular', georgia, sans-serif;
-    font-size: 1em;
+    font-size: 1.7em;
+}
+.age_button_in_menu_already_created *{
+    color: var(--main-green-color);
+}
+.age_button_in_menu_not_yet_created *{
+    color: var(--main-beige-color);
+    font-weight:bold;
 }
 

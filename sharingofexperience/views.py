@@ -206,8 +206,13 @@ def home(request):
 def sharing_experiences_menu(request):
     user_age = age_calculation(request.user.birth_date)
     user_ages = [age for age in range(user_age) if age > LOWER_LIMIT_AGE_TO_BE_SHARED]
+
+    user_sharing_of_experiences = SharingOfExperience.objects.filter(user_id_id = request.user.id)    
+    already_filled_ages = [sharing.experienced_age for sharing in user_sharing_of_experiences]
+
     context = {
-        'user_ages':user_ages
+        'user_ages':user_ages,
+        'already_filled_ages':already_filled_ages
     }
     return render(request, 'sharingofexperience/sharing_experiences_menu.html', context=context)
 
