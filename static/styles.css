@@ -422,7 +422,27 @@ h2 {
 
 
 /*=============================*/
-/*========== CREATION OF A NEW EXPERIENCE PAGE ==========*/
+/*========== CREATION OF A NEW EXPERIENCE  &  UPDATE OF A NEW EXPERIENCE PAGES ==========*/
+
+#blocPageSharingCreation, #blocPageSharingCreation form, #blocPageSharingCreation form p, #blocPageSharingUpdate, #blocPageSharingUpdate form, #blocPageSharingUpdate form p  {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+
+#blocPageSharingCreation button, #blocPageSharingCreation form input, #blocPageSharingUpdate button, #blocPageSharingUpdate form input {
+    width: 100px;
+    margin-bottom: 5px;
+}
+
+
+#blocPageSharingCreation form p textarea, #blocPageSharingUpdate form p textarea{
+    color:var(--main-green-color);
+    width: 60%;
+}
 
 
 
@@ -485,3 +505,15 @@ button * {
     font-weight:bold;
 }
 
+
+#blocPageSharingCreation form input, #blocPageSharingUpdate form input {
+    border-width: 2px;
+    border-color: var(--main-green-color);
+    border-style: solid;
+
+    background-color: rgb(255,255,255);
+
+    color: var(--main-green-color);
+    font-family: 'lane_-_narrowregular', georgia, sans-serif;
+    font-size: 1.1em;
+}
