@@ -2,7 +2,9 @@
 {% block content %}
 
 <div id=blocPageSharingCreation>
-    <p>Sharing my experience : XX years</p>
+    <h2>Partager mon expérience: {{ context.experienced_age }} ans </h2>
+
+    <p>Essayez de commencer votre partdage par "A l'age de {{ context.experienced_age }} ans, ce qui a compté pour moi, c'est ..." ou "A l'age de {{ context.experienced_age }} ans, j'aurais aimé savoir ..." "A l'age de {{ context.experienced_age }} ans, j'ai compris ..." </p>
 
     <form action="" method="post">
         {% csrf_token %}

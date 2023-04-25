@@ -444,7 +444,10 @@ h2 {
     width: 60%;
 }
 
-
+#blocPageSharingCreation form p label, #blocPageSharingUpdate form p label{
+    color:var(--main-grey-color);
+    width: 60%;
+}
 
 /*=============================*/
 /*========== BUTTONS ==========*/

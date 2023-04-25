@@ -42,7 +42,7 @@ def sharing_of_experience_of_an_user_at_a_given_age_id(request, experienced_age)
 
 def url_to_be_returned_for_experience_create_view(
         request, experienced_age_to_be_created_low_enough_boolean, age_already_filled_boolean,
-        experienced_age, form):
+        experienced_age, form, context):
 
     if not experienced_age_to_be_created_low_enough_boolean:
         return render(request, 'sharingofexperience/be_patient.html')
@@ -51,7 +51,7 @@ def url_to_be_returned_for_experience_create_view(
             sharing_of_experience_already_created_id=sharing_of_experience_of_an_user_at_a_given_age_id(request, experienced_age)
             return redirect('sharing_an_experience_update', sharing_of_experience_already_created_id)
         else: 
-            return render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
+            return render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form, 'context':context})
 
 
 def sharing_of_experience_found(sharing_of_experience_search):
@@ -317,9 +317,13 @@ def sharing_an_experience_create(request, experienced_age):
     else:
         form = SharingOfExperienceFormCreate()
 
+    context = {
+        'experienced_age': experienced_age,
+    }
+
     url_to_be_returned = url_to_be_returned_for_experience_create_view(
         request, experienced_age_to_be_created_low_enough_boolean, age_already_filled_boolean,
-        experienced_age, form)
+        experienced_age, form, context)
     return url_to_be_returned
 
 
@@ -347,9 +351,13 @@ def sharing_an_experience_update(request, sharing_of_experience_id):
             else:
                 form = SharingOfExperienceFormCreate(instance=sharing_of_experience)
 
+            context = {
+                'experienced_age': sharing_of_experience.experienced_age,
+            }
+
             return render(request,
                 'sharingofexperience/sharing_an_experience_update.html',
-                {'form': form}
+                {'form': form, 'context':context}
             )
         else:
             return render(request, 'sharingofexperience/not_your_experience.html')
