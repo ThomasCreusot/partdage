@@ -1228,7 +1228,7 @@ class TestLearning_from_othersView:
         # -> tests that the sharing of experience corresponding to userA age is well displayed
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
-        assert content.find("<p>{0}</p>".format(test_sharing_user_B_1.description)) != -1 
+        assert content.find(">{0}</p>".format(test_sharing_user_B_1.description)) != -1 
         assert content.find("<p>Likes :") != -1 
         assert content.find('<button><a href="/like_a_sharing_of_experience/{0}/">Like</a></button>'.format(test_sharing_user_B_1.id)) != -1 
         # -> tests that the sharing of experience which does not correspond to userA age is not displayed
@@ -1322,7 +1322,7 @@ class TestLearning_from_othersView:
         # -> tests that the sharing of experience corresponding to userA age is well displayed
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
-        assert content.find("<p>{0}</p>".format(test_sharing_user_B_1.description)) != -1 
+        assert content.find(">{0}</p>".format(test_sharing_user_B_1.description)) != -1 
         assert content.find("<p>Likes :") != -1 
         assert content.find('<button><a href="/like_a_sharing_of_experience/{0}/">Like</a></button>'.format(test_sharing_user_B_1.id)) != -1 
         # -> tests that the sharing of experience which does not correspond to userA age is not displayed
@@ -1531,12 +1531,12 @@ class TestLearning_from_othersView:
         # User A should NOT have access to the sharing of experience
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
-        assert content.find("<p>{0}</p>".format(test_sharing_user_B_1.description)) == -1 
+        assert content.find(">{0}</p>".format(test_sharing_user_B_1.description)) == -1 
         assert content.find("<p>Likes :") == -1 
         assert content.find('<button><a href="/like_a_sharing_of_experience/{0}/">Like</a></button>'.format(test_sharing_user_B_1.id)) == -1 
-        assert content.find("<p>{0}</p>".format(test_sharing_user_B_2.description)) == -1
+        assert content.find(">{0}</p>".format(test_sharing_user_B_2.description)) == -1
         # -> tests that the 'sharings_not_yet_accessible' is displayed on HTML 
-        assert content.find("My main philosophy is to be in the moment (present) ; however, as the number of shared".format(test_sharing_user_B_2.description)) != -1
+        assert content.find("Ma philosophie actuelle principale est d'être ") != -1
 
 
 class TestLike_a_sharing_of_experienceView:
@@ -1805,10 +1805,10 @@ class TestSpend_creditsView:
 
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
-        assert content.find("<p>{0}</p>".format(test_sharing_user_B_past_1.description)) == -1
-        assert content.find("<p>{0}</p>".format(test_sharing_user_B_past_2.description)) == -1
-        assert content.find("<p>{0}</p>".format(test_sharing_user_B_future_1.description)) == -1
-        assert content.find("<p>{0}</p>".format(test_sharing_user_B_future_2.description)) == -1
+        assert content.find(">{0}</p>".format(test_sharing_user_B_past_1.description)) == -1
+        assert content.find(">{0}</p>".format(test_sharing_user_B_past_2.description)) == -1
+        assert content.find(">{0}</p>".format(test_sharing_user_B_future_1.description)) == -1
+        assert content.find(">{0}</p>".format(test_sharing_user_B_future_2.description)) == -1
 
         # User A makes a GET request towards spend_credits page
         path_past_experiences = reverse('spend_credits', args=['past_sharings'])
@@ -1831,8 +1831,8 @@ class TestSpend_creditsView:
 
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
-        assert content.find("<p>{0}</p>".format(test_sharing_user_B_past_1.description)) != -1 or content.find("<p>{0}</p>".format(test_sharing_user_B_past_2.description)) != -1
-        assert content.find("<p>{0}</p>".format(test_sharing_user_B_future_1.description)) != -1 or content.find("<p>{0}</p>".format(test_sharing_user_B_future_2.description)) != -1
+        assert content.find(">{0}</p>".format(test_sharing_user_B_past_1.description)) != -1 or content.find(">{0}</p>".format(test_sharing_user_B_past_2.description)) != -1
+        assert content.find(">{0}</p>".format(test_sharing_user_B_future_1.description)) != -1 or content.find(">{0}</p>".format(test_sharing_user_B_future_2.description)) != -1
 
         # Test that : user_credits -= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS to be
         # checked

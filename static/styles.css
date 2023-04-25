@@ -449,6 +449,94 @@ h2 {
     width: 60%;
 }
 
+
+/*=============================*/
+/*========== LEARNING FROM OTHERS PAGE ==========*/
+
+#blocPageLearningFromOthers {
+    width: 80%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#blocPageLearningFromOthers h2 {
+    margin-bottom: 10%;
+}
+
+
+#blocPageLearningFromOthers .sharing_of_experience_container {
+    width: 98%;
+}
+
+#blocPageLearningFromOthers .sharing_of_experience_container .sharing_of_experience {
+    width: 100%;
+
+    margin-bottom: 15%;
+    margin-top: 0;
+}
+
+#blocPageLearningFromOthers .sharing_of_experience_container .sharing_of_experience_description {
+    width: 100%;
+
+    margin:0;
+    margin-bottom: 1%;
+
+    font-size: 1.4em;
+    text-align: justify;
+    font-family: 'lane_-_narrowregular', georgia, sans-serif;
+    font-weight: bold;
+}
+
+#blocPageLearningFromOthers .sharing_of_experience_container .like_and_like_button {
+    margin:0;
+    padding: 0;
+
+    width: 50%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: baseline;
+    align-items: center;
+}
+
+#blocPageLearningFromOthers .sharing_of_experience_container .like_and_like_button p {
+    margin:0;
+}
+
+#blocPageLearningFromOthers .sharing_of_experience_container .like_and_like_button button a {
+    text-decoration: none;
+}
+
+
+.spend_credits_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: center;
+}
+
+.spend_credits_container .spend_credits_buttons_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
+    width: 100%;
+}
+
+
+.spend_credits_container .spend_credits_buttons_container button {
+    width: 25%;
+}
+
+.spend_credits_container .spend_credits_buttons_container button  a {
+    text-decoration: none;
+}
+
+
 /*=============================*/
 /*========== BUTTONS ==========*/
 

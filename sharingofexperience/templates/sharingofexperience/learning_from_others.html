@@ -1,42 +1,59 @@
 {% extends 'base.html' %}
 {% block content %}
-    <p>LEARNING FROM OTHERS</p>
 
-   
+<div id=blocPageLearningFromOthers>
+    <h2>APPRENDRE DES AUTRES</h2>
+
+    <div class="sharing_of_experience_container">   
     {% for sharing_of_experience in sharing_of_experiences %}
-        <p>{{ sharing_of_experience.user_id }}</p>
-        <p>{{ sharing_of_experience.description }}</p>
-        <p>Likes : {{ sharing_of_experience.total_likes }}</p>
-        <button><a href="{% url 'like_a_sharing_of_experience' sharing_of_experience.id %}">Like</a></button>
+        <div class="sharing_of_experience">
+                <!--<p>{{ sharing_of_experience.user_id }}</p>-->
+                <p class="sharing_of_experience_description">{{ sharing_of_experience.description }}</p>
+                <div class="like_and_like_button">
+                    <!--<button><a href="{% url 'like_a_sharing_of_experience' sharing_of_experience.id %}">Like</a></button>-->
+                    <!--<button><a href="{% url 'like_a_sharing_of_experience' sharing_of_experience.id %}">♡</a></button>-->
+                    <!--<p>Likes : {{ sharing_of_experience.total_likes }}</p>-->
+                    <button><a href="{% url 'like_a_sharing_of_experience' sharing_of_experience.id %}">❤ ({{ sharing_of_experience.total_likes }})</a></button>
+                </div>
+            </div>
     {% endfor %}
+    </div>
 
-
-    {% if sharings_not_yet_accessible %}
+    <div class="spend_credits_container">
         <p>
-            My main philosophy is to be in the moment (present) ; however, as the number of shared
-            experience may be limited ; I choose to give you the opportunity to acces experiences
-            corresponding to an age you already experienced or you will experience. 
-            HOW DOES IT WORK ?
-            When you should have had access to an experience share but none is available for your
-            current age (+/- 1 year), you accumulate credit(s) (1). You can spend credits (n=
+            Ma philosophie actuelle principale est d'être dans l'<strong>instant présent</strong>.
+            C'est pour cela que vous avez accès à des partages d'expérience correspondant à votre age actuel (+/- 1 an).
+            Cependant, étant donné que le nombre de partdages peut être limité, j'ai fait le choix de vous donner l'opportunité d'accéder à des expériences
+            correspondant à des ages que vous avez déja vécu il y a plus d'un an ou que serez amenés à vivre dans plus d'un an.
+
+            COMMENT EST CE QUE CELA FONCTIONNE ? 
+            Lorsque vous êtes censés avoir accès à un partage d'expérience mais qu'aucun partdage n'est disponible pour votre age actuel (+/- 1 an), vous accumulez des "crédits".
+            Vous pouvez dépensez vos crédits (n=
             {{ COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS }})
-            to get access to experience share(s) (n=
-            {{ NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS }}) corresponding to a
-            different age than the one you are currently living in.
+            pour avoir accès à un/des partdage(s) (n=
+            {{ NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS }}) 
+            qui correspond(ent) à un age autre que votre age actuel.
+            Pour dépenser vos crédits et accéder à de nouveaux partages, cliquez sur un des deux boutons ci dessous.
+            Si aucun bouton ne s'affiche, c'est que des partdages correspondants à votre age sont encore disponible dans notre base de données. Vous pourrez y accéder en continuant à partager votre expérience.
         </p>
-    {% endif %}
-
-    <button><a href="{% url 'spend_credits' past_sharings %}">
-        Spend credits and access to already lived age
-    </a></button>
-
-    <button><a href="{% url 'spend_credits' future_sharings %}">
-        Spend credits and access to a future age
-    </a></button>
-
-    {% if request.session.message %}
-        <p>{{ request.session.message }}</p>
-    {% endif %}
 
 
+        <div class="spend_credits_buttons_container">
+        {% if sharings_not_yet_accessible %}
+            <button class="spend_credits_button"><a href="{% url 'spend_credits' past_sharings %}">
+                Dépenser des crédits pour un âge passé
+            </a></button>
+
+            <button class="spend_credits_button"><a href="{% url 'spend_credits' future_sharings %}">
+                Dépenser des crédits pour un âge futur
+            </a></button>
+        {% endif %}
+        </div>
+
+        {% if request.session.message %}
+            <p>{{ request.session.message }}</p>
+        {% endif %}
+    </div>
+
+</div>
 {% endblock content %}
