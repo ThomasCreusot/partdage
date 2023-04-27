@@ -539,6 +539,7 @@ h2 {
 
 /*=============================*/
 /*========== BE PATIENT PAGE ==========*/
+
 #blocPageBePatient {
     display: flex;
     flex-direction: column;
@@ -547,7 +548,7 @@ h2 {
 }
 
 #blocPageBePatient .filling_space_in_be_patient_page {
-    height: 100px;
+    height: 50px;
     width: 100px;
 }
 
@@ -560,9 +561,9 @@ h2 {
 }
 
 
+
 /*=============================*/
 /*========== CREATE BEFORE UPDATE PAGE ==========*/
-
 
 #blocPageSharingNotYetCreated {
     display: flex;
@@ -573,14 +574,27 @@ h2 {
 
 
 #blocPageSharingNotYetCreated #GIF_create_before {
-    width: 300px;
-    height: 300px;
+    width: 480px;
 }
+
+
+#blocPageSharingNotYetCreated .filling_space_in_sharing_not_yet_created_page {
+    height: 50px;
+    width: 100px;
+}
+
+#blocPageSharingNotYetCreated button {
+    width: 25%;
+}
+
+#blocPageSharingNotYetCreated button a {
+    text-decoration: none;
+}
+
 
 
 /*=============================*/
 /*========== NOT YOUR SHARING PAGE ==========*/
-
 
 #blocPageNotYourSharing {
     display: flex;
@@ -591,8 +605,21 @@ h2 {
 
 
 #blocPageNotYourSharing #GIF_not_your_sharing {
-    width: 300px;
-    height: 300px;
+    width: 480px;
+}
+
+
+#blocPageNotYourSharing .filling_space_in_not_your_sharing_page {
+    height: 100px;
+    width: 100px;
+}
+
+#blocPageNotYourSharing button {
+    width: 25%;
+}
+
+#blocPageNotYourSharing button a {
+    text-decoration: none;
 }
 
 

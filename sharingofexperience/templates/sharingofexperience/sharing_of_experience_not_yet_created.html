@@ -2,10 +2,14 @@
 {% block content %}
     <div id=blocPageSharingNotYetCreated>
 
+        <div class="filling_space_in_sharing_not_yet_created_page"></div>
+
         {% load static %}
         <img id="GIF_create_before" src="{% static 'gif_create_2.gif' %}" alt="GIF illustrant un crayon effaçant ce qu'il ecrit">
 
-        <p>Please create a sharing of exeprience before trying to update it.</p>
-        <button><a href="{% url 'sharing_experiences_menu' %}">Back to menu for sharing experiences</a></button>
+        <p>Merci de créer un partage d'expérience avant d'essayer de le modifier.</p>
+        <button><a href="{% url 'sharing_experiences_menu' %}">Retour</a></button>
+
+        <div class="filling_space_in_sharing_not_yet_created_page"></div>
     </div>
 {% endblock content %}

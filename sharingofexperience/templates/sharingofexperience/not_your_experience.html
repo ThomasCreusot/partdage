@@ -2,11 +2,16 @@
 {% block content %}
 
     <div id=blocPageNotYourSharing>
+
+        <div class="filling_space_in_not_your_sharing_page"></div>
+
         {% load static %}
         <img id="GIF_not_your_sharing" src="{% static 'gif_you_shall_not_pass.gif' %}" alt="GIF illustrant gandalf qui crie you shall not pass">
 
-        <p>Please do not try to modify a sharing of experience which is not your.</p>
-        <button><a href="{% url 'sharing_experiences_menu' %}">Back to menu for sharing experiences</a></button>
-    </div>
+        <p>Merci de ne pas essayer de modifier un partage d'expérience qui n'est pas le votre.</p>
+        <button><a href="{% url 'sharing_experiences_menu' %}">Retour</a></button>
 
+        <div class="filling_space_in_not_your_sharing_page"></div>
+
+    </div>
 {% endblock content %}
