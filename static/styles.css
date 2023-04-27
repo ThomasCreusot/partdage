@@ -577,6 +577,26 @@ h2 {
     height: 300px;
 }
 
+
+/*=============================*/
+/*========== NOT YOUR SHARING PAGE ==========*/
+
+
+#blocPageNotYourSharing {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+#blocPageNotYourSharing #GIF_not_your_sharing {
+    width: 300px;
+    height: 300px;
+}
+
+
+
 /*=============================*/
 /*========== BUTTONS ==========*/
 
