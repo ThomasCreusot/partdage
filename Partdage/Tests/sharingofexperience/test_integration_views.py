@@ -993,7 +993,7 @@ class TestSharing_an_experience_updateView:
         content_get = response_get.content.decode()
         assert response_get.status_code == 200
         assertTemplateUsed(response_get, "sharingofexperience/sharing_of_experience_not_yet_created.html")
-        assert content_get.find('<p>Please create a sharing of exeprience before trying to update it.</p>') != -1
+        assert content_get.find("<p>Merci de créer un partage d'expérience avant d'essayer de le modifier.</p>") != -1
 
         # User A makes a POST request towards sharing_an_experience_update with valid form and valid age and so updates a sharing
         # Test that User A -> POST method : go to page sharing_of_experience_not_yet_created.html
@@ -1002,7 +1002,7 @@ class TestSharing_an_experience_updateView:
         content_post = response_post.content.decode()
         assert response_post.status_code == 200
         assertTemplateUsed(response_post, "sharingofexperience/sharing_of_experience_not_yet_created.html")
-        assert content_post.find('<p>Please create a sharing of exeprience before trying to update it.</p>') != -1
+        assert content_post.find("<p>Merci de créer un partage d'expérience avant d'essayer de le modifier.</p>") != -1
 
         # Test that -> tests that the sharing of experience is not updated in the database
         updated_sharing_of_experience = SharingOfExperience.objects.filter(id=test_sharing_user_A.id)[0]
@@ -1062,7 +1062,7 @@ class TestSharing_an_experience_updateView:
         content_get = response_get.content.decode()
         assert response_get.status_code == 200
         assertTemplateUsed(response_get, "sharingofexperience/not_your_experience.html")
-        assert content_get.find('<p>Please do not try to modify a sharing of experience which is not your.</p>') != -1
+        assert content_get.find("<p>Merci de ne pas essayer de modifier un partage d'expérience qui n'est pas le votre.</p>") != -1
 
         # User A makes a POST request towards sharing_an_experience_update but with the id of a sharing corresponding to another user
         # Test that User A -> POST method :  go to page not_your_experience.html
@@ -1071,7 +1071,7 @@ class TestSharing_an_experience_updateView:
         content_post = response_post.content.decode()
         assert response_post.status_code == 200
         assertTemplateUsed(response_post, "sharingofexperience/not_your_experience.html")
-        assert content_post.find('<p>Please do not try to modify a sharing of experience which is not your.</p>') != -1
+        assert content_post.find("<p>Merci de ne pas essayer de modifier un partage d'expérience qui n'est pas le votre.</p>") != -1
 
 
     @pytest.mark.django_db

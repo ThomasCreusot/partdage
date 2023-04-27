@@ -14,14 +14,36 @@
                 <img id="partdage_logo" src=  "{% static 'partdage_logo_20230420_17h42.png' %}" alt="logo du l'application Partdage">
                 <img id="partdage_slogan" src="{% static 'partdage_slogan_20230420_17h42.png' %}" alt="logo du l'application Partdage">
             </div>
-            <nav>
+            <!-- Initial version-->
+            <!-- <nav>
                 <div><a href="{% url 'index' %}">Accueil</a></div>
                 <div><a href="{% url 'sharing_experiences_menu' %}">Partager mes expérience</a></div>
                 <div><a href="{% url 'learning_from_others' %}">Apprendre des autres</a></div>
                 {%  if user.is_authenticated %}
                 <p>You are logged as {{ request.user }}. <a href="{% url 'logout' %}">Log out</a></p>
                 {% endif %}
-            </nav>
+            </nav>-->
+
+            <div id="wrap">
+                <ul class="navbar">
+                  <li>
+                    <p id ="menu_title">Menu</p>
+                    <ul>
+                      <li><a href="{% url 'index' %}">Accueil</a></li>
+                      <li><a href="{% url 'sharing_experiences_menu' %}">Partager</a></li>
+                      <li><a href="{% url 'learning_from_others' %}">Apprendre</a></li>
+                      <li><a href="{% url 'why_partdage' %}">Pourquoi ?</a></li>
+                      <li><a href="{% url 'how_partdage_was_made' %}">Comment ?</a></li>
+                      <li><a href="{% url 'policy_and_rules' %}">Données et modération</a></li>
+                      {%  if user.is_authenticated %}
+                      <p>You are logged as {{ request.user }}. <a href="{% url 'logout' %}">Log out</a></p>
+                      {% endif %}
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+
+
         </header>
 
         <div id=blocPage>

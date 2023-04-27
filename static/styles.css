@@ -129,7 +129,8 @@ header {
     max-height: var(--header-height);
 }
 
-header nav {
+/*Initial version*/
+/*header nav {
     display: flex;
     flex-direction: column;
     justify-content: baseline;
@@ -141,7 +142,78 @@ header nav {
 header nav * {
     color: var(--main-green-color);
 }
+*/
 
+#wrap {
+    width: 20%;
+    height: 50px;
+    margin: 0;
+    /*z-index: 99;*/
+    /*position: relative;*/
+}
+
+#wrap * {
+    font-size: 1em;
+    background-color: rgb(255,255,255);
+}
+
+.navbar {
+    height: 50px;
+    padding: 0;
+    margin: 0;
+    /*position: absolute;*/
+}
+
+.navbar li {
+    height: auto;
+    /*width: 100px;*/
+    width: 100%;
+    /*float: left;*/
+    text-align: center;
+    /*list-style: none;*/
+    padding: 0;
+    margin: 0;
+}
+
+.navbar li * {
+    color: var(--main-green-color);
+}
+
+.navbar li ul {
+    display: none;
+    height: auto;
+    margin: 0;
+    padding: 0;
+
+    list-style-type: none;
+}
+
+.navbar li:hover ul {
+    display: block;
+}
+
+.navbar li:hover #menu_title {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+
+.navbar li ul li {
+    /*background-color: rgb(255,255,255);*/
+    text-align: left;
+    margin-left: 20px;
+}
+
+.navbar li ul li a{
+    text-decoration: none;
+}
+
+.navbar li ul li a:hover {
+    font-weight: bold;
+  }
+
+
+/**/
 
 footer {
     display: flex;
@@ -363,7 +435,7 @@ h2 {
     font-size: 1.1em;
 }
 
-#blocPageSignup .helptext, ul, li {
+#blocPageSignup .helptext, #blocPageSignup ul, #blocPageSignup li {
     color: rgb(130,130,130);
     font-size: 0.9em;
     font-style: italic;
