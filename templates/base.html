@@ -34,7 +34,6 @@
                       <li><a href="{% url 'learning_from_others' %}">Apprendre</a></li>
                       <li><a href="{% url 'why_partdage' %}">Pourquoi ?</a></li>
                       <li><a href="{% url 'how_partdage_was_made' %}">Comment ?</a></li>
-                      <li><a href="{% url 'policy_and_rules' %}">Données et modération</a></li>
                       {%  if user.is_authenticated %}
                       <p>You are logged as {{ request.user }}. <a href="{% url 'logout' %}">Log out</a></p>
                       {% endif %}

@@ -9,10 +9,10 @@
     <form action="" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Send">
+        <input type="submit" value="Partdager">
     </form>
     
-    <button><a href="{% url 'sharing_experiences_menu' %}">Back to menu</a></button>
+    <button><a href="{% url 'sharing_experiences_menu' %}">Retour</a></button>
 </div>
 
 {% endblock content %}

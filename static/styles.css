@@ -148,7 +148,7 @@ header nav * {
     width: 20%;
     height: 50px;
     margin: 0;
-    /*z-index: 99;*/
+    z-index: 99;
     /*position: relative;*/
 }
 
@@ -210,7 +210,7 @@ header nav * {
 
 .navbar li ul li a:hover {
     font-weight: bold;
-  }
+}
 
 
 /**/
@@ -330,6 +330,10 @@ h2 {
     flex-direction: column;
     justify-content: baseline;
     align-items: center;
+
+    position: absolute;
+    height: 100%;
+    z-index: -1;
 }
 
 
@@ -458,9 +462,14 @@ h2 {
     background-attachment: fixed;
     background-position: center;
 
-    height: 600px;
-}
 
+    /*
+    height: 400px;
+    */
+    position: absolute;
+    height: 100%;
+    z-index: -1;
+}
 
 #blocPageHome button {
     margin-top: 15%;
@@ -736,6 +745,10 @@ button {
     background-color: rgb(255,255,255);
 }
 
+button:hover, input:hover{
+    font-weight: bold;
+}
+
 button * {
     color: var(--main-green-color);
     font-family: 'lane_-_narrowregular', georgia, sans-serif;
@@ -765,6 +778,11 @@ button * {
 
 .age_button_in_menu_not_yet_created {
     background-color: rgba(64, 64, 64, 0.5);
+}
+
+.age_button_in_menu_not_yet_created:hover{
+    background-color: var(--main-green-color);
+    font-size: 0.9em;
 }
 
 .age_button_in_menu_already_created *,  .age_button_in_menu_not_yet_created *{
