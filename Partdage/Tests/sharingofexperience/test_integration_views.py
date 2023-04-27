@@ -825,7 +825,7 @@ class TestSharing_an_experience_createView:
         content_get = response_get.content.decode()
         assert response_get.status_code == 200
         assertTemplateUsed(response_get, "sharingofexperience/be_patient.html")
-        assert content_get.find("<p>Please wait until you are sure you have the necessary hindsight before entering this age.</p>") != -1 
+        assert content_get.find("<p>Merci d'attendre d'avoir le recul nécéssaire pour renseigner cette age.</p>") != -1 
 
         # User A makes a POST request towards sharing_an_experience_create with valid form and with
         # an age under the lower limit and so does NOT access the form
@@ -835,7 +835,7 @@ class TestSharing_an_experience_createView:
         content_post = response_post.content.decode()
         assert response_post.status_code == 200
         assertTemplateUsed(response_post, "sharingofexperience/be_patient.html")
-        assert content_post.find("<p>Please wait until you are sure you have the necessary hindsight before entering this age.</p>") != -1 
+        assert content_post.find("<p>Merci d'attendre d'avoir le recul nécéssaire pour renseigner cette age.</p>") != -1 
 
 
 class TestSharing_an_experience_updateView:

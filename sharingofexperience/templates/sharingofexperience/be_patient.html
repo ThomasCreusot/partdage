@@ -1,5 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
-    <p>Please wait until you are sure you have the necessary hindsight before entering this age.</p>
-    <button><a href="{% url 'sharing_experiences_menu' %}">Back to menu for sharing experiences</a></button>
+
+<div id=blocPageBePatient>
+
+    <div class="filling_space_in_be_patient_page"></div>
+
+    {% load static %}
+    <img id="GIF_be_patient_please" src="{% static 'gif_be_patient.gif' %}" alt="GIF illustrant un enfant qui attend">
+    <br>
+    <p>Merci d'attendre d'avoir le recul nécéssaire pour renseigner cette age.</p>
+    <button><a href="{% url 'sharing_experiences_menu' %}">Retour</a></button>
+
+    <div class="filling_space_in_be_patient_page"></div>
+
+</div>
 {% endblock content %}

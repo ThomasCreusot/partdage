@@ -538,6 +538,29 @@ h2 {
 
 
 /*=============================*/
+/*========== BE PATIENT PAGE ==========*/
+#blocPageBePatient {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#blocPageBePatient .filling_space_in_be_patient_page {
+    height: 100px;
+    width: 100px;
+}
+
+#blocPageBePatient button {
+    width: 25%;
+}
+
+#blocPageBePatient button a {
+    text-decoration: none;
+}
+
+
+/*=============================*/
 /*========== BUTTONS ==========*/
 
 
