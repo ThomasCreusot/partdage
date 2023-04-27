@@ -561,6 +561,23 @@ h2 {
 
 
 /*=============================*/
+/*========== CREATE BEFORE UPDATE PAGE ==========*/
+
+
+#blocPageSharingNotYetCreated {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+#blocPageSharingNotYetCreated #GIF_create_before {
+    width: 300px;
+    height: 300px;
+}
+
+/*=============================*/
 /*========== BUTTONS ==========*/
 
 

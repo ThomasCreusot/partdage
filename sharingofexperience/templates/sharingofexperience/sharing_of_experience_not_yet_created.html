@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
-    <p>Please create a sharing of exeprience before trying to update it.</p>
-    <button><a href="{% url 'sharing_experiences_menu' %}">Back to menu for sharing experiences</a></button>
+    <div id=blocPageSharingNotYetCreated>
+
+        {% load static %}
+        <img id="GIF_create_before" src="{% static 'gif_create_2.gif' %}" alt="GIF illustrant un crayon effaçant ce qu'il ecrit">
+
+        <p>Please create a sharing of exeprience before trying to update it.</p>
+        <button><a href="{% url 'sharing_experiences_menu' %}">Back to menu for sharing experiences</a></button>
+    </div>
 {% endblock content %}
