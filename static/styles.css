@@ -1,13 +1,31 @@
 /*__PLAN__
+
+_VARIABLES
+_FONTS
 _ALL WEBSITE
-_HOMEPAGE
-_SIGN-UP PAGE
+
+INDEXPAGE
+WHY PAGE
+HOW WAS MADE PAGE
+POLICY RULES PAGE
+LOGIN PAGE
+SIGNUP PAGE
+HOME PAGE
+MENU SHARING MY EXPERIENCES PAGE
+CREATION OF A NEW EXPERIENCE  &  UPDATE OF A NEW EXPERIENCE PAGES
+LEARNING FROM OTHERS PAGE
+BE PATIENT PAGE
+CREATE BEFORE UPDATE PAGE
+NOT YOUR SHARING PAGE
+
 _BUTTONS
 */
 
 
+
 /*===============================*/
 /*========== VARIABLES ==========*/
+
 :root {
     --main-beige-color: #FFFAEC; /*rgb(255, 250, 236);*/
     --main-green-color: #00704A; /*rgb(0, 112, 74);*/
@@ -19,7 +37,9 @@ _BUTTONS
 
 
 
+/*===============================*/
 /*========== FONTS ==========*/
+
 @font-face {
     font-family: 'lane_-_narrowregular';
     src: url('fonts/lane-narrow_regular_macroman/LANENAR_-webfont.eot');
@@ -31,6 +51,7 @@ _BUTTONS
     font-weight: normal;
     font-style: normal;
 }
+
 
 @font-face {
     font-family: 'archivo_narrowregular';
@@ -80,6 +101,7 @@ body {
     margin-bottom: 2%;
 }
 
+
 header {
     display: flex;
     flex-direction: row;
@@ -119,6 +141,7 @@ header nav {
 header nav * {
     color: var(--main-green-color);
 }
+
 
 footer {
     display: flex;
@@ -170,8 +193,10 @@ h2 {
     width: 80%;
 }
 
-/*==============================*/
-/*========== INDEXPAGE ==========*/
+
+
+/*================================*/
+/*========== INDEX PAGE ==========*/
 
 #blocPageIndex button {
     width: 14%;
@@ -179,6 +204,7 @@ h2 {
     position:relative;
     left: 43%; /*50% - 14%/2 with 14% <-> button width*/
 }
+
 
 
 /*==============================*/
@@ -192,7 +218,8 @@ h2 {
 }
 
 
-/*==============================*/
+
+/*=======================================*/
 /*========== HOW WAS MADE PAGE ==========*/
 
 #blocPageHowWasMade button {
@@ -203,7 +230,8 @@ h2 {
 }
 
 
-/*==============================*/
+
+/*=======================================*/
 /*========== POLICY RULES PAGE ==========*/
 
 #blocPagePolicyRules button {
@@ -214,7 +242,8 @@ h2 {
 }
 
 
-/*==================================*/
+
+/*================================*/
 /*========== LOGIN PAGE ==========*/
 
 #blocPageLogin {
@@ -253,7 +282,6 @@ h2 {
     padding-bottom: 2%;
 }
 
-
 #blocPageLogin .login_form_container form {
     display: flex;
     flex-direction: column;
@@ -265,8 +293,6 @@ h2 {
     color: var(--main-green-color);
 }
 
-
-
 #blocPageLogin .login_form_container button{
     width: 150px;
 
@@ -277,7 +303,7 @@ h2 {
 
 
 
-/*==================================*/
+/*=================================*/
 /*========== SIGNUP PAGE ==========*/
 
 #blocPageSignup {
@@ -318,7 +344,6 @@ h2 {
     padding-right: 2%;
 }
 
-
 #blocPageSignup .signup_form_container form {
     display: flex;
     flex-direction: column;
@@ -346,7 +371,7 @@ h2 {
 
 
 
-/*==================================*/
+/*===============================*/
 /*========== HOME PAGE ==========*/
 
 #blocPageHome {
@@ -365,7 +390,7 @@ h2 {
 }
 
 
-#blocPageHome button{
+#blocPageHome button {
     margin-top: 15%;
     height: 80px;
     font-size: 1.2em;
@@ -382,11 +407,11 @@ h2 {
     background-color: rgba(255, 250, 236, 0.5);
 }
 
-#blocPageHome #home_page_left_button *{
+#blocPageHome #home_page_left_button * {
     color: var(--main-green-color);
 }
 
-#blocPageHome #home_page_right_button{
+#blocPageHome #home_page_right_button {
     width: 20%;
 
     border-width: 2px;
@@ -397,13 +422,13 @@ h2 {
     background-color: rgba(64, 64, 64, 0.5);
 }
 
-#blocPageHome #home_page_right_button *{
+#blocPageHome #home_page_right_button * {
     color: var(--main-beige-color);
 }
 
 
 
-/*=============================*/
+/*======================================================*/
 /*========== MENU SHARING MY EXPERIENCES PAGE ==========*/
 
 #menu_of_age_button {
@@ -421,8 +446,11 @@ h2 {
 }
 
 
-/*=============================*/
-/*========== CREATION OF A NEW EXPERIENCE  &  UPDATE OF A NEW EXPERIENCE PAGES ==========*/
+
+/*======================================================*/
+/*========== CREATION OF A NEW EXPERIENCE ==============*/
+/*========== & =========================================*/
+/*========== UPDATE OF A NEW EXPERIENCE PAGES ==========*/
 
 #blocPageSharingCreation, #blocPageSharingCreation form, #blocPageSharingCreation form p, #blocPageSharingUpdate, #blocPageSharingUpdate form, #blocPageSharingUpdate form p  {
     display: flex;
@@ -450,7 +478,8 @@ h2 {
 }
 
 
-/*=============================*/
+
+/*===============================================*/
 /*========== LEARNING FROM OTHERS PAGE ==========*/
 
 #blocPageLearningFromOthers {
@@ -465,7 +494,6 @@ h2 {
 #blocPageLearningFromOthers h2 {
     margin-bottom: 10%;
 }
-
 
 #blocPageLearningFromOthers .sharing_of_experience_container {
     width: 98%;
@@ -527,7 +555,6 @@ h2 {
     width: 100%;
 }
 
-
 .spend_credits_container .spend_credits_buttons_container button {
     width: 25%;
 }
@@ -537,7 +564,8 @@ h2 {
 }
 
 
-/*=============================*/
+
+/*=====================================*/
 /*========== BE PATIENT PAGE ==========*/
 
 #blocPageBePatient {
@@ -562,7 +590,7 @@ h2 {
 
 
 
-/*=============================*/
+/*===============================================*/
 /*========== CREATE BEFORE UPDATE PAGE ==========*/
 
 #blocPageSharingNotYetCreated {
@@ -572,11 +600,9 @@ h2 {
     align-items: center;
 }
 
-
 #blocPageSharingNotYetCreated #GIF_create_before {
     width: 480px;
 }
-
 
 #blocPageSharingNotYetCreated .filling_space_in_sharing_not_yet_created_page {
     height: 50px;
@@ -593,7 +619,7 @@ h2 {
 
 
 
-/*=============================*/
+/*===========================================*/
 /*========== NOT YOUR SHARING PAGE ==========*/
 
 #blocPageNotYourSharing {
@@ -603,11 +629,9 @@ h2 {
     align-items: center;
 }
 
-
 #blocPageNotYourSharing #GIF_not_your_sharing {
     width: 480px;
 }
-
 
 #blocPageNotYourSharing .filling_space_in_not_your_sharing_page {
     height: 100px;
@@ -629,6 +653,7 @@ h2 {
 
 
 /* Default buttons */
+
 button {
     width: 10%;
 
@@ -669,7 +694,6 @@ button * {
 .age_button_in_menu_not_yet_created {
     background-color: rgba(64, 64, 64, 0.5);
 }
-
 
 .age_button_in_menu_already_created *,  .age_button_in_menu_not_yet_created *{
     font-family: 'archivo_narrowregular', 'lane_-_narrowregular', georgia, sans-serif;
