@@ -43,7 +43,7 @@ SECRET_KEY = env('SECRET_KEY')
 # https://django-environ.readthedocs.io/en/latest/quickstart.html
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -118,18 +118,31 @@ WSGI_APPLICATION = 'Partdage.wsgi.application'
 #    )
 # }
 
-# Change DATABASES for postgreSQL
+# Change DATABASES for postgreSQL : LOCAL
+# DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql',
+#        'NAME': env('DATABASE_NAME'),
+#        'USER': env('DATABASE_USER'),
+#        'PASSWORD': env('DATABASE_PASSWORD'),
+#        'HOST': '127.0.0.1',
+#        'PORT': '5432',
+#    }
+# }
+
+# Change DATABASES for postgreSQL within docker compose
+# https://github.com/docker/awesome-compose/tree/master/official-documentation-samples/django/
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DATABASE_NAME'),
-        'USER': env('DATABASE_USER'),
-        'PASSWORD': env('DATABASE_PASSWORD'),
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': os.environ.get('POSTGRES_NAME'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': 'db',
+        'PORT': 5432,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
