@@ -132,28 +132,29 @@ WSGI_APPLICATION = 'Partdage.wsgi.application'
 
 # Change DATABASES for postgreSQL within docker compose
 # https://github.com/docker/awesome-compose/tree/master/official-documentation-samples/django/
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_NAME'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'db',
-        'PORT': 5432,
-    }
-}
-
-# Try fusion of both DATABASES previous setup
 # DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.postgresql',
-#        'NAME': os.environ.get('DATABASE_NAME', 'postgres'),
-#        'USER': os.environ.get('DATABASE_USER', 'postgres'),
-#        'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
-#        'HOST': os.environ.get('DATABASE_HOST', 'db'),
+#        'NAME': os.environ.get('POSTGRES_NAME'),
+#        'USER': os.environ.get('POSTGRES_USER'),
+#        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+#        'HOST': 'db',
 #        'PORT': 5432,
 #    }
 # }
+
+# Try fusion of both DATABASES previous setup
+# PUT DATABASE_HOST=127.0.0.1 in .env file !
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DATABASE_NAME', 'postgres'),
+        'USER': os.environ.get('DATABASE_USER', 'postgres'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
+        'HOST': os.environ.get('DATABASE_HOST', 'db'),
+        'PORT': 5432,
+    }
+}
 
 
 # Password validation

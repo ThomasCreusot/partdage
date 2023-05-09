@@ -1,6 +1,9 @@
+version: "3"
+
 services:
   db:
     image: postgres
+    env_file: docker.env
     volumes:
       - ./data/db:/var/lib/postgresql/data
     environment:
@@ -9,6 +12,7 @@ services:
       - POSTGRES_PASSWORD=postgres
   web:
     build: .
+    env_file: docker.env
     image: thomascreusot/partdage_project-web:latest
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
