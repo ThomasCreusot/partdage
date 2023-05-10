@@ -29,7 +29,7 @@ jobs:
           DATABASE_NAME: circle_test
           DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
           DATABASE_USER: root
-          DATABASE_PASSWORD: ''
+          DATABASE_PASSWORD: 'aze'
           DATABASE_PORT: 5432
           DATABASE_HOST: localhost 
       - image: circleci/postgres:9.6.2
@@ -37,9 +37,12 @@ jobs:
           DATABASE_NAME: circle_test
           DATABASE_USER: root
           DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
-          DATABASE_PASSWORD: ''
+          DATABASE_PASSWORD: 'aze'
           DATABASE_PORT: 5432
           DATABASE_HOST: localhost 
+
+    #could not bind IPv4 socket: Address already in use
+
 
     steps:
       # https://circleci.com/blog/continuous-integration-for-django-projects/
