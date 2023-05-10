@@ -29,9 +29,10 @@ jobs:
           DATABASE_NAME: circle_test
           DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
           DATABASE_USER: root
-          DATABASE_PASSWORD: 'aze'
+          DATABASE_PASSWORD: ''
           DATABASE_PORT: 5432
-          DATABASE_HOST: localhost 
+          DATABASE_HOST: localhost
+          POSTGRES_PASSWORD: password
       #- image: circleci/postgres:9.6.2
       # - PostgreSQL 11 or later is required (found 9.602)
       - image: circleci/postgres:11
@@ -39,9 +40,10 @@ jobs:
           DATABASE_NAME: circle_test
           DATABASE_USER: root
           DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
-          DATABASE_PASSWORD: 'aze'
+          DATABASE_PASSWORD: ''
           DATABASE_PORT: 5432
           DATABASE_HOST: localhost 
+          POSTGRES_PASSWORD: password
 
     #could not bind IPv4 socket: Address already in use
 
