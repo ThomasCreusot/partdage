@@ -19,7 +19,8 @@ jobs:
 
   build_and_test:
     docker:
-      #- image: circleci/python:3.10  # version on my computer + as https://pypi.org/project/asgiref/  asgiref requires Python 3.7 or higher.
+      # initial : 
+      # - image: circleci/python:3.10  # version on my computer + as https://pypi.org/project/asgiref/  asgiref requires Python 3.7 or higher.
 
       # https://discuss.circleci.com/t/setting-up-test-database-credentials-with-circleci-with-django-is-failing/42396
       - image: circleci/python:3.10
@@ -30,7 +31,7 @@ jobs:
           DATABASE_PASSWORD: ''
           DATABASE_PORT: 5432
           DATABASE_HOST: localhost 
-      - image: circleci/postgres:11
+      - image: circleci/postgres:15.1
         environment:
           DATABASE_NAME: circle_test
           DATABASE_USER: root
