@@ -37,7 +37,7 @@ jobs:
           key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
           paths:
             - "venv"
-      # pytest -s --no-migrations --ignore=env
+      # pytest -s --no-migrations --ignore=env 
       - run:
           name: Running tests
           command: |
