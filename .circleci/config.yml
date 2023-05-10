@@ -37,11 +37,12 @@ jobs:
           key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
           paths:
             - "venv"
+      # pytest -s --no-migrations --ignore=env
       - run:
           name: Running tests
           command: |
             . venv/bin/activate
-            pytest -s --no-migrations --ignore=env
+            pytest 
       - run:
           name: Running linter
           command: |
