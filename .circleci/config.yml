@@ -76,10 +76,10 @@ jobs:
           path: test-reports/
           destination: python_app
       # https://circleci.com/docs/language-python/ ; https://circleci.com/docs/workspaces/
-      #- persist_to_workspace:
-      #    root: ~/project
-      #    paths:
-      #      - .
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
 
 workflows:
   build_test_deploy:
