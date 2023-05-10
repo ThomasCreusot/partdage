@@ -32,7 +32,9 @@ jobs:
           DATABASE_PASSWORD: 'aze'
           DATABASE_PORT: 5432
           DATABASE_HOST: localhost 
-      - image: circleci/postgres:9.6.2
+      #- image: circleci/postgres:9.6.2
+      # - PostgreSQL 11 or later is required (found 9.602)
+      - image: circleci/postgres:11
         environment:
           DATABASE_NAME: circle_test
           DATABASE_USER: root
@@ -42,7 +44,7 @@ jobs:
           DATABASE_HOST: localhost 
 
     #could not bind IPv4 socket: Address already in use
-    #PostgreSQL 11 or later is required (found 9.602)
+
 
 
     steps:
@@ -66,7 +68,7 @@ jobs:
           name: Running tests
           command: |
             . venv/bin/activate
-             
+            pytest 
       - run:
           name: Running linter
           command: |
@@ -76,10 +78,10 @@ jobs:
           path: test-reports/
           destination: python_app
       # https://circleci.com/docs/language-python/ ; https://circleci.com/docs/workspaces/
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - .
+      #- persist_to_workspace:
+      #    root: ~/project
+      #    paths:
+      #      - .
 
 workflows:
   build_test_deploy:
