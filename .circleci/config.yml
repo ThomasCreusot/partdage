@@ -1,14 +1,58 @@
+# Every CircleCI config.yml starts with the version key. This key is used to issue warnings about
+# breaking changes.
 version: 2.1
+
 jobs:
-  build:
+  #Demo from documentation
+  #build:
+  #  docker:
+  #    - image: alpine:3.15
+  #      auth:
+  #        username: mydockerhub-user
+  #        password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+  #  steps:
+  #    - run:
+  #        name: The First Step
+  #        command: |
+  #          echo 'Hello World!'
+  #          echo 'This is the delivery pipeline'
+
+  build_and_test:
     docker:
-      - image: alpine:3.15
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+      - image: circleci/python:3.10  # version on my computer + as https://pypi.org/project/asgiref/  asgiref requires Python 3.7 or higher.
+
     steps:
+      # https://circleci.com/blog/continuous-integration-for-django-projects/
+      - checkout  # This command fetches your source code over SSH to the configured path (the working directory, by default).
+      - restore_cache:  # This command restores a previously saved cache
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
       - run:
-          name: The First Step
+          name: Virtual environment creation and requirements installation
           command: |
-            echo 'Hello World!'
-            echo 'This is the delivery pipeline'
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install --upgrade pip
+            pip install -r requirements.txt
+      - save_cache:  # This command generates and saves a cache of a file, multiple files, or folders. In our case, we save a cache of the installed Python packages obtained after running pip install ….
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          paths:
+            - "venv"
+      - run:
+          name: Running tests
+          command: |
+            . venv/bin/activate
+            pytest -s --no-migrations --ignore=env
+      - run:
+          name: Running linter
+          command: |
+            . venv/bin/activate
+            flake8 --max-line-length 119 --exclude=env,venv,./lettings/migrations,./oc_lettings_site/migrations,./profiles/migrations
+      - store_artifacts:  # This command stores logs, binaries, etc. so that they are accessible by the app in later runs.
+          path: test-reports/
+          destination: python_app
+      # https://circleci.com/docs/language-python/ ; https://circleci.com/docs/workspaces/
+      #- persist_to_workspace:
+      #    root: ~/project
+      #    paths:
+      #      - .
+
