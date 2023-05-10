@@ -482,13 +482,14 @@ class TestSharing_an_experience_createView:
         # User A makes a GET request towards sharing_an_experience_create and so access the form
         # + 1 year because menu values for creation of sharings begins at
         # LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
+        
         path_get = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
         response_get = client_test_user_A.get(path_get)
         content_get = response_get.content.decode()
         assert response_get.status_code == 200
         assertTemplateUsed(response_get, "sharingofexperience/sharing_an_experience_create.html")
         assert content_get.find('<form action="" method="post">') != -1
-        assert content_get.find('<input type="submit" value="Send">') != -1
+        assert content_get.find('<input type="submit" value="Partdager">') != -1
 
         # User A makes a POST request towards sharing_an_experience_create with valid form and
         # valid age and so complete all his sharings
@@ -510,6 +511,7 @@ class TestSharing_an_experience_createView:
         user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
         user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
         assert user_A_profile_model_dictionnary == expected_value
+        
 
 
     @pytest.mark.django_db
@@ -607,7 +609,7 @@ class TestSharing_an_experience_createView:
         assert response_get.status_code == 200
         assertTemplateUsed(response_get, "sharingofexperience/sharing_an_experience_create.html")
         assert content_get.find('<form action="" method="post">') != -1
-        assert content_get.find('<input type="submit" value="Send">') != -1
+        assert content_get.find('<input type="submit" value="Partdager">') != -1
 
         for i in range(NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS):
             # User A makes a POST request towards sharing_an_experience_create with valid form and
@@ -685,7 +687,7 @@ class TestSharing_an_experience_createView:
         assert response_get.status_code == 200
         assertTemplateUsed(response_get, "sharingofexperience/sharing_an_experience_create.html")
         assert content_get.find('<form action="" method="post">') != -1
-        assert content_get.find('<input type="submit" value="Send">') != -1
+        assert content_get.find('<input type="submit" value="Partdager">') != -1
 
         # User A makes a POST request towards sharing_an_experience_create with INvalid form and
         # valid age and so does NOT create a sharing
@@ -931,7 +933,7 @@ class TestSharing_an_experience_updateView:
         assert response_get.status_code == 200
         assertTemplateUsed(response_get, "sharingofexperience/sharing_an_experience_update.html")
         assert content_get.find('{0}</textarea>'.format(test_sharing_user_A.description)) != -1
-        assert content_get.find('<input type="submit" value="Send">') != -1
+        assert content_get.find('<input type="submit" value="Mise à jour">') != -1
 
         # User A makes a POST request towards sharing_an_experience_update with valid form and
         # valid age and so updates a sharing
@@ -1121,7 +1123,7 @@ class TestSharing_an_experience_updateView:
         assert response_get.status_code == 200
         assertTemplateUsed(response_get, "sharingofexperience/sharing_an_experience_update.html")
         assert content_get.find('{0}</textarea>'.format(test_sharing_user_A.description)) != -1
-        assert content_get.find('<input type="submit" value="Send">') != -1
+        assert content_get.find('<input type="submit" value="Mise à jour">') != -1
 
         # User A makes a POST request towards sharing_an_experience_update with an INvalid form and
         # valid age and so does NOT update a sharing
