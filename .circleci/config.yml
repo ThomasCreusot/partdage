@@ -22,37 +22,18 @@ jobs:
       # initial : 
       # - image: circleci/python:3.10  # version on my computer + as https://pypi.org/project/asgiref/  asgiref requires Python 3.7 or higher.
 
-      # https://discuss.circleci.com/t/setting-up-test-database-credentials-with-circleci-with-django-is-failing/42396
+      # Original version: https://discuss.circleci.com/t/setting-up-test-database-credentials-with-circleci-with-django-is-failing/42396
       # https://circleci.com/developer/images/image/cimg/postgres
       - image: circleci/python:3.10
         environment:
-          DATABASE_NAME: postgres
           DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
-          DATABASE_USER: postgres
-          DATABASE_PASSWORD: postgres
-          DATABASE_PORT: 5432
-          DATABASE_HOST: localhost
-          POSTGRES_PASSWORD: password
 
       #- image: circleci/postgres:9.6.2
       # - PostgreSQL 11 or later is required (found 9.602)
       - image: circleci/postgres:11
         environment:
-          DATABASE_NAME: postgres
-          DATABASE_USER: postgres
-          DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
-          DATABASE_PASSWORD: postgres
-          DATABASE_PORT: 5432
-          DATABASE_HOST: localhost 
-          POSTGRES_PASSWORD: password
-
-
-    #could not bind IPv4 socket: Address already in use
-    #il me dit qu'il manque un password; je mets :
-    #POSTGRES_PASSWORD: password
-    # il me dit : 
-    #role "root" does not exist
-
+          DATABASE_USER: root
+          POSTGRES_DB: circle_test
 
 
 
