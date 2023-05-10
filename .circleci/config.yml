@@ -2,10 +2,6 @@
 # breaking changes.
 version: 2.1
 
-orbs:
-  python: circleci/python@2.1.1  # No orb found for django
-  heroku: circleci/heroku@2.0.0
-
 jobs:
   #Demo from documentation
   #build:
