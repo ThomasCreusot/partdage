@@ -22,7 +22,7 @@ jobs:
       #- image: circleci/python:3.10  # version on my computer + as https://pypi.org/project/asgiref/  asgiref requires Python 3.7 or higher.
 
       # https://discuss.circleci.com/t/setting-up-test-database-credentials-with-circleci-with-django-is-failing/42396
-      - image: circleci/python:3.7
+      - image: circleci/python:3.10
         environment:
           DATABASE_NAME: circle_test
           DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
