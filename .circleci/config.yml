@@ -32,7 +32,7 @@ jobs:
           DATABASE_PASSWORD: ''
           DATABASE_PORT: 5432
           DATABASE_HOST: localhost 
-      - image: circleci/postgres:15.2.0
+      - image: cimg/postgres:15.2.0
         environment:
           DATABASE_NAME: circle_test
           DATABASE_USER: root
