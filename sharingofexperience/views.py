@@ -311,7 +311,7 @@ def sharing_an_experience_create(request, experienced_age):
             # Save
             sharing_of_experience.save()
 
-            access_to_new_sharings_of_experience(request)
+            # access_to_new_sharings_of_experience(request)
 
             return redirect('sharing_experiences_menu')
     else:
