@@ -23,7 +23,7 @@ def login_page(request):
                 # https://docs.djangoproject.com/en/4.1/topics/db/examples/one_to_one/
                 try:
                     ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
-                except:
+                except ProfileModelSharingOfExperiencesUserHasAccess.DoesNotExist:
                     profile_model = ProfileModelSharingOfExperiencesUserHasAccess(
                         user=request.user,
                         # 'dictionary initialisation' is used later, see views.py of sharingofexperience app
