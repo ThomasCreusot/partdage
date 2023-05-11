@@ -43,7 +43,7 @@ SECRET_KEY = env('SECRET_KEY')
 # https://django-environ.readthedocs.io/en/latest/quickstart.html
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'partdage.herokuapp.com']
 
 
 # Application definition
@@ -197,9 +197,9 @@ STATIC_URL = 'static/'
 # In addition to using a static/ directory inside your apps, you can define a list of directories 
 # (STATICFILES_DIRS) in your settings file where Django will also look for static files. 
 # You can namespace static assets in STATICFILES_DIRS by specifying prefixes.
+# note: model: '/var/www/static/',
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    '/var/www/static/',
 ]
 
 
@@ -226,3 +226,10 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 
 
+# https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# https://docs.djangoproject.com/en/4.0/howto/static-files/ 
+# STATIC_ROOT = "/var/www/example.com/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')

@@ -383,33 +383,33 @@ def learning_from_others(request):
     at_least_a_numeric_key_is_true = False
     for key in user_profile_model_dictionnary:
         if key.isnumeric():
-            if user_profile_model_dictionnary[key] == True:
+            if user_profile_model_dictionnary[key]:
                 at_least_a_numeric_key_is_true = True
                 break
 
     user_profile_model_dictionnary_int = [int(key) for key in user_profile_model_dictionnary if key.isnumeric()]
 
-    if at_least_a_numeric_key_is_true == True:
+    if at_least_a_numeric_key_is_true is True:
         sharings_of_experiences_to_display = SharingOfExperience.objects.filter(id__in=user_profile_model_dictionnary_int)
         for sharing in sharings_of_experiences_to_display:
             sharing.total_likes_calculation()
 
-    if at_least_a_numeric_key_is_true == False:
-        #if 'credits' in user_profile_model_dictionnary:
+    if at_least_a_numeric_key_is_true is False:
+        # if 'credits' in user_profile_model_dictionnary:
         #    if user_profile_model_dictionnary['credits'] > 1:
         #        sharings_not_yet_accessible = True
         sharings_not_yet_accessible = True
 
     if 'full access sharings age plus minus' in user_profile_model_dictionnary:
-        if user_profile_model_dictionnary['full access sharings age plus minus'] == True:
+        if user_profile_model_dictionnary['full access sharings age plus minus'] is True:
             sharings_of_experiences_to_display = queryset_sharing_of_experiences_from_others(request)
 
     context = {
-        'sharing_of_experiences':sharings_of_experiences_to_display,
-        'COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS':COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS,
-        'NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS':NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS,
-        'past_sharings':"past_sharings",
-        'future_sharings':"future_sharings",
+        'sharing_of_experiences': sharings_of_experiences_to_display,
+        'COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS': COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS,
+        'NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS': NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS,
+        'past_sharings': "past_sharings",
+        'future_sharings': "future_sharings",
         'sharings_not_yet_accessible': sharings_not_yet_accessible
     }
     return render(request, 'sharingofexperience/learning_from_others.html', context=context)
@@ -418,7 +418,7 @@ def learning_from_others(request):
 @login_required
 def like_a_sharing_of_experience(request, id_sharing_of_experience_to_be_liked):
     print("like : to be done ; with a if sharing of experience instance . property (to be created : list of sharing exp the request.user has access) = add a like from request.user in dico ; else redirect")
-    sharing_of_experience_to_be_liked = SharingOfExperience.objects.filter(id = id_sharing_of_experience_to_be_liked)[0]
+    sharing_of_experience_to_be_liked = SharingOfExperience.objects.filter(id=id_sharing_of_experience_to_be_liked)[0]
     sharing_of_experience_to_be_liked.receive_like(request.user.id)
 
     return redirect('learning_from_others')
@@ -433,33 +433,33 @@ def spend_credits(request, past_or_future_sharings):
 
     if user_credits >= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS:
         user_age = age_calculation(request.user.birth_date)
-        user_profile_model_dictionnary_only_numeric_keys=user_profile_model_dictionnary_only_numeric_keys_kept(user_profile_model_dictionnary)
+        user_profile_model_dictionnary_only_numeric_keys = user_profile_model_dictionnary_only_numeric_keys_kept(user_profile_model_dictionnary)
 
         if past_or_future_sharings == "past_sharings":
             past_ages_before_gap = [age for age in range(LOWER_LIMIT_AGE_TO_BE_SHARED, user_age - GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES)]
             past_or_future_sharings_from_other_users = SharingOfExperience.objects.filter(
-                ~Q(user_id_id = request.user.id) & Q(experienced_age__in=past_ages_before_gap) & ~Q(id__in = user_profile_model_dictionnary_only_numeric_keys)
+                ~Q(user_id_id=request.user.id) & Q(experienced_age__in=past_ages_before_gap) & ~Q(id__in=user_profile_model_dictionnary_only_numeric_keys)
             )
         elif past_or_future_sharings == "future_sharings":
             future_ages_after_gap = [age for age in range(user_age + GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES + 1, HIGHER_LIMIT_AGE_TO_BE_SHARED)]
             past_or_future_sharings_from_other_users = SharingOfExperience.objects.filter(
-                ~Q(user_id_id = request.user.id) & Q(experienced_age__in=future_ages_after_gap) & ~Q(id__in = user_profile_model_dictionnary_only_numeric_keys)
+                ~Q(user_id_id=request.user.id) & Q(experienced_age__in=future_ages_after_gap) & ~Q(id__in=user_profile_model_dictionnary_only_numeric_keys)
             )
 
         queryset_is_empty = past_or_future_sharings_from_other_users.count() == 0
-        if queryset_is_empty == False :
-                allocation_of_new_sharings_of_experiences(request, NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS, past_or_future_sharings_from_other_users)
-                # initial version : user_credits -= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS
-                user_profile_model_after_allocation_of_credits = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
-                user_profile_model_dictionnary_after_allocation_of_credits = user_profile_model_after_allocation_of_credits.sharing_of_experiences_user_has_access
-                user_profile_model_dictionnary_after_allocation_of_credits['credits'] -= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS
-                user_profile_model_after_allocation_of_credits.save()
-        elif queryset_is_empty == True :
-                message = "You have enough credits to access past or futures experiences shares; however, our database is not yet enough complete to satisfy your demand. Please try again later. Thanks for your comprehension"
+        if queryset_is_empty is False:
+            allocation_of_new_sharings_of_experiences(request, NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS, past_or_future_sharings_from_other_users)
+            # initial version : user_credits -= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS
+            user_profile_model_after_allocation_of_credits = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
+            user_profile_model_dictionnary_after_allocation_of_credits = user_profile_model_after_allocation_of_credits.sharing_of_experiences_user_has_access
+            user_profile_model_dictionnary_after_allocation_of_credits['credits'] -= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS
+            user_profile_model_after_allocation_of_credits.save()
+        elif queryset_is_empty is True:
+            message = "You have enough credits to access past or futures experiences shares; however, our database is not yet enough complete to satisfy your demand. Please try again later. Thanks for your comprehension"
 
     else:
         message = "You do not have enough credits {0} to access past or futures experiences shares".format(COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS)
 
-    #print(message)
+    # print(message)
     request.session['message'] = message
     return redirect('learning_from_others')

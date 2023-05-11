@@ -25,7 +25,7 @@ class TestAuthenticationViews():
     @pytest.mark.django_db
     def test_signup_page_and_login_page_right_credentials(self):
         """
-        Tests that an user can sign-up and log-in 
+        Tests that an user can sign-up and log-in
         + tests creation of a ProfileModel object during first connection
         """
 
@@ -43,7 +43,7 @@ class TestAuthenticationViews():
         assert ProfileModelSharingOfExperiencesUserHasAccess.objects.all().count() == 0
 
         response = client.post(reverse('login'), {'username': 'test_user_signup',
-            'password': 'TestUserPassword'})
+        'password': 'TestUserPassword'})
         assert response.status_code == 302
         assert response.url == reverse('home')
         assert ProfileModelSharingOfExperiencesUserHasAccess.objects.all().count() == 1
@@ -51,7 +51,6 @@ class TestAuthenticationViews():
         # Test that the user is well authenticated -> to be studied.
         # user = auth.get_user(client)
         # assert user.is_authenticated
-
 
     @pytest.mark.django_db
     def test_signup_page_and_login_page_wrong_credentials(self):
@@ -72,7 +71,7 @@ class TestAuthenticationViews():
         content = response.content.decode()
 
         assert response.status_code == 200
-        assert content.find("Invalid credentials.") != -1 
+        assert content.find("Invalid credentials.") != -1
 
 
 class TestIndexView():
@@ -87,18 +86,17 @@ class TestIndexView():
 
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/index.html")
-        assert content.find(">LOGIN</a></button>") != -1 
-
+        assert content.find(">LOGIN</a></button>") != -1
 
     @pytest.mark.django_db
     def test_index_user_logged_in(self):
         """Tests that an user logged-in can access index view with rigth content"""
 
         test_user_A = User.objects.create(
-                username = 'test_user_A',
-                password = 'test_user_A',
-                birth_date = '2000-01-31',
-                email = 'user_A@mail.com',
+                username='test_user_A',
+                password='test_user_A',
+                birth_date='2000-01-31',
+                email='user_A@mail.com',
             )
         test_user_A.save()
         client_test_user_A = Client()
@@ -124,8 +122,8 @@ class TestHomeView:
         -> its dictionnary is not modified
         Note : We consider that User A has already access to sharings as its profile_model
         dictionary is {'credits': 1,} instead of {"dictionary initialisation": 1}
-        
-        Scenario : 
+
+        Scenario :
         Creation of User A and User B
         User A has a profile model with credits (so we can consider it has already access to
         sharings as its dictionary does not contain "dictionary initialisation")

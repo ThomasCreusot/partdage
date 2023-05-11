@@ -74,7 +74,7 @@ jobs:
           name: Running linter
           command: |
             . venv/bin/activate
-            flake8 --max-line-length 119 --exclude=env,venv,./lettings/migrations,./oc_lettings_site/migrations,./profiles/migrations
+            flake8 --max-line-length 119 --exclude=env,venv,./authentication/migrations,./sharingofexperience/migrations
       - store_artifacts:  # This command stores logs, binaries, etc. so that they are accessible by the app in later runs.
           path: test-reports/
           destination: python_app
