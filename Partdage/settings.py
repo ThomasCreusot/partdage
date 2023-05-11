@@ -39,7 +39,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
+# DEBUG = True
 # https://django-environ.readthedocs.io/en/latest/quickstart.html
 DEBUG = env('DEBUG')
 
@@ -196,8 +196,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
-# In addition to using a static/ directory inside your apps, you can define a list of directories 
-# (STATICFILES_DIRS) in your settings file where Django will also look for static files. 
+# In addition to using a static/ directory inside your apps, you can define a list of directories
+# (STATICFILES_DIRS) in your settings file where Django will also look for static files.
 # You can namespace static assets in STATICFILES_DIRS by specifying prefixes.
 # note: model: '/var/www/static/',
 STATICFILES_DIRS = [
@@ -211,7 +211,7 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # https://django-environ.readthedocs.io/en/latest/quickstart.html
-#CACHES = {
+# CACHES = {
 #    # Read os.environ['CACHE_URL'] and raises
 #    # ImproperlyConfigured exception if not found.
 #    #
@@ -232,7 +232,7 @@ LOGIN_REDIRECT_URL = 'home'
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
-# https://docs.djangoproject.com/en/4.0/howto/static-files/ 
+# https://docs.djangoproject.com/en/4.0/howto/static-files/
 # STATIC_ROOT = "/var/www/example.com/static/"
 # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # https://whitenoise.readthedocs.io/en/stable/django.html

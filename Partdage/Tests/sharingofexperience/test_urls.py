@@ -14,7 +14,6 @@ class TestSharingofExperienceUrls:
         assert resolve(url).view_name == 'sharing_an_experience_create'
         assert resolve(url).func == sharing_an_experience_create
 
-
     def test_sharing_an_experience_update(self):
         """Testing if the 'sharing_an_experience_update' (name) route is mapping to sharing_an_experience_update (view)"""
 
@@ -23,7 +22,6 @@ class TestSharingofExperienceUrls:
         assert resolve(url).view_name == 'sharing_an_experience_update'
         assert resolve(url).func == sharing_an_experience_update
 
-
     def test_like_a_sharing_of_experience(self):
         """Testing if the 'like_a_sharing_of_experience' (name) route is mapping to like_a_sharing_of_experience (view)"""
 
@@ -31,7 +29,6 @@ class TestSharingofExperienceUrls:
         assert url == "/like_a_sharing_of_experience/1/"
         assert resolve(url).view_name == 'like_a_sharing_of_experience'
         assert resolve(url).func == like_a_sharing_of_experience
-
 
     def test_spend_credits(self):
         """Testing if the 'spend_credits' (name) route is mapping to spend_credits (view)"""

@@ -1,4 +1,4 @@
-# Django documentation : Si vous utilisez une classe ModelAdmin personnalisée qui hérite de 
+# Django documentation : Si vous utilisez une classe ModelAdmin personnalisée qui hérite de
 # django.contrib.auth.admin.UserAdmin, vous devez alors ajouter vos champs personnalisés à
 # fieldsets (pour les champs qui doivent faire partie de l’édition des utilisateurs) et à
 # add_fieldsets (pour les champs qui doivent faire partie de la création des utilisateurs).
@@ -6,7 +6,7 @@
 
 # I copy-pasted the code of the django documentation example and provided some changes
 # https://docs.djangoproject.com/fr/4.1/topics/auth/customizing/#a-full-example
-# Voici un exemple d’application d’utilisateur personnalisé compatible avec l’interface d’administration. 
+# Voici un exemple d’application d’utilisateur personnalisé compatible avec l’interface d’administration.
 
 from django import forms
 from django.contrib import admin
@@ -29,7 +29,6 @@ class UserCreationForm(forms.ModelForm):
         model = MyUser
         # fields = ('email', 'birth_date')
         fields = ('username', 'email', 'password', 'birth_date')
-
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -79,7 +78,7 @@ class UserAdmin(BaseUserAdmin):
         (None, {'fields': ('username', 'password', 'birth_date')}),
         # ('Personal info', {'fields': ('first_name', 'last_name', 'email')}),
         ('Personal info', {'fields': ('email',)}),
-        #('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        # ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')})
 
 
@@ -89,7 +88,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            #'fields': ('email', 'date_of_birth', 'password1', 'password2'),
+            # 'fields': ('email', 'date_of_birth', 'password1', 'password2'),
             'fields': ('username', 'password1', 'password2', 'birth_date'),
         }),
         # ('Personal info', {'fields': ('first_name', 'last_name', 'email')}),
@@ -101,8 +100,6 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('username',)
     ordering = ('email',)
     filter_horizontal = ()
-
-
 
 
 # Now register the new UserAdmin...
