@@ -17,3 +17,4 @@ pytest-django==4.5.2
 sqlparse==0.4.3
 tomli==2.0.1
 tzdata==2022.7
+whitenoise==6.4.0

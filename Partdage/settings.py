@@ -61,6 +61,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # https://whitenoise.readthedocs.io/en/stable/django.html
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -232,4 +234,13 @@ SESSION_COOKIE_SECURE = True
 
 # https://docs.djangoproject.com/en/4.0/howto/static-files/ 
 # STATIC_ROOT = "/var/www/example.com/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# https://whitenoise.readthedocs.io/en/stable/django.html
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# STORAGES = {
+#    # ...
+#    "staticfiles": {
+#        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#    },
+# }
