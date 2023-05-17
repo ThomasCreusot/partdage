@@ -30,6 +30,7 @@ jobs:
       # Original version: https://discuss.circleci.com/t/setting-up-test-database-credentials-with-circleci-with-django-is-failing/42396
       # https://circleci.com/developer/images/image/cimg/postgres
       # original version : DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
+      # then, DATABASE_URL: postgresql://postgres:postgres@localhost/postgres?sslmode=disable
       - image: circleci/python:3.10
         environment:
           DATABASE_NAME: postgres
