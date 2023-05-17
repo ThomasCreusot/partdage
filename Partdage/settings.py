@@ -174,8 +174,6 @@ DATABASES = {
         'DATABASE_URL': os.environ.get('DATABASE_URL', 'db'),
     }
 }
-if os.environ.get('ON_HEROKU') == True:
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 
 
