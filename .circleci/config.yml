@@ -38,7 +38,7 @@ jobs:
           DATABASE_PORT: 5432
           DATABASE_HOST: localhost
           POSTGRES_PASSWORD: password
-          ON_HEROKU: false
+          DATABASE_URL: postgres://postgres:[postgres]@localhost:5432/postgres
 
       #- image: circleci/postgres:9.6.2
       # - PostgreSQL 11 or later is required (found 9.602)
@@ -51,7 +51,7 @@ jobs:
           DATABASE_PORT: 5432
           DATABASE_HOST: localhost 
           POSTGRES_PASSWORD: password
-          ON_HEROKU: false
+          DATABASE_URL: postgres://postgres:[postgres]@localhost:5432/postgres
 
     steps:
       # https://circleci.com/blog/continuous-integration-for-django-projects/
@@ -94,8 +94,6 @@ jobs:
   # https://circleci.com/docs/language-python/
   deploy:
     executor: heroku/default  # use the default executor defined within the orb
-      environment:
-        ON_HEROKU: true
     steps:
       - attach_workspace:
           at: ~/project

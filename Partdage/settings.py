@@ -146,7 +146,7 @@ WSGI_APPLICATION = 'Partdage.wsgi.application'
 #    }
 # }
 
-"""
+
 # Try fusion of both DATABASES previous setup
 # PUT DATABASE_HOST=127.0.0.1 in .env file !
 DATABASES = {
@@ -162,7 +162,7 @@ DATABASES = {
 
 # https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
 #DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-"""
+
 
 
 """
@@ -178,7 +178,7 @@ if os.environ.get('ON_HEROKU') == True:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 """
-
+"""
 #TEST 18052023 -v 2
 DATABASES = {
     'default': {
@@ -190,8 +190,10 @@ DATABASES = {
         'PORT': 5432,
     }
 }
-if os.environ.get('ON_HEROKU') == True:
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+#if os.environ.get('ON_HEROKU') == True:
+#    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+#>does not work
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
