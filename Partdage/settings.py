@@ -176,7 +176,6 @@ if 'test' in sys.argv:
             'PORT': 5432,
         }
     }
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 else:
     DATABASES = {
     'default': {
@@ -188,7 +187,7 @@ else:
         'PORT': 5432,
         }
     }
-
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 """
 #https://pypi.org/project/dj-database-url/
