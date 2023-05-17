@@ -82,10 +82,11 @@ jobs:
           path: test-reports/
           destination: python_app
       # https://circleci.com/docs/language-python/ ; https://circleci.com/docs/workspaces/
-      #- persist_to_workspace:
-      #    root: ~/project
-      #    paths:
-      #      - .
+      # if this step is deleted, error: fatal: not a git repository (or any of the parent directories): .git 
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
 
 
   # https://circleci.com/docs/language-python/
