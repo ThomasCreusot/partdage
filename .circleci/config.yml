@@ -94,8 +94,8 @@ jobs:
   # https://circleci.com/docs/language-python/
   deploy:
     executor: heroku/default  # use the default executor defined within the orb
-    environment:
-      ON_HEROKU: true
+      environment:
+        ON_HEROKU: true
     steps:
       - attach_workspace:
           at: ~/project
