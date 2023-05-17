@@ -2,6 +2,11 @@
 # breaking changes.
 version: 2.1
 
+orbs:
+  # python: circleci/python@2.0.3
+  # heroku: circleci/heroku@1.2.6
+  heroku: circleci/heroku@2.0.0
+
 jobs:
   #Demo from documentation
   #build:
@@ -46,8 +51,6 @@ jobs:
           DATABASE_HOST: localhost 
           POSTGRES_PASSWORD: password
 
-
-
     steps:
       # https://circleci.com/blog/continuous-integration-for-django-projects/
       - checkout  # This command fetches your source code over SSH to the configured path (the working directory, by default).
@@ -84,7 +87,24 @@ jobs:
       #    paths:
       #      - .
 
+
+  # https://circleci.com/docs/language-python/
+  deploy:
+    executor: heroku/default  # use the default executor defined within the orb
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - heroku/deploy-via-git:
+          force: true # force push when pushing to the heroku remote, see: https://devcenter.heroku.com/articles/git
+
+
 workflows:
   build_test_deploy:
     jobs:
       - build_and_test
+      - deploy:
+          requires:
+            - build_and_test
+#          filters:
+#            branches:
+#              only: main
