@@ -170,23 +170,23 @@ DATABASES = {
 """
 DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 """
-
-# not "DATABASE_URL" <=> local or on circleCI -> so we use env variables
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DATABASE_NAME', 'postgres'),
-        'USER': os.environ.get('DATABASE_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
-        'HOST': os.environ.get('DATABASE_HOST', 'db'),
-        'PORT': 5432,
-    }
-}
-#if not "LOCAL" in os.environ:
-if os.environ.get('LOCAL') == True:
-    # "DATABASE_URL" <=> deployment online : https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
+DATABASES=[]
+# DATABASE_URL : on heroku
+if "DATABASE_URL" in os.environ:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
+# No DATABASE_URL : local or circleci
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('DATABASE_NAME', 'postgres'),
+            'USER': os.environ.get('DATABASE_USER', 'postgres'),
+            'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
+            'HOST': os.environ.get('DATABASE_HOST', 'db'),
+            'PORT': 5432,
+        }
+    }
 
 
 
