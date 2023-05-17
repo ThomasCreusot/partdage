@@ -169,7 +169,7 @@ DATABASES = {
 # https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
 
 
-production = False
+production = True
 if not production:
     #Je peux supp 'NAME', "USER", "HOST", "PORT"; tant que je garde DATABASE URL
     DATABASES = {
