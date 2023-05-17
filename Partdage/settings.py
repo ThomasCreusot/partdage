@@ -148,7 +148,6 @@ WSGI_APPLICATION = 'Partdage.wsgi.application'
 
 # Try fusion of both DATABASES previous setup
 # PUT DATABASE_HOST=127.0.0.1 in .env file !
-"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -159,51 +158,11 @@ DATABASES = {
         'PORT': 5432,
     }
 }
-"""
-
-# put in .env file : DATABASE_URL=postgres://thcre:DsorkQCbcEEt4W,!@localhost:5432/partdage_db
-# DATABASES = {
-#    'default': env.db('DATABASE_URL'),
-# }
 
 # https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
+#DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 
-production = True
-if not production:
-    #Je peux supp 'NAME', "USER", "HOST", "PORT"; tant que je garde DATABASE URL
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
-            'DATABASE_URL': os.environ.get('DATABASE_URL', 'test'),
-        }
-    }
-else:
-    DATABASES = {'default': {}}
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-
-
-
-"""
-DATABASES=[]
-# DATABASE_URL : on heroku
-if "DATABASE_URL" in os.environ:
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-
-# No DATABASE_URL : local or circleci
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DATABASE_NAME', 'postgres'),
-            'USER': os.environ.get('DATABASE_USER', 'postgres'),
-            'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
-            'HOST': os.environ.get('DATABASE_HOST', 'db'),
-            'PORT': 5432,
-        }
-    }
-"""
 
 
 # Password validation
