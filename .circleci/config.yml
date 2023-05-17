@@ -29,11 +29,10 @@ jobs:
 
       # Original version: https://discuss.circleci.com/t/setting-up-test-database-credentials-with-circleci-with-django-is-failing/42396
       # https://circleci.com/developer/images/image/cimg/postgres
-      #          DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
       - image: circleci/python:3.10
         environment:
           DATABASE_NAME: postgres
-          DATABASE_URL: postgres://postgres:[postgres]@localhost:5432/postgres
+          DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
           DATABASE_USER: postgres
           DATABASE_PASSWORD: postgres
           DATABASE_PORT: 5432
@@ -46,7 +45,7 @@ jobs:
         environment:
           DATABASE_NAME: postgres
           DATABASE_USER: postgres
-          DATABASE_URL: postgres://postgres:[postgres]@localhost:5432/postgres
+          DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
           DATABASE_PASSWORD: postgres
           DATABASE_PORT: 5432
           DATABASE_HOST: localhost 
