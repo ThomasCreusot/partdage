@@ -145,7 +145,7 @@ WSGI_APPLICATION = 'Partdage.wsgi.application'
 #        'PORT': 5432,
 #    }
 # }
-
+"""
 # Try fusion of both DATABASES previous setup
 # PUT DATABASE_HOST=127.0.0.1 in .env file !
 DATABASES = {
@@ -161,10 +161,10 @@ DATABASES = {
 
 # https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
 #DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-
-
-
 """
+
+
+
 #TEST 18052023
 DATABASES = {
     'default': {
@@ -175,7 +175,7 @@ DATABASES = {
 }
 if os.environ.get('ON_HEROKU') == True:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-"""
+
 
 
 # Password validation
