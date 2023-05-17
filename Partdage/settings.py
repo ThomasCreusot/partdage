@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-import sys
+
 import environ
 import os
 from pathlib import Path
@@ -146,7 +146,7 @@ WSGI_APPLICATION = 'Partdage.wsgi.application'
 #    }
 # }
 
-"""
+
 # Try fusion of both DATABASES previous setup
 # PUT DATABASE_HOST=127.0.0.1 in .env file !
 DATABASES = {
@@ -162,32 +162,10 @@ DATABASES = {
 
 
 # https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-"""
+#DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
-if 'test' in sys.argv:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DATABASE_NAME', 'postgres'),
-            'USER': os.environ.get('DATABASE_USER', 'postgres'),
-            'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
-            'HOST': os.environ.get('DATABASE_HOST', 'db'),
-            'PORT': 5432,
-        }
-    }
-else:
-    DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DATABASE_NAME', 'postgres'),
-        'USER': os.environ.get('DATABASE_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
-        'HOST': os.environ.get('DATABASE_HOST', 'db'),
-        'PORT': 5432,
-        }
-    }
-    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+
+
 
 """
 #https://pypi.org/project/dj-database-url/
