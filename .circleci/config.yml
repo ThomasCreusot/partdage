@@ -31,7 +31,7 @@ jobs:
       # https://circleci.com/developer/images/image/cimg/postgres
       - image: circleci/python:3.10
         environment:
-          DATABASE_URL: postgres://postgres:[postgres]@localhost:5432/postgres
+          DATABASE_URL: postgres
           DATABASE_NAME: postgres
           DATABASE_URL: postgresql://root@localhost/circle_test?sslmode=disable
           DATABASE_USER: postgres
