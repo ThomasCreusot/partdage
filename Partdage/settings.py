@@ -167,8 +167,24 @@ DATABASES = {
 # }
 
 # https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
-"""
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+
+
+production = False
+if not production:
+    #Je peux supp 'NAME', "USER", "HOST", "PORT"; tant que je garde DATABASE URL
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
+            'DATABASE_URL': os.environ.get('DATABASE_URL', 'test'),
+        }
+    }
+else:
+    DATABASES = {'default': {}}
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+
+
+
 """
 DATABASES=[]
 # DATABASE_URL : on heroku
@@ -187,7 +203,7 @@ else:
             'PORT': 5432,
         }
     }
-
+"""
 
 
 # Password validation
