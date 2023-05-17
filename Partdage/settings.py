@@ -183,7 +183,7 @@ DATABASES = {
     }
 }
 #if not "LOCAL" in os.environ:
-if not os.environ.get('LOCAL') is True:
+if os.environ.get('LOCAL') == True:
     # "DATABASE_URL" <=> deployment online : https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
