@@ -160,15 +160,19 @@ DATABASES = {
     }
 }
 
-
+#OPTION 1
 # https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
 #DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 # uses DATABASE_URL ; 
 # prevent local and circleCI testing -> server does not support SSL, but SSL was required
 
+# OPTION 2
 # https://dev.to/giftedstan/heroku-how-to-deploy-a-django-app-with-postgres-in-5-minutes-5lk
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
+# >>> django.db.utils.OperationalError
+#AH ! avec DATABASE_URL qui a ",!" et sans corchets ça passe en local!
+# sur circleCI ca me sort port 5432 failed: FATAL:  role "root" does not exis 
 
 """
 #https://pypi.org/project/dj-database-url/
