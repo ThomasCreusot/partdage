@@ -50,7 +50,7 @@ jobs:
           DATABASE_PORT: 5432
           DATABASE_HOST: localhost 
           POSTGRES_PASSWORD: password
-          DATABASE_URL: postgres://postgres:[postgres]@localhost:5432/postgres
+          POSTGRES_URL: postgres://postgres:[postgres]@localhost:5432/postgres
 
     steps:
       # https://circleci.com/blog/continuous-integration-for-django-projects/
