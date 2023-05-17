@@ -145,6 +145,7 @@ WSGI_APPLICATION = 'Partdage.wsgi.application'
 #        'PORT': 5432,
 #    }
 # }
+
 """
 # Try fusion of both DATABASES previous setup
 # PUT DATABASE_HOST=127.0.0.1 in .env file !
