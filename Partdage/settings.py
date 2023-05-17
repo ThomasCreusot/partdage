@@ -182,7 +182,7 @@ DATABASES = {
         'PORT': 5432,
     }
 }
-if "DATABASE_URL" in os.environ:
+if not "LOCAL" in os.environ:
     # "DATABASE_URL" <=> deployment online : https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
