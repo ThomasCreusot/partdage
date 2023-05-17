@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import sys
 import environ
 import os
 from pathlib import Path
@@ -160,12 +160,46 @@ DATABASES = {
     }
 }
 
+
 # https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
 DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 """
 
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('DATABASE_NAME', 'postgres'),
+            'USER': os.environ.get('DATABASE_USER', 'postgres'),
+            'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
+            'HOST': os.environ.get('DATABASE_HOST', 'db'),
+            'PORT': 5432,
+        }
+    }
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+else:
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DATABASE_NAME', 'postgres'),
+        'USER': os.environ.get('DATABASE_USER', 'postgres'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
+        'HOST': os.environ.get('DATABASE_HOST', 'db'),
+        'PORT': 5432,
+        }
+    }
 
 
+"""
+#https://pypi.org/project/dj-database-url/
+DATABASES['default'] = dj_database_url.config(
+    conn_max_age=600,
+    conn_health_checks=True,
+)
+"""
+
+
+"""
 #TEST 18052023
 DATABASES = {
     'default': {
@@ -176,7 +210,7 @@ DATABASES = {
 }
 if os.environ.get('ON_HEROKU') == True:
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-
+"""
 
 """
 #TEST 18052023 -v 2
