@@ -162,7 +162,7 @@ class TestHomeView:
                 user_id = test_user_B,
                 experienced_age = 11,
                 description = "description test_sharing",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B.save()
@@ -185,6 +185,98 @@ class TestHomeView:
     @pytest.mark.django_db
     def test_home_user_has_not_access_to_sharings_yet(self):
         """
+        Tests that an user logged in and who has already access to sharings of experiences 
+        -> can access home with rigth content 
+        -> its dictionnary is well updated
+        Note : We consider that User A has NOT already access to sharings as its profile_model
+        dictionary is {"dictionary initialisation": 1}
+        Note : the ages of user A and shared experience of user B impacts the test: if too much
+        difference (related to the GAP value (see constants imports)): then, 5 credits are allowed;
+        if enough close : then, 4 credits + a new key in the dictionnary
+
+        Scenario : 
+
+        User A (age) and User B 
+        User A has a profile model with "dictionary initialisation"
+        User B shared two experiences : the first one corresponds to userA age, the second one is out of the range age_plus_minus (initially gap = 1 year) 
+        User A logs-in the application and makes a GET request towards Home page.
+        User A should have a dictionnary updated with credits instead of {"dictionary initialisation": 1}
+        """
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+        # Profile models creation 
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'dictionary initialisation': 1,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # Sharings of experience creation 
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_1 = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_1.save()
+
+        test_sharing_user_B_2 = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+1,
+                description = "description test_sharing",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_2.save()
+
+        # User A makes a GET request towards home
+        path = reverse('home')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/home.html")
+        assert content.find(">PARTAGER MES EXPERIENCES</a></button>") != -1 
+        assert content.find(">APPRENDRE DES AUTRES</a></button>") != -1 
+
+        # Test that user A dictionnary is updated
+        expected_value = {str(test_sharing_user_B_1.id): True, 'credits': ACCESS_TO_SHARINGS_MINIMUM_NUMBER -1}
+        # does not work : print(test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.sharing_of_experiences_user_has_access)
+        # >>> {'dictionary initialisation': 1}
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+        assert user_A_profile_model_dictionnary == expected_value
+
+
+    @pytest.mark.django_db
+    def test_home_user_has_not_access_to_sharings_yet_moderator_validation_is_NOP(self):
+        """
+        Double verification of the test_home_user_has_not_access_to_sharings_yet test : in the
+        present test, sharings of experience are not yet validated by the moderator. Then, they
+        are not yet visible by the user
+
         Tests that an user logged in and who has already access to sharings of experiences 
         -> can access home with rigth content 
         -> its dictionnary is well updated
@@ -262,7 +354,7 @@ class TestHomeView:
         assert content.find(">APPRENDRE DES AUTRES</a></button>") != -1 
 
         # Test that user A dictionnary is updated
-        expected_value = {str(test_sharing_user_B_1.id): True, 'credits': ACCESS_TO_SHARINGS_MINIMUM_NUMBER -1}
+        expected_value = {'credits': ACCESS_TO_SHARINGS_MINIMUM_NUMBER}
         # does not work : print(test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.sharing_of_experiences_user_has_access)
         # >>> {'dictionary initialisation': 1}
         user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
@@ -459,7 +551,7 @@ class TestSharing_an_experience_createView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age,
                 description = "description test_sharing",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B_age_userA.save()
@@ -468,7 +560,7 @@ class TestSharing_an_experience_createView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age + GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES + 1,  # innacessible by user A by default
                 description = "description test_sharing",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B_higher_than_age_userA.save()
@@ -511,10 +603,136 @@ class TestSharing_an_experience_createView:
         assert user_A_profile_model_dictionnary == expected_value
         
 
-
     @pytest.mark.django_db
     def test_creation_of_sharing_all_conditions_meet_and_user_did_not_completed_all_his_sharings(self):
         """
+        Tests that an user who meets the conditions :
+        - logged-in
+        - + valid form
+        - + no sharing is already created for the age concerned by the post request
+        - + the age concerned by the post request is lower than the actual age of the user 
+        - + which has not completed all his/her sharings yet 
+        - + the number of sharings % NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS == 0
+
+        -> GET method : url_to_be_returned =
+        render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
+        -> POST method : can access sharing_an_experience_create view with rigth content
+        (redirection to menu)
+        -> tests that the sharing of experience is well recorded in the database
+        -> as the number of sharings % NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS == 0
+        access given to credits and/or some (but not all) sharings from other users (age +/- GAP)
+
+        Scenario : 
+        Creation of users A and B
+        Creation of user A profile model
+        Creation of sharings (user B): a sharing corresponding to age of user A and another too
+        high to be accessed by user A by default
+        User A makes a GET request towards sharing_an_experience_create and then a POST request
+        with valid form and valid age and so create a sharing.
+
+        Note: For x in range(NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS): creation of
+        sharings --> then test the update of user_profile_model_dictionnary with sharings id and/or
+        credits
+        Note: The tested action is done via access_to_some_sharings_age_minus_plus() which calls
+        allocation_of_new_sharings_of_experiences()
+        """
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+        # Profile models creation 
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits': 1,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # Sharings of experience creation 
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_age_userA = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_age_userA.save()
+
+        test_sharing_user_B_higher_than_age_userA = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age + GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES + 1,  # innacessible by user A by default
+                description = "description test_sharing",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_higher_than_age_userA.save()
+
+        number_of_sharings_in_database_before_post_request_by_userA = len(SharingOfExperience.objects.all())
+
+        # Test that User A -> GET method: url_to_be_returned =
+        # render(request, 'sharingofexperience/sharing_an_experience_create.html', {'form': form})
+        # User A makes a GET request towards sharing_an_experience_create and so access the form
+        # +1 year because menu values for creation of sharings begins at
+        # LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
+        path_get = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1])
+        response_get = client_test_user_A.get(path_get)
+        content_get = response_get.content.decode()
+        assert response_get.status_code == 200
+        assertTemplateUsed(response_get, "sharingofexperience/sharing_an_experience_create.html")
+        assert content_get.find('<form action="" method="post">') != -1
+        assert content_get.find('<input type="submit" value="Partdager">') != -1
+
+        for i in range(NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS):
+            # User A makes a POST request towards sharing_an_experience_create with valid form and
+            # valid age and so create a sharing
+            # + 1 year because menu values for creation of sharings begins at
+            # LOWER_LIMIT_AGE_TO_BE_SHARED + 1 
+            # + i  for the boucle + the assertion of well recording
+            # Test that User A -> POST method : can access sharing_an_experience_create view with
+            # rigth content (redirection to menu)
+            path_post = reverse('sharing_an_experience_create', args=[LOWER_LIMIT_AGE_TO_BE_SHARED + 1 + i])
+            response_post = client_test_user_A.post(path_post, {'description': 'Description of the sharing of experience by user A', })
+            assert response_post.status_code == 302
+            assert response_post.url == reverse('sharing_experiences_menu')
+
+            # Test that -> the sharing of experience is well recorded in the database
+            number_of_sharings_in_database_after_post_request_by_userA = len(SharingOfExperience.objects.all())
+            assert number_of_sharings_in_database_before_post_request_by_userA + 1 + i == number_of_sharings_in_database_after_post_request_by_userA
+            
+        # Test that User A -> access given to all sharings from other users (age +/- GAP)
+        # Note : credits: + 1 is the initial value (when user A dictionary was created) ;-1 is
+        # because of the access given to a sharing of experience of user B
+        expected_value = {str(test_sharing_user_B_age_userA.id): True, 'credits': 1 + DEFAULT_NUMBER_GIVE_ACCESS_TO_SHARINGS_AT_EACH_PARTICIPATION -1}
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+        assert user_A_profile_model_dictionnary == expected_value
+
+
+    @pytest.mark.django_db
+    def test_creation_of_sharing_all_conditions_meet_and_user_did_not_completed_all_his_sharings_moderator_validation_is_NOP(self):
+        """
+        Double verification of the test_creation_of_sharing_all_conditions_meet_and_user_did_not_completed_all_his_sharings test :
+        in the present test, sharings of experience are not yet validated by the moderator.
+        Then, they are not yet visible by the user.
+
         Tests that an user who meets the conditions :
         - logged-in
         - + valid form
@@ -629,7 +847,7 @@ class TestSharing_an_experience_createView:
         # Test that User A -> access given to all sharings from other users (age +/- GAP)
         # Note : credits: + 1 is the initial value (when user A dictionary was created) ;-1 is
         # because of the access given to a sharing of experience of user B
-        expected_value = {str(test_sharing_user_B_age_userA.id): True, 'credits': 1 + DEFAULT_NUMBER_GIVE_ACCESS_TO_SHARINGS_AT_EACH_PARTICIPATION -1}
+        expected_value = {'credits': 1 + DEFAULT_NUMBER_GIVE_ACCESS_TO_SHARINGS_AT_EACH_PARTICIPATION}
         user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
         user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
         assert user_A_profile_model_dictionnary == expected_value
@@ -749,7 +967,7 @@ class TestSharing_an_experience_createView:
                 user_id = test_user_A,
                 experienced_age = LOWER_LIMIT_AGE_TO_BE_SHARED + 1,
                 description = "description test_sharing",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_A_first.save()
@@ -861,7 +1079,7 @@ class TestSharing_an_experience_updateView:
                 user_id = test_user_A,
                 experienced_age = LOWER_LIMIT_AGE_TO_BE_SHARED + 1,
                 description = "description test_sharing",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_A.save()
@@ -917,7 +1135,7 @@ class TestSharing_an_experience_updateView:
                 user_id = test_user_A,
                 experienced_age = LOWER_LIMIT_AGE_TO_BE_SHARED + 1,
                 description = "description test_sharing",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_A.save()
@@ -981,7 +1199,7 @@ class TestSharing_an_experience_updateView:
                 user_id = test_user_A,
                 experienced_age = LOWER_LIMIT_AGE_TO_BE_SHARED + 1,
                 description = "description test_sharing",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_A.save()
@@ -1049,7 +1267,7 @@ class TestSharing_an_experience_updateView:
                 user_id = test_user_B,
                 experienced_age = LOWER_LIMIT_AGE_TO_BE_SHARED + 1,
                 description = "description test_sharing",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B.save()
@@ -1107,7 +1325,7 @@ class TestSharing_an_experience_updateView:
                 user_id = test_user_A,
                 experienced_age = LOWER_LIMIT_AGE_TO_BE_SHARED + 1,
                 description = "description test_sharing",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_A.save()
@@ -1197,7 +1415,7 @@ class TestLearning_from_othersView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age,
                 description = "description test_sharing test_sharing_user_B_1",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B_1.save()
@@ -1206,7 +1424,7 @@ class TestLearning_from_othersView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+1,
                 description = "description test_sharing test_sharing_user_B_2",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B_2.save()
@@ -1291,6 +1509,104 @@ class TestLearning_from_othersView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age,
                 description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_1.save()
+
+        test_sharing_user_B_2 = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+1,
+                description = "description test_sharing test_sharing_user_B_2",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_2.save()
+
+        # Profile models creation 
+        # Reminder : + user dictionnary has NOT a key corresponding to a sharing id equal to true
+        # in its profile model
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {str (test_sharing_user_B_1.id) : 0, 'full access sharings age plus minus' : True},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # User A makes a GET request towards learning_from_others page
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+        # User A should have access to the sharing of experience corresponding to his/her age but no access to the sharing of experience which does not correspond to his/her
+        # -> tests that the sharing of experience corresponding to userA age is well displayed
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
+        assert content.find(">{0}</p>".format(test_sharing_user_B_1.description)) != -1 
+        assert content.find("<p>Likes :") != -1 
+        assert content.find('<button><a href="/like_a_sharing_of_experience/{0}/">Like</a></button>'.format(test_sharing_user_B_1.id)) != -1 
+        # -> tests that the sharing of experience which does not correspond to userA age is not displayed
+        assert content.find("<p>{0}</p>".format(test_sharing_user_B_2.description)) == -1
+
+
+    @pytest.mark.django_db
+    def test_learning_from_others_all_conditions_meet_full_access_moderator_validation_is_NOP(self):
+        """
+        Double verification of the test_learning_from_others_all_conditions_meet_full_access test :
+        in the present test, sharings of experience are not yet validated by the moderator.
+        Then, they are not yet visible by the user.
+        
+        Tests that a couple user/sharing who all meets the conditions:
+        - user is logged-in
+        - + user dictionnary does not have 'dictionary initialisation' = 1 in its profile model
+        (redirection home)
+        - + user dictionnary has NOT a key corresponding to a sharing id equal to true in its
+        profile model
+            ->at_least_a_numeric_key_is_true ; if not : impacts HTML content
+            (sharings_not_yet_accessible)
+
+        - Note : for this test, the user has 'full access sharings age plus minus' = True in its
+        profile model
+
+        -> tests that the sharing of experience corresponding to userA age is well displayed even
+        if the corresponding numeric key is not equal to one
+
+        Scenario : 
+        Creation of users A and B and profile model of user A
+        User B shared two experiences : the first one corresponds to userA age, the second one is
+        out of the range age_plus_minus (initially gap = 1 year) 
+        User A logs-in the application and makes a GET request towards learning_from_others page
+        User A should have access to the sharing of experience corresponding to his/her age but no
+        access to the sharing of experience which does not correspond to his/her
+        """
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+        # Sharings of experience creation 
+        # User B shared two experiences : the first one corresponds to userA age, the second one is
+        # out of the range age_plus_minus (initially gap = 1 year) 
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_1= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing test_sharing_user_B_1",
                 moderator_validation = "NOP",
                 likes = {"likes": {}}
         )
@@ -1322,12 +1638,11 @@ class TestLearning_from_othersView:
         # -> tests that the sharing of experience corresponding to userA age is well displayed
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
-        assert content.find(">{0}</p>".format(test_sharing_user_B_1.description)) != -1 
-        assert content.find("<p>Likes :") != -1 
-        assert content.find('<button><a href="/like_a_sharing_of_experience/{0}/">Like</a></button>'.format(test_sharing_user_B_1.id)) != -1 
+        assert content.find(">{0}</p>".format(test_sharing_user_B_1.description)) == -1 
+        assert content.find("<p>Likes :") == -1 
+        assert content.find('<button><a href="/like_a_sharing_of_experience/{0}/">Like</a></button>'.format(test_sharing_user_B_1.id)) == -1 
         # -> tests that the sharing of experience which does not correspond to userA age is not displayed
         assert content.find("<p>{0}</p>".format(test_sharing_user_B_2.description)) == -1
-
 
 
     @pytest.mark.django_db
@@ -1355,6 +1670,105 @@ class TestLearning_from_othersView:
     @pytest.mark.django_db
     def test_learning_from_others_dictionary_initialisation_redirects_user(self):
         """
+        Tests that a couple user/sharing who all meets the conditions:
+        - user is logged-in
+        - + user dictionnary HAS 'dictionary initialisation' = 1 in its profile model
+        (redirection home)
+        - + user dictionnary has a key corresponding to a sharing id equal to true in its profile
+        model
+            ->at_least_a_numeric_key_is_true ; if not : impacts HTML content
+            (sharings_not_yet_accessible)
+
+        - Note : for this test, the user does not have 'full access sharings age plus minus' in its
+        profile model
+
+        -> tests that the user is redirected towards home page
+        -> tests that the redirection towards home page reinitialised the user profile model
+        dictionary
+
+        Scenario : 
+        Creation of users A and B and profile model of user A
+        User B shared an experience which corresponds to userA age
+        User A logs-in the application and makes a GET request towards learning_from_others page
+        User A should be redirected towards home page
+        """
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+        # Sharings of experience creation 
+        # User B shared two experiences : the first one corresponds to userA age, the second one is out of the range age_plus_minus (initially gap = 1 year) 
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_1= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_1.save()
+
+        test_sharing_user_B_2 = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+1,
+                description = "description test_sharing test_sharing_user_B_2",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_2.save()
+
+        # Profile models creation 
+        # Reminder : + user dictionnary has a key corresponding to a sharing id equal to true in
+        # its profile model
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {str (test_sharing_user_B_1.id) : 1, 'dictionary initialisation' : 1},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # User A makes a GET request towards learning_from_others page
+        # User A should be redirected towards home page
+        # -> tests that the user is redirected towards home page
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        assert response.status_code == 302
+        assert response.url == reverse('home')
+
+        # -> tests that the redirection towards home page reinitialised the user profile model
+        # dictionary
+        path = reverse('home')
+        response = client_test_user_A.get(path)
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+        expected_value = {str (test_sharing_user_B_1.id) : 1, 'credits': ACCESS_TO_SHARINGS_MINIMUM_NUMBER-1}
+        assert user_A_profile_model_dictionnary == expected_value
+
+
+    @pytest.mark.django_db
+    def test_learning_from_others_dictionary_initialisation_redirects_user_moderator_validation_is_NOP(self):
+        """
+        Double verification of the test_learning_from_others_dictionary_initialisation_redirects_user test :
+        in the present test, sharings of experience are not yet validated by the moderator.
+        Then, they are not yet visible by the user.
+
         Tests that a couple user/sharing who all meets the conditions:
         - user is logged-in
         - + user dictionnary HAS 'dictionary initialisation' = 1 in its profile model
@@ -1443,7 +1857,7 @@ class TestLearning_from_othersView:
         response = client_test_user_A.get(path)
         user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
         user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
-        expected_value = {str (test_sharing_user_B_1.id) : 1, 'credits': ACCESS_TO_SHARINGS_MINIMUM_NUMBER-1}
+        expected_value = {str (test_sharing_user_B_1.id) : 1, 'credits': ACCESS_TO_SHARINGS_MINIMUM_NUMBER}
         assert user_A_profile_model_dictionnary == expected_value
 
 
@@ -1501,7 +1915,7 @@ class TestLearning_from_othersView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age,
                 description = "description test_sharing test_sharing_user_B_1",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B_1.save()
@@ -1510,7 +1924,7 @@ class TestLearning_from_othersView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+1,
                 description = "description test_sharing test_sharing_user_B_2",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B_2.save()
@@ -1593,7 +2007,7 @@ class TestLike_a_sharing_of_experienceView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age,
                 description = "description test_sharing test_sharing_user_B_1",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B_1.save()
@@ -1672,7 +2086,7 @@ class TestLike_a_sharing_of_experienceView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age,
                 description = "description test_sharing test_sharing_user_B_1",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B_1.save()
@@ -1703,6 +2117,156 @@ class TestSpend_creditsView:
     @pytest.mark.django_db
     def test_spend_credits_all_condition_met(self):
         """
+        Tests that a user can spend credits to access past or futures sharings of experience
+        - user is logged-in
+        - user has enought credits to spend it 
+        (2 * COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS)
+        - there is at least a sharing he/she does not have access yet (both past and future)
+        
+        - Note : user dictionnary does not have 'dictionary initialisation' = 1 in its profile
+        model (redirection home)
+        - Note : for this test, the user does not have 'full access sharings age plus minus' in its
+        profile model
+
+        -> tests that the user can access two new sharings wich are not in the range
+        'user_age - GAP ; user_age + GAP)
+
+        Scenario : 
+        Creation of users A and B and profile model of user A
+        User B shared four experiences which are OUT of the range age_plus_minus
+        (initially gap = 1 year) : two pasts and two futures experiences
+        User A logs-in the application and makes two GET requests towards spend_creadits() : for
+        past and future experiences
+        The user has access to two sharings of experience which are OUT of the range age_plus_minus
+        (initially gap = 1 year)
+        Note : return redirect('learning_from_others')
+        Note : user_credits -= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS to be checked
+        """
+
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+        # Profile models creation 
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits' : 2*COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # Sharings of experience creation 
+        # User B shared four experiences which are OUT of the range age_plus_minus
+        # (initially gap = 1 year) : two pasts and two futures experiences
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_past_1= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age-GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES-1,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_past_1.save()
+
+        test_sharing_user_B_past_2= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age-GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES-2,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_past_2.save()
+
+        test_sharing_user_B_future_1 = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+1,
+                description = "description test_sharing test_sharing_user_B_2",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_future_1.save()
+
+        test_sharing_user_B_future_2 = SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+2,
+                description = "description test_sharing test_sharing_user_B_2",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_future_2.save()
+
+        #-> Initially, user A does not have access to sharings wich are not in the range
+        # 'user_age - GAP ; user_age + GAP)
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
+        assert content.find(">{0}</p>".format(test_sharing_user_B_past_1.description)) == -1
+        assert content.find(">{0}</p>".format(test_sharing_user_B_past_2.description)) == -1
+        assert content.find(">{0}</p>".format(test_sharing_user_B_future_1.description)) == -1
+        assert content.find(">{0}</p>".format(test_sharing_user_B_future_2.description)) == -1
+
+        # User A makes a GET request towards spend_credits page
+        path_past_experiences = reverse('spend_credits', args=['past_sharings'])
+        response_past_experiences = client_test_user_A.get(path_past_experiences)
+        assert response_past_experiences.status_code == 302
+        assert response_past_experiences.url == reverse('learning_from_others')
+
+        path_future_experiences = reverse('spend_credits', args=['future_sharings'])
+        response_future_experiences = client_test_user_A.get(path_future_experiences)
+        assert response_future_experiences.status_code == 302
+        assert response_future_experiences.url == reverse('learning_from_others')
+
+        #-> tests that the user can access two new sharings wich are not in the range
+        # 'user_age - GAP ; user_age + GAP)
+        # User A makes a GET request towards learning_from_others page (in reality : automated
+        # with redirection)
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
+        assert content.find(">{0}</p>".format(test_sharing_user_B_past_1.description)) != -1 or content.find(">{0}</p>".format(test_sharing_user_B_past_2.description)) != -1
+        assert content.find(">{0}</p>".format(test_sharing_user_B_future_1.description)) != -1 or content.find(">{0}</p>".format(test_sharing_user_B_future_2.description)) != -1
+
+        # Test that : user_credits -= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS to be
+        # checked
+        expected_value_past1_future_1 = {str(test_sharing_user_B_past_1.id): True, str(test_sharing_user_B_future_1.id): True, 'credits': 0}
+        expected_value_past1_future_2 = {str(test_sharing_user_B_past_1.id): True, str(test_sharing_user_B_future_2.id): True, 'credits': 0}
+        expected_value_past2_future_1 = {str(test_sharing_user_B_past_2.id): True, str(test_sharing_user_B_future_1.id): True, 'credits': 0}
+        expected_value_past2_future_2 = {str(test_sharing_user_B_past_2.id): True, str(test_sharing_user_B_future_2.id): True, 'credits': 0}
+
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+        assert user_A_profile_model_dictionnary == expected_value_past1_future_1 or user_A_profile_model_dictionnary == expected_value_past1_future_2 or user_A_profile_model_dictionnary == expected_value_past2_future_1 or user_A_profile_model_dictionnary == expected_value_past2_future_2
+
+
+    @pytest.mark.django_db
+    def test_spend_credits_all_condition_met_moderator_validation_is_NOP(self):
+        """
+        Double verification of the test_spend_credits_all_condition_met test :
+        in the present test, sharings of experience are not yet validated by the moderator.
+        Then, they are not yet visible by the user.
+
         Tests that a user can spend credits to access past or futures sharings of experience
         - user is logged-in
         - user has enought credits to spend it 
@@ -1831,8 +2395,8 @@ class TestSpend_creditsView:
 
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
-        assert content.find(">{0}</p>".format(test_sharing_user_B_past_1.description)) != -1 or content.find(">{0}</p>".format(test_sharing_user_B_past_2.description)) != -1
-        assert content.find(">{0}</p>".format(test_sharing_user_B_future_1.description)) != -1 or content.find(">{0}</p>".format(test_sharing_user_B_future_2.description)) != -1
+        assert content.find(">{0}</p>".format(test_sharing_user_B_past_1.description)) == -1 and content.find(">{0}</p>".format(test_sharing_user_B_past_2.description)) == -1
+        assert content.find(">{0}</p>".format(test_sharing_user_B_future_1.description)) == -1 and content.find(">{0}</p>".format(test_sharing_user_B_future_2.description)) == -1
 
         # Test that : user_credits -= COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS to be
         # checked
@@ -1843,7 +2407,7 @@ class TestSpend_creditsView:
 
         user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
         user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
-        assert user_A_profile_model_dictionnary == expected_value_past1_future_1 or user_A_profile_model_dictionnary == expected_value_past1_future_2 or user_A_profile_model_dictionnary == expected_value_past2_future_1 or user_A_profile_model_dictionnary == expected_value_past2_future_2
+        assert user_A_profile_model_dictionnary != expected_value_past1_future_1 and user_A_profile_model_dictionnary != expected_value_past1_future_2 and user_A_profile_model_dictionnary != expected_value_past2_future_1 and user_A_profile_model_dictionnary != expected_value_past2_future_2
 
 
     @pytest.mark.django_db
@@ -1908,7 +2472,7 @@ class TestSpend_creditsView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age-GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES-1,
                 description = "description test_sharing test_sharing_user_B_1",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B_past_1.save()
@@ -1917,7 +2481,7 @@ class TestSpend_creditsView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age-GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES-2,
                 description = "description test_sharing test_sharing_user_B_1",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B_past_2.save()
@@ -1926,7 +2490,7 @@ class TestSpend_creditsView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+1,
                 description = "description test_sharing test_sharing_user_B_2",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B_future_1.save()
@@ -1935,7 +2499,7 @@ class TestSpend_creditsView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+2,
                 description = "description test_sharing test_sharing_user_B_2",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B_future_2.save()
@@ -2016,7 +2580,7 @@ class TestSpend_creditsView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age-GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES-1,
                 description = "description test_sharing test_sharing_user_B_1",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B_past_1.save()
@@ -2025,7 +2589,7 @@ class TestSpend_creditsView:
                 user_id = test_user_B,
                 experienced_age = test_user_A_age-GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES-2,
                 description = "description test_sharing test_sharing_user_B_1",
-                moderator_validation = "NOP",
+                moderator_validation = "VAL",
                 likes = {"likes": {}}
         )
         test_sharing_user_B_past_2.save()
@@ -2034,7 +2598,7 @@ class TestSpend_creditsView:
                 user_id=test_user_B,
                 experienced_age=test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+1,
                 description="description test_sharing test_sharing_user_B_2",
-                moderator_validation="NOP",
+                moderator_validation="VAL",
                 likes={"likes": {}}
         )
         test_sharing_user_B_future_1.save()
@@ -2043,7 +2607,7 @@ class TestSpend_creditsView:
                 user_id=test_user_B,
                 experienced_age=test_user_A_age+GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES+2,
                 description="description test_sharing test_sharing_user_B_2",
-                moderator_validation="NOP",
+                moderator_validation="VAL",
                 likes={"likes": {}}
         )
         test_sharing_user_B_future_2.save()
