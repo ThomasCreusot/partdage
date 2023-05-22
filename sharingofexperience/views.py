@@ -444,12 +444,12 @@ def spend_credits(request, past_or_future_sharings):
         if past_or_future_sharings == "past_sharings":
             past_ages_before_gap = [age for age in range(LOWER_LIMIT_AGE_TO_BE_SHARED, user_age - GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES)]
             past_or_future_sharings_from_other_users = SharingOfExperience.objects.filter(
-                ~Q(user_id_id=request.user.id) & Q(experienced_age__in=past_ages_before_gap) & ~Q(id__in=user_profile_model_dictionnary_only_numeric_keys)
+                ~Q(user_id_id=request.user.id) & Q(experienced_age__in=past_ages_before_gap) & ~Q(id__in=user_profile_model_dictionnary_only_numeric_keys) & Q(moderator_validation="VAL")
             )
         elif past_or_future_sharings == "future_sharings":
             future_ages_after_gap = [age for age in range(user_age + GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES + 1, HIGHER_LIMIT_AGE_TO_BE_SHARED)]
             past_or_future_sharings_from_other_users = SharingOfExperience.objects.filter(
-                ~Q(user_id_id=request.user.id) & Q(experienced_age__in=future_ages_after_gap) & ~Q(id__in=user_profile_model_dictionnary_only_numeric_keys)
+                ~Q(user_id_id=request.user.id) & Q(experienced_age__in=future_ages_after_gap) & ~Q(id__in=user_profile_model_dictionnary_only_numeric_keys) & Q(moderator_validation="VAL")
             )
 
         queryset_is_empty = past_or_future_sharings_from_other_users.count() == 0
