@@ -36,7 +36,10 @@ _BUTTONS
     --footer-height: 20px; /*rgb(64, 64, 64);*/    
 }
 
-
+ol li *{
+    color: var(--main-green-color);
+    font-size: 3em; 
+}
 
 /*===============================*/
 /*========== FONTS ==========*/
