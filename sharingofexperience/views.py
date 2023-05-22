@@ -103,7 +103,7 @@ def queryset_sharing_of_experiences_from_others(request):
     user_age = age_calculation(request.user.birth_date)
     user_age_plus_minus_range = user_age_plus_minus_range_generation(user_age)
     sharing_of_experiences_from_others = SharingOfExperience.objects.filter(
-        ~Q(user_id_id=request.user.id) & Q(experienced_age__in=user_age_plus_minus_range)
+        ~Q(user_id_id=request.user.id) & Q(experienced_age__in=user_age_plus_minus_range) & Q(moderator_validation="VAL")
     )
     return sharing_of_experiences_from_others
 
