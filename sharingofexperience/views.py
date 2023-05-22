@@ -131,6 +131,11 @@ def allocation_of_new_sharings_of_experiences(request, number_of_new_sharings, s
     user_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=request.user.id)
     user_profile_model_dictionnary = user_profile_model.sharing_of_experiences_user_has_access
 
+    # update 22/05/2023: only shares validated by the moderator are kept in the queryset
+    sharings_queryset_in_which_we_sample=sharings_queryset_in_which_we_sample.filter(
+        Q(moderator_validation="VAL")
+    )
+
     total_sharings_queryset_in_which_we_sample = sharings_queryset_in_which_we_sample.count()
     # print('total_sharings_of_experience_age_plus_minus_one', total_sharings_queryset_in_which_we_sample)
 
