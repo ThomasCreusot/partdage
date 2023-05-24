@@ -35,7 +35,7 @@ RESPONSIVENESS
     --main-grey-color: #404040; /*rgb(64, 64, 64);*/
 
     --header-height: 110px;
-    --header-height-on-mobile: 160px;
+    --header-height-on-mobile: 130px;
     /*--header-height-on-mobile-half: 80px;*/ /*160px/2*/
     --footer-height: 20px;
 }
@@ -903,7 +903,7 @@ button * {
     header {
         display: flex;
         flex-direction: row;
-        justify-content: space-around; 
+        justify-content: space-between; 
         align-items: center;
         width: 100%;
     
@@ -928,13 +928,13 @@ button * {
 
     #partdage_logo {
         /*width: 60%;*/
-        width: 280px;
+        width: 200px;
         /*max-height: var(--header-height-on-mobile-half);*/
     }
     
     #partdage_slogan {
         /*width: 70%;*/
-        width: 280px;
+        width: 200px;
         /*max-height: var(--header-height-on-mobile-half);*/
     }
 
@@ -957,4 +957,16 @@ button * {
         margin-top: var(--header-height-on-mobile);
     }
 
+    .age_button_in_menu_already_created, .age_button_in_menu_not_yet_created {
+        width: 120px;
+    }
+
+    #wrap {
+        width: 30%;
+        min-width: 100px;
+        height: 50px;
+        margin: 0;
+        z-index: 99;
+        /*position: relative;*/
+    }
 }
