@@ -8,3 +8,6 @@ env/
 
 # Local posgreSQL data
 data/
+
+latest.dump
+latest.dump.1

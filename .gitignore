@@ -4,3 +4,5 @@ db.sqlite3
 .env
 docker.env
 data
+latest.dump
+latest.dump.1
