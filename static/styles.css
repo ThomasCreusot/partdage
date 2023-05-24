@@ -71,8 +71,9 @@ _BUTTONS
 
 /*Default font*/
 * {
-    color: var(--main-beige-color);
+    /*color: var(--main-beige-color);*/
     font-family: 'archivo_narrowregular', 'lane_-_narrowregular', georgia, sans-serif;
+    color : red
 }
 
 
