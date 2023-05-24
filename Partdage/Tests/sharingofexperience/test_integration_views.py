@@ -412,7 +412,7 @@ class TestSharing_experiences_menuView:
         response = client_test_user_A.get(path)
 
         content = response.content.decode()
-        assert content.find("<p>Sharing my experiences</p>") != -1 
+        assert content.find("<p><strong>COMMENT PARTDAGER ?</strong></p>") != -1 
         assert response.status_code == 200
         assertTemplateUsed(response, "sharingofexperience/sharing_experiences_menu.html")
 
