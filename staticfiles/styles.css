@@ -288,6 +288,10 @@ h2 {
     align-items: center;
 }
 
+.wordbreak-breakall{
+    word-break: break-all;
+}
+
 
 
 /*==================================*/
@@ -374,6 +378,23 @@ h2 {
     height: 50px;
     position:relative;
     left: 43%; /*50% - 14%/2 with 14% <-> button width*/
+}
+
+#blocPageHowWasMade strong * {
+    font-size: 1.1em;
+    color: rgb(255, 255, 255)
+}
+
+#blocPageHowWasMade ul * {
+    font-size: 0.9em;
+}
+
+#blocPageHowWasMade ul ul *, #blocPageHowWasMade ul ol * {
+    font-size: 1.15em;
+}
+
+#blocPageHowWasMade ul ul *, #blocPageHowWasMade ul ol * {
+    font-style: italic;
 }
 
 

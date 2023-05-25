@@ -8,95 +8,98 @@
         <br>
         <div class='centered_text' class = 'primary_text'><p><strong>C'est une longue histoire (en cours de rédaction et schématisation), mais dans les grandes lignes :</strong></p></div>
         <br>
-        <strong>Étape 1</strong> : J'ai défini le concept et le cadre.
+        <strong>Étape 1 : J'ai défini le concept et le cadre.</strong>
         <br>
         Par exemple : comment je pensais m'organiser, quels livrables je devais produire, quels étaient mes contraintes potentielles, etc. 
             <ul>
                 <li>Projet personnel après la validation d'un diplôme : propre et complet</li>
                 <li>Pratiquer, Apprendre</li>
-                <li>Présenter : github, Domain Driven Design, Django, testing, HTMLL/CSS, déploiement, etc.</li>
+                <li>Présenter : github, Domain Driven Design, Django, testing, HTML/CSS, déploiement, etc.</li>
                 <li>Il me tient à coeur d'utiliser Django, postgreSQL et de mettre en place un pipeline CI/CD</li>
             </ul>
         <br>
 
-        <strong>Étape 2</strong> : J'ai défini le besoin.
+        <strong>Étape 2 : J'ai défini le besoin.</strong>
         <br>
         Il s'agit de l'une de mes étapes préférées (j'apprécie comprendre le métier, la personne et ses besoins) !
         Sauf que normalement cette étape se fait en échangeant avec un(e) passioné(e) qui a son projet ^^.
-        Dans le cas du présent projet j'ai cogité en autonomie sur le projet Partdage. Les étapes (toujours dans les grandes lignes et sans rentrer dans le détail) sont:
+        Dans le cas du projet PARTDAGE, j'ai cogité en autonomie. Les étapes (toujours dans les grandes lignes et sans rentrer dans les détails) sont:
             <ul>
-                <li>Comprendre le quoi et le pourquoi de la solution ; Comment la solution peut être la plus pratique, utile et ergonomique possible pour ses utilisateurs ?</li>
-                <li>Définir qui sont les acteurs qui utilisent l'application ?</li>
-                <li>C'est à ce moment la que j'ai préparé le livrable "Diagramme des cas d'usages" = objectifs des acteurs (en une phrase, puis de manière plus détaillée et sous forme d'interactions avec la machine). J'ai fait des diagrammes pour chacune des fonctionalités majeures de l'application (connexion et création de compte, rédaction d'un partage d'expérience, consultation des expériences des autres utilisateurs, etc)</li>
-                <li>J'ai également préparé les "User stories" qui associent un Contexte, une Fonction et un Bénéfice = En tant que ... je veux ... pour ... . C'est l'occasion de définir des critères d'acceptations pour chaque fonctionalité.</li>
-                <li>J'ai également préparé les "Wireframes" = il s'agit de maquettes très simples, en niveau de gris. J'ai surtout travaillé le 'zoning', c'est à dire l'emplacement de chaque information</li>
-                <li>Pour l'instant je n'ai pas tapé une seule ligne de code. Je me concentre sur l'utilisateur et ses objectifs, etc. C'est une approche qui s'appelle le Domain Driven Design. Par exemple, dans les User Stories, je ne définis pas les taches de l'équipe de développment mais le besoin utilisateur.</li>
+                <li>Comprendre le 'quoi' et le 'pourquoi' de la solution ; Comment la solution peut être la plus pratique, utile et ergonomique possible pour ses utilisateurs ?</li>
+                <li>Définir qui sont les acteurs qui utilisent l'application.</li>
+                <li>C'est à ce moment la que j'ai préparé le livrable "Diagramme des cas d'usages" = objectifs des acteurs (en une phrase, puis de manière plus détaillée et sous forme d'interactions avec la machine). J'ai fait des diagrammes pour chacune des fonctionalités majeures de l'application (connexion et création de compte, rédaction d'un partage d'expérience, consultation des expériences des autres utilisateurs, etc.).</li>
+                <li>J'ai également préparé les "User stories" qui associent un Contexte, une Fonction et un Bénéfice = En tant que ... je veux ... pour ... . C'est l'occasion de définir des critères d'acceptation pour chaque fonctionalité.</li>
+                <li>J'ai également préparé les "Wireframes" = il s'agit de maquettes très simples, en niveaux de gris. J'ai surtout travaillé le 'zoning', c'est à dire l'emplacement de chaque information</li>
+                <li>Pour l'instant je n'ai pas tapé une seule ligne de code. Je me concentre sur l'utilisateur et ses objectifs. C'est une approche qui s'appelle le Domain Driven Design. Par exemple, dans les User Stories, je ne définis pas les taches qui seront réalisées par le développeur mais le besoin utilisateur.</li>
             </ul>
         <br>
 
-        <strong>Étape 3</strong> : J'ai rédigé le diagramme de classe : la technique arrive !
+        <strong>Étape 3 : J'ai rédigé le diagramme de classe : la technique arrive !</strong>
         <br>
-        La technique arrive, et donc la conception aussi ! C'est une autre de mes étapes préférées. Je retrouve la conception avant et pendant que je code; ce sont juste deux niveaux de conception différents. En général, arrivé à ce stade j'ai hâte de coder ! Mais il vaut mieux prendre le temps de bien définir ce qui va se passer.
+        La technique arrive, et donc la conception aussi ! C'est une autre de mes étapes préférées. Je retrouve la conception avant et pendant que je code ; ce sont juste deux niveaux de conception différents. En général, arrivé à ce stade j'ai hâte de coder ! Mais il vaut mieux prendre le temps de bien définir ce qui va se passer.
             <ul>
-                <li>Si je devais vulgariser, je dirai qu'avec le code, on peut définir un monde d'objets qui ressemblent aux objets qui nous entourent. Pour définir un objet (disons une voiture) ce n'est pas compliqué. Mais pour en définir 10 ou 100, ça devient long. Donc ce que l'on peut faire, c'est créer un "moule à objet" qui créera l'objet tout seul, on aura juste à préciser quelques attributs, par exemple la couleur de la voiture. Ce moule, c'est une classe. Les voitures produites à partir du moule seront des 'instances de classe'</li>
-                <li>On va également s'interesser aux relations entre nos classes. Par exemple, une voiture a une couleur. Une couleur peut servir à plusieurs voitures.</li>
+                <li>Si je devais vulgariser, je dirai qu'avec le code, on peut définir un monde d'objets qui ressemblent aux objets qui nous entourent. Pour définir un objet (disons une voiture) ce n'est pas compliqué. Mais pour en définir 10 ou 100, ça devient long et surtout très répétitif. Donc ce que l'on peut faire, c'est créer un "moule à objet" qui permet d'automatiser la création de l'objet. On aura juste à préciser quelques attributs, par exemple la couleur de la voiture. Ce moule, c'est une classe. Les voitures produites à partir du moule seront des 'instances de classe'.</li>
+                <li>On va également s'interesser aux relations entre nos classes. Par exemple, une voiture a une couleur. Une couleur peut être utilisée pour peindre plusieurs voitures. C'est une relation "1:n"</li>
                 <li>simple, n'est il pas !?</li>
                 <li>Oui, mais si la portière de ma voiture a été changée et n'a plus la même couleur... Il y a une nouvelle relation, entre la portière et la voiture, entre la couleur et la portière, mince ?..</li>
-                <li>..mais non, pas de soucis ! on est en amont du code, on peut donc prendre le temps de bien réfléchir à notre modèle : devons nous pouvoir changer la portière de la voiture dans notre simulation ou pas ? On demande au client, tout simplement !</li>
-                <li>Note : on peut tout simplement estimer qu'une voiture peut avoir plusieurs couleurs et qu'une couleur peut être utilisée sur plusieurs voitures, et hop !</li>
+                <li>..mais non, pas de soucis ! on est en amont du code, on peut donc prendre le temps de bien réfléchir à notre modèle : devons nous pouvoir changer la portière de la voiture dans notre simulation ou pas ? On demande au client, tout simplement ! Un garagiste et un simulateur de traffic autoroutier travaillent sur des voitures, mais l'un accordera beaucoup plus d'importance à l'objet 'portière' que l'autre.</li>
+                <li>Note : on peut tout simplement estimer qu'une voiture peut avoir plusieurs couleurs et qu'une couleur peut être utilisée sur plusieurs voitures, et hop on opte pour une petite relation "n:n" ! On pourra même enregistrer des informations relatives à cette relation, par exemple le pourcentage de voiture recouvert par une couleur donné (information propre à la relation couleur/voiture), mais je sens que je m'éparpille !</li>
                 <li>Oh, et en plus d'avoir des propriétés, nos objets peuvent réaliser des actions... Mais ça ce sera pour une prochaine fois ^^</li>
             </ul>
         <br>
 
-        <strong>Étape 4</strong> : J'ai codé, forcément !
+        <strong>Étape 4 : J'ai codé, forcément !</strong>
         <br>
         et codé encore !
             <ul>
-                <li>J'ai utilisé un outil de versionning : github -> je retrouve mon code à n'importe quelle étape du développement sans effort</li>
-                <li>J'ai créé un environnement virtuel -> pas de soucis de compatibilité; mon code pourra tourner sur mon ordinateur comme sur le votre</li>
-                <li>J'ai utilisé le framework Django (et plein d'autres outils déja existant qui facilitent la vie des développeurs) : Django est un framework qui, entre autres, définit à quels endroits je peux mettre les urls, les views, les templates et les modèles et, surtout, qui établit le lien entre ces éléments.
+                <li>J'ai utilisé un outil de versionning : github -> je retrouve mon code à n'importe quelle étape de son développement sans effort. C'est un incontournable en développement !</li>
+                <li>J'ai créé un environnement virtuel -> pas de soucis de compatibilité; mon code pourra tourner sur mon ordinateur comme sur le votre si vous souhaitez mettre a jour mon code. Cela me servira aussi au niveau du déploiement (mettre mon code sur un serveur (pour qu'il soit accessible en ligne), à qui il faut que je communique une description de l'environnement virtuel).</li>
+                <li>J'ai utilisé le framework Django (et plein d'autres outils déja existants qui facilitent la vie des développeurs) : Django est un framework qui, entre autres, définit à quels endroits je peux mettre les urls, les views, les templates et les modèles et, surtout, qui établit le lien entre ces éléments.
                     <ul>
-                        <li>urls : l'application reçoit votre demande, par exemple 'https://partdage.herokuapp.com/how_partdage_was_made/' et va chercher la view correspondante</li>
-                        <li>views : la view renverra une template à l'utilisateur, mais constitue également une étape intermédiaire dans laquelle diverses actions (vérification, action sur les données, etc) peuvent être effectuées</li>
-                        <li>templates : le texte que vous lisez est écrit dans une template; c'est un fichier HTML qui sera mis en forme avec un fichier CSS</li>
-                        <li>modèles : ce sont les classes dont je parlais précédemment; vous allez en créer, en modifier, en consulter sans même vous en rendre compte car cela se fera via les templates</li>
+                        <li class="wordbreak-breakall">urls : l'application reçoit votre demande, par exemple 'https://partdage.herokuapp.com/how_partdage_was_made/' et va chercher la view correspondante ;</li>
+                        <li>views : la view renverra une template à l'utilisateur, mais constitue également une étape intermédiaire dans laquelle diverses actions (vérification, action sur les données, etc.) peuvent être effectuées ;</li>
+                        <li>templates : le texte que vous lisez est écrit dans une template; c'est un fichier HTML qui sera mis en forme avec un fichier CSS ;</li>
+                        <li>modèles : ce sont les classes dont je parlais précédemment; vous allez créer des instances de ces classes, en modifier, en consulter sans même vous en rendre compte car cela se fera via les templates. Par exemple vous allez (ou avez déja) créer une instance de la classe User en créant un compte utilisateur; une instance de SharingOfExperience en partageant une expérience, etc.</li>
                     </ul>
                 </li>
                 <li>Dans l'odre, ça donne : 
                     <ol>
-                    <li>j'ai codé les modèles (User, SharingOfExperience, etc)</li>
-                    <li>j'ai créé la base de données et l'ai reliée à l'application</li>
-                    <li>j'ai créé les url, views et templates (ainsi que les formulaires, etc.) pour chaque fonctionalité : création de compte et connexion, création de partage d'expérience, etc.</li>
-                    <li>J'ai du réfléchir à quelques subtilités, comme l'enregistrement automatique de valeurs par défauts, le stockage d'information 'a quel partage d'expérience, initialement aléatoire, un utilisateur a il accès ?',le fait qu'un utilisateur ne puisse pas modifier le partage d'expérience d'un autre utilisateur, ou encore qu'il ne puisse pas partager un partage pour un age qu'il n'a pas vécu. Et ces subtilités sont plus ou moins complexe mais surtout, elles sont nombreuses malgré la simplicité du projet.</li>
+                    <li>j'ai codé les modèles (User, SharingOfExperience, etc.) ;</li>
+                    <li>j'ai mis au point la base de données et l'ai reliée à l'application ;</li>
+                    <li>j'ai créé les url, views et templates (ainsi que les formulaires, etc.) pour chaque fonctionalité : création de compte et connexion, création de partage d'expérience, etc. ;</li>
+                    <li>J'ai du réfléchir à quelques subtilités, comme l'enregistrement automatique de valeurs par défaut, le stockage d'information (par exemple, comment stocker 'a quel partage d'expérience, initialement aléatoire, un utilisateur a il accès ?'), le fait qu'un utilisateur ne puisse pas modifier le partage d'expérience d'un autre utilisateur, ou encore qu'il ne puisse pas partager une expérience pour un age qu'il n'a pas vécu. Et ces subtilités sont plus ou moins complexe mais surtout, elles sont nombreuses malgré la simplicité du projet.</li>
                     </ol>
                 </li>
                 <li>On arrive à une étape très importante : le testing. 
                     En quelques mots: quand je code une fonctionalité, je vérifie qu'elle fonctionne, en cliquant sur des boutons qui me font passer de page en page, en vérifiant le contenu des pages, ou des informations stockées dans la base de données.
-                    Et bien tout cela peut s'automatiser. On peut coder le fait de créer une voiture virtuelle, de lui enlever un pneu pour le réparer, et on pourra vérifier entre ces deux étapes que le nombre de pneus sur la voiture est bel et bien trois. Simple et évident ? Oui, mais si on ne le vérifie pas, on risque d'envoyer un tricycle sur l'autoroute !
+                    Et bien tout cela peut être automatisé. On peut coder le fait de créer une voiture virtuelle, de lui enlever un pneu pour le réparer, et on pourra vérifier entre ces deux étapes que le nombre de pneus sur la voiture est bel et bien trois. Simple et évident ? Oui, mais si on ne le vérifie pas, on risque d'envoyer un tricycle sur l'autoroute !
                     Je ne rentrerai pas dans le détail des tests (unitaires, d'intégration, fonctionnels, etc.), tout simplement car il y a beaucoup trop à dire et que l'essentiel est que cette étape est importante pour que le code soit maintenable dans le temps.
                     Il existe le Testing Driven Design: on rédige d'abord un test, puis on rédige le code devant répondre aux exigences de ce test. Ce projet m'a donné envie d'essayer, car la rédaction de tests après la rédaction de code peut être fastidieuse.
                     <ol>
                         <li>j'ai défini le plan de test : je teste quoi ? Je fournis quels paramètres d'entrée ? J'attends quels résultats en sortie ?</li>
-                        <li>et là, c'est le moment de faire tout un tas de scénarios ! et si.. et si ... et si .... alors : le teste passe/passe pas</li>
+                        <li>et là, c'est le moment de faire tout un tas de scénarios ! et si.. et si ... et si .... alors : on s'attend à ci ou à ça</li>
                         <li>j'ai rédigé, puis optimité les tests</li>
                     </ol>
                 </li>
-                <li>J'ai mis en forme mes templates : taille, emplacement, allignements, marges, bordures, etc. Ce n'est pas ma spécialité, mais j'apprécie ce moment plus 'artistique'</li>
+                <li>J'ai mis en forme mes templates : taille, emplacement, allignements, marges, bordures, etc. Ce n'est pas ma spécialité, mais j'apprécie ce moment plus 'artistique'.</li>
             </ul>
         <br>
 
-        <strong>Étape 5</strong> : Dockerisation, Déploiement, Pipeline CI/CD
+        <strong>Étape 5 : Dockerisation, Déploiement, Pipeline CI/CD</strong>
         <br>
         On arrive sur des notions complexes que je vais fortement vulgariser
             <ul>
                 <li>J'ai utilisé Docker. Grossièrement, je rédige un fichier Dockerfile qui est une suite d'instructions/un plan de montage. Ce fichier définit comment sera construit mon container, c'est à dire l'environnement et l'application qui tourne au sein de cet environnement. Si je devais imager, je dirai que pour que vous preniez une photo de votre paysage préféré, il faut : que vous soyez à votre endroit préféré et que vous ayez un appareil photo. Dans le dockerfile, on définir votre présence au sein de votre endroit préféré et on lancera l'instruction "prise d'une photo". Pour précision, ce qui parait simple peut vite se compliquer lorsqu'une base de données entre en considération ^^.</li>
-                <li>J'ai déployé l'application sur Heroku, c'est à dire qu'elle est en ligne. Cette étape ne se fait pas en un clic mais en plusieurs instructions car il faut, par exemple, relier l'application en ligne à sa base de données (en ligne également) qui n'est pas la même que la base de données en local (mais que l'on peut syncrhoniser, breeeeeef)</li>
-                <li>J'ai mis en place un piple CI/CD avec circleCI. Vous vous souvenez de l'automatisation des tests ? Et bien on peut également automatiser le déploiement (lorsque l'application sera mise à jour). Et on peut aller plus loin que ça en automatisant le déploiement si et uniquement si la mise à jour n'entraine pas l'echec d'un test automatisé, et même que le code reste 'propre' : WhooOoOW ! C'est le grand chef d'orchestre !</li>
+                <li>J'ai déployé l'application sur Heroku, c'est à dire qu'elle est en ligne. Cette étape ne se fait pas en un clic mais en plusieurs instructions car il faut, par exemple, relier l'application en ligne à sa base de données (en ligne également) qui n'est pas la même que la base de données en local (mais que l'on peut synchroniser, breeeeeef).</li>
+                <li>J'ai mis en place un pipeline CI/CD avec circleCI. Vous vous souvenez de l'automatisation des tests ? Et bien on peut également automatiser le déploiement (lorsque l'application sera mise à jour). Et on peut aller plus loin que ça en automatisant le déploiement si et uniquement si la mise à jour n'entraine pas l'echec d'un test automatisé, et même que le code reste 'propre' : WhooOoOW ! C'est le grand chef d'orchestre !</li>
                 <li>Ces étapes ne sont pas linéaires, quand on change le comportement d'un musicien il faut que le chef d'orchestre s'adapte, et inversement ^^</li>
             </ul>
         <br>
 
-        <strong>Étape 6</strong> : Les petits ajustements (petits mais nombreux !) 
+        <strong>Étape 6 : Les petits ajustements (petits mais nombreux !)</strong>
+        <br>
+        Par exemple ? Sauvegarder la base de données en ligne, gérer le 'responsive' (le fait que la mise en forme de l'application s'adapte à la taille de la fenêtre/de l'écran; le rendu sur téléphone serait désagréable sans cette étape), etc.
+
     </p>
 
     <br>
