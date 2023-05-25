@@ -235,7 +235,7 @@ def user_has_already_access_to_all_sharings_age_minus_plus(request):
     user_profile_model_dictionnary = user_profile_model.sharing_of_experiences_user_has_access
 
     if 'full access sharings age plus minus' in user_profile_model_dictionnary:
-        return user_profile_model_dictionnary['user_profile_model_dictionnary'] is True
+        return user_profile_model_dictionnary['full access sharings age plus minus'] is True
     else:
         return False
 
