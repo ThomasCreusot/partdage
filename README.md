@@ -51,6 +51,7 @@ The code is now also on your github account (*Le code est désormais également 
 2. Create a local copy of the previous fork (créer une copie locale du fork)
 Click on the "code" button, then copy the project URL; open a terminal and run : (*Cliquez sur le bouton « code », puis copiez l’URL du projet ; ouvrez un terminal et executez la commande suivante :*)
 >`git clone PROJECT_URL`   
+
 You have retrieved the project locally from your github repository (*Vous avez récupéré le projet en local depuis votre repository github*).
 
 ### Local execution - *Execution du code en local*
