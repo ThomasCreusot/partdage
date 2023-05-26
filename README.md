@@ -4,24 +4,22 @@
 ## Project presentation – *Présentation du projet*
 EN: PARTDAGE is a web application (Django + postgreSQL) which allows to share experiences of life and learn from other users experiences. I deployed PARTDAGE on heroku (https://partdage.herokuapp.com/).   
 The present project is a way to continue to learn and practice coding after passing a Developer degree. It is a simple application with interesting details. This application is also a concrete demonstration of my skills, in the context of a new professionnal opportunity research. And also I like to code.   
+How does it work ? Each user can share an experience of life for each age he/she lived. Each user can consult sharings (from other user) which correspond to his/her current age (+/- 1 year old). The more an user shares, the more he/she has access to now credits in the form of access to new sharings of experience.
 
 FR : *PARTDAGE est une application web (Django + postgreSQL), permettant de partager ses expériences de vie et d’apprendre des expériences des autres utilisateurs. J’ai déployé PARTDAGE sur heroku (https://partdage.herokuapp.com/).*   
 *Le présent projet est l’opportunité pour moi de continuer à pratiquer le développement informatique et à apprendre après la formation de Développeur que j’ai menée à bien. Il s’agit d’une application simple mais ayant ses subtilités. Cette application constitue également une démonstration concrète de mes competences pour ma recherche d'une nouvelle opportunité professionnelle. Et puis je m'épanouis en développant, tout simplement.*   
-
-How does it work ? Each user can share an experience of life for each age he/she lived. Each user can consult sharings (from other user) which correspond to his/her current age (+/- 1 year old). The more an user shares, the more he/she has access to now credits in the form of access to new sharings of experience.
-
 *Comment ça marche ? Chaque utilisateur peut partager une expérience de vie pour chaque age qu’il a vécu. Chaque utilisateur peut consulter des partages d’expériences d’autres utilisateurs, qui correspondent à son âge actuel (+/- un an). Plus un utilisateur partage ses expériences, plus il a accès à de nouveaux crédits qui se concrétisent par un accès à de nouveaux partages d’expériences.*
 
 
 ## Specifications
-I wrote specifications for the present application. The main ones are as follow:
-- an user must not be able to modify the sharing of experience of another user;
-- an user must not be able to share an experience corresponding to his/her current age (or older) ;
-- a sharing of experience can be displayed only if the moderator approved its content.
+I wrote specifications for the present application. The main ones are as follow:   
+- an user must not be able to modify the sharing of experience of another user;   
+- an user must not be able to share an experience corresponding to his/her current age (or older);   
+- a sharing of experience can be displayed only if the moderator approved its content.   
 
 *J’ai écrit des spécifications pour la présente application. Les principales sont les suivantes :*
 - *un utilisateur ne doit pas pouvoir modifier le partage d’expérience d’un autre utilisateur ;*
-- *un utilisateur ne doit pas pouvoir partager une expérience pour son âge actuelle ou un age plus avancé ;*
+- *un utilisateur ne doit pas pouvoir partager une expérience pour son âge actuelle ou un âge plus avancé ;*
 - *un partage d’expérience n’est affiché que s’il est validé par le modérateur.*
 
 The web applications allows the user to : 
