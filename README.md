@@ -16,6 +16,7 @@ I wrote specifications for the present application. The main ones are as follow:
 - an user must not be able to modify the sharing of experience of another user;
 - an user must not be able to share an experience corresponding to his/her current age (or older);
 - a sharing of experience can be displayed only if the moderator approved its content.
+
 The web applications allows the user to : 
 - Sign up and log
 - chose an experienced age and write an experience of life
@@ -25,6 +26,7 @@ The web applications allows the user to :
 - *un utilisateur ne doit pas pouvoir modifier le partage d’expérience d’un autre utilisateur ;*
 - *un utilisateur ne doit pas pouvoir partager une expérience pour son âge actuelle ou un âge plus avancé ;*
 - *un partage d’expérience n’est affiché que s’il est validé par le modérateur.*
+
 *L’application permet à un utilisateur de :*
 - *s’inscrire et se connecter*
 - *sélectionner un âge vécu et écrire une expérience de vie*
@@ -35,7 +37,7 @@ The web applications allows the user to :
 ### Prerequisites - *Prérequis*
 - Python
 - A terminal
-- pgAdmin4 (ideally (**idéalement))
+- pgAdmin4 (ideally (*idéalement*))
 - GitHub account with read access to this repository (*Compte GitHub avec accès en lecture à ce repository*)
 - Git CLI
 
@@ -48,7 +50,7 @@ The code is now also on your github account (*Le code est désormais également 
 
 2. Create a local copy of the previous fork (créer une copie locale du fork)
 Click on the "code" button, then copy the project URL; open a terminal and run : (*Cliquez sur le bouton « code », puis copiez l’URL du projet ; ouvrez un terminal et executez la commande suivante :*)
->`git clone PROJECT_URL`
+>`git clone PROJECT_URL`   
 You have retrieved the project locally from your github repository (*Vous avez récupéré le projet en local depuis votre repository github*).
 
 ### Local execution - *Execution du code en local*
