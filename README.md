@@ -42,7 +42,7 @@ The web applications allows the user to :
 - Git CLI
 
 ### Code importation *Import du code*
-First of all, you must import code.
+First of all, you must import code (*Avant toute chose, vous devez importer le code*)
 
 1. Optionnal step : Duplicate the project by creating a new repo in your GitHub account (*Étape optionnelle : Dupliquer le projet en créant un nouveau repo dans votre compte GitHub.*)
 Click on the « Fork » button in the top right-hand corner and click « Create fork » (*Cliquez sur le bouton Fork en haut à droite et cliquez sur le bouton « Create fork »*) 
@@ -50,12 +50,12 @@ The code is now also on your github account (*Le code est désormais également 
 
 2. Create a local copy of the previous fork (créer une copie locale du fork)
 Click on the "code" button, then copy the project URL; open a terminal and run : (*Cliquez sur le bouton « code », puis copiez l’URL du projet ; ouvrez un terminal et executez la commande suivante :*)
->`git clone PROJECT_URL`   
+>`git clone PROJECT_URL`
 
 You have retrieved the project locally from your github repository (*Vous avez récupéré le projet en local depuis votre repository github*).
 
 ### Local execution - *Execution du code en local*
-To correctly execute the program, you need to activate the associated virtual environment which has been recorded in the ‘requirements.txt’ file.
+To correctly execute the program, you need to activate the associated virtual environment which has been recorded in the ‘requirements.txt’ file.   
 *Pour exécuter correctement le programme, vous devez activer l'environnement virtuel associé qui a été enregistré dans le fichier 'requirements.txt'.*
 
 ### Creation and activation of the virtual environment - *Création et activation de l'environnement virtuel*
@@ -76,6 +76,7 @@ Please follow theses instructions (*Veuillez suivre les indications suivantes*):
 4. Activate this virtual environment (*Activez l’environnement virtuel*): 
 -Linux or Mac: write the following command in the console (*saisissez la commande suivante*)
 >'source env/bin/activate'
+
 -Windows: write the following command in the console (*saisissez la commande suivante*)
 >'env\Scripts\activate'
 
@@ -84,6 +85,7 @@ Please follow theses instructions (*Veuillez suivre les indications suivantes*):
 
 ### To launch the server locally - *Lancez le serveur en local*
 Write in the console the following command (*saisissez la commande suivante*)
+
 6. Write the following command in the console (Python must be installed on your computer and virtual environment must be activated) (*saisissez la commande suivante (Python doit être installé sur votre ordinateur et l'environnement virtuel doit être activé.)*)
 >'python manage.py runserver'
 
@@ -101,7 +103,8 @@ Write in the console one of the following command (*saisissez une des commandes 
 - `pytest -v`
 
 #### Database - *Base de données*
-pgAdmin4 configuration is required for this step (*la configuration de pgAdmin4 est requise pour cette étape*)
+pgAdmin4 configuration is required for this step (*la configuration de pgAdmin4 est requise pour cette étape*).
+
 You will have access to your local database by writing the following command in the console (*Vous aurez accès à votre base de données local en saisissant la commande suivante*)
 - `heroku pg :psql`
 You can now execute a SQL request, as an example (*Vous pouvez désormais executer une requête SQL, par exemple*)
@@ -134,7 +137,7 @@ Using the terminal, go to the project folder (command `cd`), then execute the fo
 
 - Authenticate yourself (*Authentifiez vous*)
 >`heroku login`
-- 
+
 Create a heroku application (you can specify an application name ; if not, you will get a randomly generated name for this application; the notation NOM_APP_HEROKU will be used hereafter) (*Créer une application heroku (vous pouvez spécifier un nom d'application ; sinon, vous obtiendrez un nom généré aléatoirement pour cette application ; la notation NOM_APP_HEROKU sera utilisée par la suite)*)
 >`heroku create NOM_APP_HEROKU`
 - Make sure you are on the right "git remote" (git remotes are versions of your repository on other servers). (*Assurez vous d'être sur le bon "git remote" (les git remotes sont des versions de votre repository sur d'autres serveurs)*)
@@ -148,23 +151,23 @@ Create a heroku application (you can specify an application name ; if not, you w
 - Make sure you are authentified, if not : (*assurez vous d’être authentifiez, sinon *) 
 >`heroku login`
 - Push your code on github (*poussez votre code sur github*):
->` git add .`
->`git commit -m "MESSAGE"`
+>` git add .`   
+>`git commit -m "MESSAGE"`   
 >`git push origin main` (or `git push -u origin BRANCH_NAME`)
 - Push your code on heroku (*poussez votre code sur heroku *):
 >`git push heroku main` (or `git push heroku BRANCH_NAME:main`)
 
 -You can check that the application is working correctly by using the following commands (the application requires Heroku "dynos" to be available on your account) (* Vous pouvez vérifier le bon fonctionnement de l'application avec les commandes (l'application nécéssite que des "dynos" heroku soient disponible sur votre compte)*) : 
->`heroku ps:scale web=1`
+>`heroku ps:scale web=1`   
 >`heroku open`
 
 ### Steps required to deploy an update for a heroku application - *Étapes nécessaires au déploiement d'une mise à jour d'une application heroku*
 #### Mannual deployment - *Déploiement mannuel*
 - To deploy a manual update (*Pour le déploiement d'une mise à jour mannuel*) :
->`heroku login`
->` git add .`
->`git commit -m "MESSAGE"`
->`git push origin main` (or `git push -u origin BRANCH_NAME`)
+>`heroku login`   
+>` git add .`   
+>`git commit -m "MESSAGE"`   
+>`git push origin main` (or `git push -u origin BRANCH_NAME`)   
 >`git push heroku main` (or `git push heroku BRANCH_NAME:main`)
 
 #### Automatic deployment with a circleCI pipeline - *Déploiement automatique avec un pipeline circleCI*
@@ -177,6 +180,6 @@ If your code is pushed to GitHub and your circleCI account is associated with yo
   - SECRET_KEY : ask the person responsible for the application  (*demandez la au responsable de l'application*)
 
 - To make an automatic deployment with a circleCI pipeline (*Pour le déploiement automatisé d'une mise à jour*) :
->`git add .`
->`commit -m "DESCRIPTIF_DE_VOTRE_COMMIT" `
+>`git add .`   
+>`commit -m "DESCRIPTIF_DE_VOTRE_COMMIT" `   
 >`git push origin main` (or `git push -u origin BRANCH_NAME`)
