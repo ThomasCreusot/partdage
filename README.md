@@ -11,30 +11,28 @@ FR : *PARTDAGE est une application web (Django + postgreSQL), permettant de part
 *Comment ça marche ? Chaque utilisateur peut partager une expérience de vie pour chaque age qu’il a vécu. Chaque utilisateur peut consulter des partages d’expériences d’autres utilisateurs, qui correspondent à son âge actuel (+/- un an). Plus un utilisateur partage ses expériences, plus il a accès à de nouveaux crédits qui se concrétisent par un accès à de nouveaux partages d’expériences.*
 
 
-## Specifications
-I wrote specifications for the present application. The main ones are as follow:   
-- an user must not be able to modify the sharing of experience of another user;   
-- an user must not be able to share an experience corresponding to his/her current age (or older);   
-- a sharing of experience can be displayed only if the moderator approved its content.   
-
-*J’ai écrit des spécifications pour la présente application. Les principales sont les suivantes :*
-- *un utilisateur ne doit pas pouvoir modifier le partage d’expérience d’un autre utilisateur ;*
-- *un utilisateur ne doit pas pouvoir partager une expérience pour son âge actuelle ou un âge plus avancé ;*
-- *un partage d’expérience n’est affiché que s’il est validé par le modérateur.*
-
+## Specifications - *Cahier des charges*
+I wrote specifications for the present application. The main ones are as follow:
+- an user must not be able to modify the sharing of experience of another user;
+- an user must not be able to share an experience corresponding to his/her current age (or older);
+- a sharing of experience can be displayed only if the moderator approved its content.
 The web applications allows the user to : 
 - Sign up and log
 - chose an experienced age and write an experience of life
-- read sharings of experience from other user
+- read sharings of experience from other users
 
+*J’ai rédigé un cahier des charges pour la présente application. Les principales spécifications sont les suivantes :*
+- *un utilisateur ne doit pas pouvoir modifier le partage d’expérience d’un autre utilisateur ;*
+- *un utilisateur ne doit pas pouvoir partager une expérience pour son âge actuelle ou un âge plus avancé ;*
+- *un partage d’expérience n’est affiché que s’il est validé par le modérateur.*
 *L’application permet à un utilisateur de :*
 - *s’inscrire et se connecter*
 - *sélectionner un âge vécu et écrire une expérience de vie*
 - *lire des expériences de vies d’autres utilisateurs*
 
 
-## Project execution *Execution du projet*
-### Prerequisites (*Prérequis*)
+## Project execution - *Execution du projet*
+### Prerequisites - *Prérequis*
 - Python
 - A terminal
 - pgAdmin4 (ideally (**idéalement))
@@ -53,11 +51,11 @@ Click on the "code" button, then copy the project URL; open a terminal and run :
 >`git clone PROJECT_URL`
 You have retrieved the project locally from your github repository (*Vous avez récupéré le projet en local depuis votre repository github*).
 
-### Local execution *Execution du code en local*
+### Local execution - *Execution du code en local*
 To correctly execute the program, you need to activate the associated virtual environment which has been recorded in the ‘requirements.txt’ file.
 *Pour exécuter correctement le programme, vous devez activer l'environnement virtuel associé qui a été enregistré dans le fichier 'requirements.txt'.*
 
-### Creation and activation of the virtual environment (*Création et activation de l'environnement virtuel*)
+### Creation and activation of the virtual environment - *Création et activation de l'environnement virtuel*
 Please follow theses instructions (*Veuillez suivre les indications suivantes*):
 
 1. Open your Shell (*ouvez votre terminal*)
@@ -81,40 +79,40 @@ Please follow theses instructions (*Veuillez suivre les indications suivantes*):
 5. Install the python packages recorded in the *requirements.txt* file : write in the console the following command (*Installez les paquets python enregistrés dans le fichier *requirements.txt* : saisissez la commande suivante*)
 >'pip install -r requirements.txt'
 
-### To launch the server locally (*Lancez le serveur en local*)
+### To launch the server locally - *Lancez le serveur en local*
 Write in the console the following command (*saisissez la commande suivante*)
 6. Write the following command in the console (Python must be installed on your computer and virtual environment must be activated) (*saisissez la commande suivante (Python doit être installé sur votre ordinateur et l'environnement virtuel doit être activé.)*)
 >'python manage.py runserver'
 
-### To access to the web application (*Pour accéder à l’application*)
+### To access to the web application - *Pour accéder à l’application*
 7. Open an internet browser and visit local host url ( http://127.0.0.1:8000/ ) (*Ouvrez un navigateur Internet et visitez l'url de l'hôte local ( http://127.0.0.1:8000/ )*)
 
-### Linting, testing and access to local database and adminitration panel (*Linting, Testing et accès à la base de données locale et au panneau d’administration*)
+### Linting, testing and access to local database and adminitration panel - *Linting, Testing et accès à la base de données locale et au panneau d’administration*
 #### Linting
 Write in the console the following command (*saisissez la commande suivante*)
 - ` flake8 --max-line-length 119 --exclude=env,venv,./authentication/migrations,./sharingofexperience/migrations`
 
-#### Tests unitaires
+#### Testing - *Tests*
 Write in the console one of the following command (*saisissez une des commandes suivante*)
 - `pytest`
 - `pytest -v`
 
-#### Base de données
+#### Database - *Base de données*
 pgAdmin4 configuration is required for this step (*la configuration de pgAdmin4 est requise pour cette étape*)
 You will have access to your local database by writing the following command in the console (*Vous aurez accès à votre base de données local en saisissant la commande suivante*)
 - `heroku pg :psql`
 You can now execute a SQL request, as an example (*Vous pouvez désormais executer une requête SQL, par exemple*)
 - `SELECT * FROM sharingofexperience_sharingofexperience;`
 
-#### Panel d'administration
+#### Adminisatration panel - *Panel d'administration*
 - create a Django superuser (*créez un superuser Django*)
 - Visite (*Allez sur*) : `http://localhost:8000/admin`
 - Log in with super user credentials (*Connectez-vous avec l’authentifiant du superuser*) 
 
 
-## Heroku deployment *Déploiement sur Heroku*
+## Heroku deployment - *Déploiement sur Heroku*
 
-### Récapitulatif haut niveau du fonctionnement du déploiement
+### Summary of deployment operating - *Récapitulatif du fonctionnement du déploiement*
 Deployment of the code on Heroku is automated via a circleCI pipeline, which is executed when a git push is made (master branch only). The circleCI pipeline is described in the .circleci/config.yml file. To use this process, you must configure your circleCI account (link it to your github account and define the HEROKU_API_KEY, HEROKU_APP_NAME and SECRET_KEY environment variables).
 Deployment can also be carried out manually (see text below).
 
@@ -128,7 +126,7 @@ Pour un déploiement manuel :
 - Heroku CLI 
 - A circleCI account (Un compte circleCI)
 
-### Steps for a new heroku deployment (*Étapes nécessaires au déploiement d'une nouvelle application heroku*)
+### Steps for a new heroku deployment - *Étapes nécessaires au déploiement d'une nouvelle application heroku*
 Using the terminal, go to the project folder (command `cd`), then execute the following commands: (*Avec le terminal, placez vous dans le dossier du projet (commande `cd`), puis executez les commandes suivantes :*)
 
 - Authenticate yourself (*Authentifiez vous*)
@@ -157,8 +155,8 @@ Create a heroku application (you can specify an application name ; if not, you w
 >`heroku ps:scale web=1`
 >`heroku open`
 
-### Étapes nécessaires au déploiement d'une mise à jour d'une application heroku
-#### Déploiement mannuel
+### Steps required to deploy an update for a heroku application - *Étapes nécessaires au déploiement d'une mise à jour d'une application heroku*
+#### Mannual deployment - *Déploiement mannuel*
 - To deploy a manual update (*Pour le déploiement d'une mise à jour mannuel*) :
 >`heroku login`
 >` git add .`
@@ -166,7 +164,7 @@ Create a heroku application (you can specify an application name ; if not, you w
 >`git push origin main` (or `git push -u origin BRANCH_NAME`)
 >`git push heroku main` (or `git push heroku BRANCH_NAME:main`)
 
-#### Automatic deployment with a circleCI pipeline (*Déploiement automatique avec un pipeline circleCI*)
+#### Automatic deployment with a circleCI pipeline - *Déploiement automatique avec un pipeline circleCI*
 If your code is pushed to GitHub and your circleCI account is associated with your GitHub account, you should find your project on the circleCI dashboard and be able to click a "Set Up Project" button next to your project name. You can follow the documentation to initiate your pipeline (choose the 'Fastest' option)
 *Si votre code est poussé sur GitHub et que votre compte circleCI est associé à votre compte GitHub, vous devriez trouver votre projet sur le tableau de bord de circleCI et avoir la possibilité de cliquer un bouton "Set Up Project" à côté du nom de votre projet. Vous pouvez suivre la documentation pour initier votre pipeline (choix de l'option 'Fastest')*
 
