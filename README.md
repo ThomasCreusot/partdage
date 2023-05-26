@@ -2,11 +2,11 @@
 
 
 ## Project presentation – *Présentation du projet*
-EN: PARTDAGE is a web application (Django + postgreSQL) which allows to share experiences of life and learn from other users experiences. I [deployed PARTDAGE on heroku](partdage.herokuapp.com/)
-The present project is a way to continue to learn and practice coding after passing a Developer degree. It is a simple application which has interesting details. This application is also a concrete demonstration of my skills, in the context of a new professionnal opportunity research. And I just like to code. 
+EN: PARTDAGE is a web application (Django + postgreSQL) which allows to share experiences of life and learn from other users experiences. I deployed PARTDAGE on heroku (partdage.herokuapp.com/).   
+The present project is a way to continue to learn and practice coding after passing a Developer degree. It is a simple application which has interesting details. This application is also a concrete demonstration of my skills, in the context of a new professionnal opportunity research. And I just like to code.   
 How does it work ? Each user can share an experience of life for each age he/she lived. Each user can consult sharings (from other user) which correspond to his/her current age (+/- 1 year old). The more an user shares, the more he/she has access to now credits in the form of access to new sharings of experience.
 
-FR : *PARTDAGE est une application web (Django + postgreSQL), permettant de partager ses expériences de vie et d’apprendre des expériences des autres utilisateurs. J’ai [déployé PARTDAGE sur heroku](partdage.herokuapp.com/)*
+FR : *PARTDAGE est une application web (Django + postgreSQL), permettant de partager ses expériences de vie et d’apprendre des expériences des autres utilisateurs. J’ai déployé PARTDAGE sur heroku (partdage.herokuapp.com/).*
 *Le présent projet est l’opportunité pour moi de continuer à pratiquer le développement informatique et à apprendre après la formation de Développeur que j’ai suivie. Il s’agit d’une application simple mais ayant ses subtilités. Cette application constitue également une démonstration concrète de mes competences pour ma recherche d'une nouvelle opportunité professionnelle. Et puis je m'épanouis en développant, tout simplement.*
 *Comment ça marche ? Chaque utilisateur peut partager une expérience de vie pour chaque age qu’il a vécu. Chaque utilisateur peut consulter des partages d’expériences d’autres utilisateurs, qui correspondent à son âge actuel (+/- un an). Plus un utilisateur partage ses expériences, plus il a accès à de nouveaux crédits qui se concrétisent par un accès à de nouveaux partages d’expériences.*
 
