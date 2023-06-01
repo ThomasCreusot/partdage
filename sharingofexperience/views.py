@@ -15,6 +15,7 @@ NUMBER_OF_PARTICIPATION_TO_GET_ACCESS_TO_NEW_SHARINGS = 2
 COST_IN_CREDITS_TO_ACCESS_PAST_OR_FUTURE_SHARINGS = 5
 NUMBER_OF_AVAILABLE_PAST_OR_FUTURE_SHARINGS_WHEN_SPEND_CREDITS = 1
 
+# TO BE DONE : REFACTO
 
 def age_calculation(birth_date):
     today = date.today()
@@ -385,6 +386,39 @@ def learning_from_others(request):
     if 'dictionary initialisation' in user_profile_model_dictionnary:
         if user_profile_model_dictionnary['dictionary initialisation'] == 1:
             return redirect('home')
+
+    # ==== TO BE DONE : REFACTO +++ ===
+    # if enought credits and if valid sharings (id from other, age+-1, moderator validation) the
+    # user has not yet access are available
+    # so : adding sharings to user profile model + debit of credits
+
+    if 'credits' in user_profile_model_dictionnary:
+        user_credits = user_profile_model_dictionnary['credits']
+        # We keep only sharings from others users, age +/- GAP_OF_YEARS... , validated by moderator
+        sharings_of_experiences_from_others = queryset_sharing_of_experiences_from_others(request)
+    
+        if user_credits >= 1 and len(sharings_of_experiences_from_others) >=1 :
+            # 
+            user_profile_model_dictionnary_only_numeric_keys = user_profile_model_dictionnary_only_numeric_keys_kept(user_profile_model_dictionnary)
+            # We keep only sharings that the request.user does not have access yet
+            sharings_queryset_in_which_we_sample = sharings_of_experiences_from_others.filter(
+                ~Q(id__in=user_profile_model_dictionnary_only_numeric_keys)
+                )
+            
+            total_sharings_queryset_in_which_we_sample = sharings_queryset_in_which_we_sample.count()
+            number_of_draws = min(user_credits, total_sharings_queryset_in_which_we_sample)
+
+            # Sampling
+            list_sharings_queryset_in_which_we_sample = list(sharings_queryset_in_which_we_sample)
+            sample_sharings_of_experience = sample(list_sharings_queryset_in_which_we_sample, number_of_draws)
+            
+            # Attribution of sharings to user and debit of credtis
+            for sharing in sample_sharings_of_experience:
+                user_profile_model_dictionnary[str(sharing.id)] = True
+                user_profile_model_dictionnary['credits']-=1
+
+            user_profile_model.save()
+    # =================================
 
     at_least_a_numeric_key_is_true = False
     for key in user_profile_model_dictionnary:
