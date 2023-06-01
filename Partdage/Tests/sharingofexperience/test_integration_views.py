@@ -1953,6 +1953,561 @@ class TestLearning_from_othersView:
         assert content.find("Ma philosophie actuelle principale est d'être ") != -1
 
 
+    @pytest.mark.django_db
+    def test_learning_from_others_all_conditions_meet_not_full_access__test_access_to_recent_sharings_all_conditions_meet_version_more_credits_than_sharings(self):
+        """Testing the part of learning_from_others() view consisting to giving access to sharings
+        of experience (of others users) which were created and allocated to request.user after that
+        request.user wrote his/her sharings
+        
+        All conditions are met : 
+        -request.user has credits
+        -sharings are available and: were written by another user, are in the gap +/-GAP_OF_YEARS..,
+        -are validated by moderator
+
+        In this version, there are more credits than sharings
+        _____
+        Scenario : 
+        Creation of users A and B and profile model of user A ; PROFILE MODEL WITHOUT SHARINGS BUT
+        ONLY CREDITS (that's the difference with previous tests)
+        User A has credits (2)
+        User B shared an experience : corresponds to userA age, validated by moderator 
+        User A logs-in the application and makes a GET request towards learning_from_others page
+        User A should have access to the sharing of experience corresponding to his/her age
+
+        + verify that credits were debited
+        + verify that sharing of experience from user B was added in user A profile model
+        """
+        
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+        # Sharings of experience creation 
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_1= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_1.save()
+
+        # Profile models creation 
+        # Reminder : + user dictionnary has a key corresponding to a sharing id equal to true in
+        # its profile model
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits': 2,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # User A makes a GET request towards learning_from_others page
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+
+        # User A should have access to the sharing of experience corresponding to his/her age
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
+        assert content.find(">{0}</p>".format(test_sharing_user_B_1.description)) != -1 
+        assert content.find("<p>Likes :") != -1 
+        assert content.find('<button><a href="/like_a_sharing_of_experience/{0}/">Like</a></button>'.format(test_sharing_user_B_1.id)) != -1 
+
+        # + verify that sharing of experience from user B was added in user A profile model
+        # + verify that credits were debited
+        expected_value = {str(test_sharing_user_B_1.id): True, 'credits': 2-1}
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+        assert user_A_profile_model_dictionnary == expected_value
+
+
+    @pytest.mark.django_db
+    def test_learning_from_others_all_conditions_meet_not_full_access__test_access_to_recent_sharings_all_conditions_meet_version_more_sharings_than_credits(self):
+        """Same as test_learning_from_others_all_conditions_meet_not_full_access__test_access_to_recent_sharings_all_conditions_meet_version_more_credits_than_sharings()
+        except that there are more sharings (2) than credits (1)
+        request.user should have access to one of the two sharings
+        """
+        
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+        # Sharings of experience creation 
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_1= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_1.save()
+
+        test_sharing_user_B_2= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing test_sharing_user_B_2",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_2.save()
+
+
+        # Profile models creation 
+        # Reminder : + user dictionnary has a key corresponding to a sharing id equal to true in
+        # its profile model
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits': 1,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # User A makes a GET request towards learning_from_others page
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+
+        # User A should have access to one of the two sharings of experience corresponding to his/her age
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
+
+        assert content.find(">{0}</p>".format(test_sharing_user_B_1.description)) != -1 or content.find(">{0}</p>".format(test_sharing_user_B_2.description)) != -1 
+        assert content.find("<p>Likes :") != -1 
+        assert content.find('<button><a href="/like_a_sharing_of_experience/{0}/">Like</a></button>'.format(test_sharing_user_B_1.id)) != -1 or content.find('<button><a href="/like_a_sharing_of_experience/{0}/">Like</a></button>'.format(test_sharing_user_B_2.id)) != -1
+
+        # + verify that sharing of experience from user B was added in user A profile model
+        # + verify that credits were debited
+        expected_value1 = {str(test_sharing_user_B_1.id): True, 'credits': 1-1}
+        expected_value2 = {str(test_sharing_user_B_2.id): True, 'credits': 1-1}
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+        assert user_A_profile_model_dictionnary == expected_value1 or user_A_profile_model_dictionnary == expected_value2
+
+
+    @pytest.mark.django_db
+    def test_learning_from_others_all_conditions_meet_not_full_access__test_access_to_recent_sharings_no_credits(self):
+        """Testing the part of learning_from_others() view consisting to giving access to sharings
+        of experience (of others users) which were created and allocated to request.user after that
+        request.user wrote his/her sharings
+        
+        All conditions are met except : -request.user has no credits
+        _____
+        Scenario : 
+        Creation of users A and B and profile model of user A ; PROFILE MODEL WITHOUT SHARINGS BUT
+        ONLY CREDITS (that's the difference with previous tests)
+        User A has NO credits
+        User B shared an experience : corresponds to userA age, validated by moderator 
+        User A logs-in the application and makes a GET request towards learning_from_others page
+        User A should NOT have access to the sharing of experience corresponding to his/her age
+
+        + verify that NO credits were debited
+        + verify that sharing of experience from user B was NOT added in user A profile model
+        """
+        
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+        # Sharings of experience creation 
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_1= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_1.save()
+
+        # Profile models creation 
+        # Reminder : + user dictionnary has a key corresponding to a sharing id equal to true in
+        # its profile model
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits': 0,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # User A makes a GET request towards learning_from_others page
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+
+        # User A should NOT have access to the sharing of experience corresponding to his/her age
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
+        assert content.find(">{0}</p>".format(test_sharing_user_B_1.description)) == -1 
+        assert content.find("<p>Likes :") == -1 
+        assert content.find('<button><a href="/like_a_sharing_of_experience/{0}/">Like</a></button>'.format(test_sharing_user_B_1.id)) == -1 
+
+        # + verify that sharing of experience from user B was NOT added in user A profile model
+        # + verify that credits were NOT debited
+        expected_value = {'credits': 0-0}
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+        assert user_A_profile_model_dictionnary == expected_value
+
+
+    @pytest.mark.django_db
+    def test_learning_from_others_all_conditions_meet_not_full_access__test_access_to_recent_sharings_sharing_from_requestUser(self):
+        """Testing the part of learning_from_others() view consisting to giving access to sharings
+        of experience (of others users) which were created and allocated to request.user after that
+        request.user wrote his/her sharings
+        
+        All conditions are met except that : -sharings available was not written by another user
+        
+        _____
+        Scenario : 
+        Creation of users A and profile model of user A ; PROFILE MODEL WITHOUT SHARINGS BUT
+        ONLY CREDITS (that's the difference with previous tests)
+        User A has credits (2)
+        User A shared an experience : corresponds to userA age, validated by moderator 
+        User A logs-in the application and makes a GET request towards learning_from_others page
+        User A should NOT have access to its own sharing
+
+        + verify that credits were NOT debited
+        + verify that sharing of experience from user A was NOT added in user A profile model
+        """
+        
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        # Sharings of experience creation 
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_A_1= SharingOfExperience.objects.create(
+                user_id = test_user_A,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing test_sharing_user_A_1",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_A_1.save()
+
+        # Profile models creation 
+        # Reminder : + user dictionnary has a key corresponding to a sharing id equal to true in
+        # its profile model
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits': 2,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # User A makes a GET request towards learning_from_others page
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+
+        # User A should have access to the sharing of experience corresponding to his/her age
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
+        assert content.find(">{0}</p>".format(test_sharing_user_A_1.description)) == -1 
+        assert content.find("<p>Likes :") == -1 
+        assert content.find('<button><a href="/like_a_sharing_of_experience/{0}/">Like</a></button>'.format(test_sharing_user_A_1.id)) == -1 
+
+        # + verify that sharing of experience from user A was NOT added in user A profile model
+        # + verify that credits were NOT debited
+        expected_value = {'credits': 2}
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+        assert user_A_profile_model_dictionnary == expected_value
+
+
+    @pytest.mark.django_db
+    def test_learning_from_others_all_conditions_meet_not_full_access__test_access_to_recent_sharings_sharing_outside_range(self):
+        """Testing the part of learning_from_others() view consisting to giving access to sharings
+        of experience (of others users) which were created and allocated to request.user after that
+        request.user wrote his/her sharings
+        
+        All conditions are met except : sharing is not in the gap +/-GAP_OF_YEARS..,
+
+        _____
+        Scenario : 
+        Creation of users A and B and profile model of user A ; PROFILE MODEL WITHOUT SHARINGS BUT
+        ONLY CREDITS (that's the difference with previous tests)
+        User A has credits (2)
+        User B shared an experience : DOES NOT corresponds to userA age, validated by moderator 
+        User A logs-in the application and makes a GET request towards learning_from_others page
+        User A should NOT have access to the sharing of experience which does not correspond to his/her age
+
+        + verify that credits were NOT debited
+        + verify that sharing of experience from user B was NOT added in user A profile model
+        """
+        
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+        # Sharings of experience creation 
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_1= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age + GAP_OF_YEARS_FROM_USER_AGE_FOR_DISPLAYING_EXPERIENCES + 1,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "VAL",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_1.save()
+
+        # Profile models creation 
+        # Reminder : + user dictionnary has a key corresponding to a sharing id equal to true in
+        # its profile model
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits': 2,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # User A makes a GET request towards learning_from_others page
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+
+        # User A should NOT have access to the sharing of experience which does not correspond to his/her age
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
+        assert content.find(">{0}</p>".format(test_sharing_user_B_1.description)) == -1 
+        assert content.find("<p>Likes :") == -1 
+        assert content.find('<button><a href="/like_a_sharing_of_experience/{0}/">Like</a></button>'.format(test_sharing_user_B_1.id)) == -1 
+
+        # + verify that sharing of experience from user B was NOT added in user A profile model
+        # + verify that credits were NOT debited
+        expected_value = {'credits': 2}
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+        assert user_A_profile_model_dictionnary == expected_value
+
+    @pytest.mark.django_db
+    def test_learning_from_others_all_conditions_meet_not_full_access__test_access_to_recent_sharings_sharing_not_validated_by_moderator(self):
+        """Testing the part of learning_from_others() view consisting to giving access to sharings
+        of experience (of others users) which were created and allocated to request.user after that
+        request.user wrote his/her sharings
+        
+        All conditions are met except : sharings are not validated by moderator
+
+        _____
+        Scenario : 
+        Creation of users A and B and profile model of user A ; PROFILE MODEL WITHOUT SHARINGS BUT
+        ONLY CREDITS (that's the difference with previous tests)
+        User A has credits (2)
+        User B shared an experience : corresponds to userA age, validated by moderator 
+        User A logs-in the application and makes a GET request towards learning_from_others page
+        User A should NOT have access to the sharing of experience corresponding to his/her age
+
+        + verify that credits were NOT debited
+        + verify that sharing of experience from user B was NOT added in user A profile model
+        """
+        
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+        # Sharings of experience creation 
+        test_user_A_birthdate = datetime.strptime(test_user_A.birth_date, "%Y-%m-%d")
+        test_user_A_age = age_calculation(test_user_A_birthdate)
+
+        test_sharing_user_B_1= SharingOfExperience.objects.create(
+                user_id = test_user_B,
+                experienced_age = test_user_A_age,
+                description = "description test_sharing test_sharing_user_B_1",
+                moderator_validation = "NOP",
+                likes = {"likes": {}}
+        )
+        test_sharing_user_B_1.save()
+
+        # Profile models creation 
+        # Reminder : + user dictionnary has a key corresponding to a sharing id equal to true in
+        # its profile model
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits': 2,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # User A makes a GET request towards learning_from_others page
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+
+        # User A should NOT have access to the sharing of experience corresponding to his/her age
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
+        assert content.find(">{0}</p>".format(test_sharing_user_B_1.description)) == -1 
+        assert content.find("<p>Likes :") == -1 
+        assert content.find('<button><a href="/like_a_sharing_of_experience/{0}/">Like</a></button>'.format(test_sharing_user_B_1.id)) == -1 
+
+        # + verify that sharing of experience from user B was NOT added in user A profile model
+        # + verify that credits were NOT debited
+        expected_value = {'credits': 2}
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+        assert user_A_profile_model_dictionnary == expected_value
+
+
+    @pytest.mark.django_db
+    def test_learning_from_others_all_conditions_meet_not_full_access__test_access_to_recent_sharings_no_sharings_available(self):
+        """Testing the part of learning_from_others() view consisting to giving access to sharings
+        of experience (of others users) which were created and allocated to request.user after that
+        request.user wrote his/her sharings
+        
+        All conditions are met except : there are no sharing 
+
+        In this version, there are more credits than sharings
+        _____
+        Scenario : 
+        Creation of users A and B and profile model of user A ; PROFILE MODEL WITHOUT SHARINGS BUT
+        ONLY CREDITS (that's the difference with previous tests)
+        User A has credits (2)
+        User B DID NOT share experience 
+        User A logs-in the application and makes a GET request towards learning_from_others page
+        User A should NOT have access to the sharing of experience corresponding to his/her age
+
+        + verify that credits were NOT debited
+        + verify that sharing of experience from user B was NOT added in user A profile model
+        """
+        
+        # Users creation and connection 
+        test_user_A = User.objects.create(
+                username = 'test_user_A',
+                password = 'test_user_A',
+                birth_date = '2000-01-31',
+                email = 'user_A@mail.com',
+            )
+        test_user_A.save()
+        client_test_user_A = Client()
+        client_test_user_A.force_login(test_user_A)
+
+        test_user_B = User.objects.create(
+                username = 'test_user_B',
+                password = 'test_user_B',
+                birth_date = '2000-01-31',
+                email = 'user_B@mail.com',
+            )
+        test_user_B.save()
+
+        # Sharings of experience creation 
+        # NO SHARING CREATION
+
+        # Profile models creation 
+        # Reminder : + user dictionnary has a key corresponding to a sharing id equal to true in
+        # its profile model
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess = ProfileModelSharingOfExperiencesUserHasAccess.objects.create(
+            user = test_user_A,
+            sharing_of_experiences_user_has_access = {'credits': 2,},
+        )
+        test_user_A_ProfileModelSharingOfExperiencesUserHasAccess.save()
+
+        # User A makes a GET request towards learning_from_others page
+        path = reverse('learning_from_others')
+        response = client_test_user_A.get(path)
+        content = response.content.decode()
+
+        # User A should NOT have access to any sharing of experience 
+        assert response.status_code == 200
+        assertTemplateUsed(response, "sharingofexperience/learning_from_others.html")
+        assert content.find("<p>Likes :") == -1 
+
+        # + verify that no sharing of experience from user B was added in user A profile model
+        # + verify that credits were not debited
+        expected_value = {'credits': 2}
+        user_A_profile_model = ProfileModelSharingOfExperiencesUserHasAccess.objects.get(user__pk=test_user_A.id)
+        user_A_profile_model_dictionnary = user_A_profile_model.sharing_of_experiences_user_has_access
+        assert user_A_profile_model_dictionnary == expected_value
+
+
 class TestLike_a_sharing_of_experienceView:
 
     @pytest.mark.django_db
